@@ -1,0 +1,223 @@
+  body {
+    background-color: #f4f4f4;
+    color: #555;
+    font-size: 150%;
+    font-family: Microsoft JhengHei;
+    line-height: 1.6em;
+    margin:0;
+  }
+  .container{
+    width:80%;
+    margin:auto;
+    overflow:hidden;
+  }
+  .container a {
+    color: inherit; /* 移除超連結顏色 */
+    text-decoration: none;  /* 移除超連結底線 */
+  }
+  #main-header {
+    background-color:black;
+    color:#fff;
+    text-align:center;
+    min-height: 10px;
+  }
+  #showcase {
+    background-image: url("img/paper.jpg");
+    background-position: center right;
+    min-height: 150px;
+    margin-bottom:30px;
+    text-align:center;
+  }
+  #showcase h1{
+    color:#fff;
+    font-size:50px;
+    line-height:1.6em;
+    padding-top:30px;
+  }  
+  #main {
+    float: right;
+    width: 85%;
+    padding: 0 30px;
+    box-sizing: border-box;    
+  }
+  #main a {
+    color: inherit; /* 移除超連結顏色 */
+    text-decoration: none;  /* 移除超連結底線 */
+  }  
+  #sidebar {
+    float: left;
+    width: 15%;
+    padding: 10px;
+    box-sizing: border-box;
+  }    
+  #main-footer{
+    background-color: #333;
+    color: #fff;
+    text-align:center;
+    padding: 20px;
+    margin-top:40px;
+  }
+  @media(max-width:600px){
+    #main{
+      width:100%;
+      float:none;
+    }
+    #sidebar{
+      width:100%;
+      float:none;
+    } 
+  }
+  nav {
+    border: 1px solid;
+    border-radius: 20px;
+  }
+  nav a {
+    color: inherit; /* 移除超連結顏色 */
+    display: block; /* 讓 <a> 填滿 <li> */
+    font-size: 1.2rem;
+    padding: 10px;
+    text-decoration: none;  /* 移除超連結底線 */
+  }
+  nav > ul {    
+    list-style: none;   /* 移除項目符號 */
+    margin: 0;
+    padding: 0;
+  }
+  nav a:hover {
+    background-color: rgb(115, 115, 115);
+    color: white;
+    border-radius: 15px;
+  }
+  table, td{
+    border:1px solid purple;
+    border-collapse:collapse;
+    text-align:center;
+    background-color:#DDDDDD;
+    height: 50px;
+    width: 300px;    
+  } 
+  blockquote {
+    border-radius: 20px;
+    background: #f9f9f9;
+    border-left: 10px solid #ccc;
+    margin: 0.5em 10px;
+    padding: 0.5em 10px;    
+    display: inline-block;
+    width: 300px;
+  }
+  blockquote:before {
+    color: #ccc;    
+    font-size: 4em;
+    line-height: 0.1em;
+    margin-right: 0.25em;
+    vertical-align: -0.4em;
+  }
+  blockquote p {
+    font-size:1.2em;
+    display: inline;
+  } 
+  blockquote:hover {
+    background-color: rgb(115, 115, 115);
+    color: white;
+  }
+  blockquote up {
+    color: red;
+  }
+  blockquote down {
+    color: green;
+  }
+  blockquote same {
+    color: gray;
+  }
+/*//////////////////////////////////////////////////////////////////
+[ Table ]*/
+table {
+  width: 100%;
+  background-color: #fff;
+}
+
+th, td {
+  font-weight: unset;
+  padding-right: 10px;
+  text-align:center;
+}
+
+.column100 {
+  width: 130px;
+  padding-left: 25px;
+}
+
+.column100.column1 {
+  width: 265px;
+  padding-left: 42px;
+}
+
+.row100.head th {
+  padding-top: 24px;
+  padding-bottom: 20px;
+}
+
+.row100 td {
+  padding-top: 18px;
+  padding-bottom: 14px;
+}
+
+
+/*==================================================================
+[ Ver1 ]*/
+.table100.ver1 td {
+  font-family: Montserrat-Regular;
+  font-size: 23px;
+  color: #808080;
+  line-height: 1.4;
+}
+
+.table100.ver1 th {
+  font-family: Montserrat-Medium;
+  font-size: 23px;
+  color: #fff;
+  line-height: 1.4;
+  text-transform: uppercase;
+  background-color: #36304a;
+}
+
+.table100.ver1 .row100:hover {
+  background-color: #f2f2f2;
+}
+
+.table100.ver1 .hov-column-ver1 {
+  background-color: #f2f2f2;
+}
+
+.table100.ver1 .hov-column-head-ver1 {
+  background-color: #484848 !important;
+}
+
+.table100.ver1 .row100 td:hover {
+  background-color: #6c7ae0;
+  color: #fff;
+}
+  #main .btn-group button {
+    background-color: #4CAF50; /* Green background */
+    border: 1px solid green; /* Green border */
+    color: white; /* White text */
+    padding: 10px 24px; /* Some padding */
+    cursor: pointer; /* Pointer/hand icon */
+    float: left; /* Float the buttons side by side */
+  }
+
+  /* Clear floats (clearfix hack) */
+  #main .btn-group:after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+
+  #main .btn-group button:not(:last-child) {
+    border-right: none; /* Prevent double borders */
+  }
+
+  /* Add a background color on hover */
+  #main .btn-group button:hover {
+    background-color: #3e8e41;
+  }
