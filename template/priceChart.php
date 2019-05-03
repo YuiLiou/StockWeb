@@ -8,15 +8,37 @@
         ?>        
         contentType: "application/json",
         dataType: "json",         
-        success: function(response) {
-            // collection
+        success: function(response) {         
             var date = [];
             var price = [];
-            for(var i=response.length-1;i>=0;i--) {
+            var length = response.length-1;
+            //-------------------- 由先而後塞入股價 --------------------
+            for(var i=length; i>=0; i--) {
                 date.push(response[i]['date']);
                 price.push(response[i]['price']);
             }
-            // draw graph
+            //-------------------- 設定折線圖顏色 --------------------
+            var ctx = document.getElementById('myChart').getContext("2d");                        
+            var gradientFill = ctx.createLinearGradient(0, 0, 0, 700);   
+            var trend = "rgba(128,128,128,0.8)";
+            //-------------------- 下跌 -----------------------------
+            if (parseFloat(price[0]) > parseFloat(price[length])){
+                gradientFill.addColorStop(0, "rgba(0, 255, 0, 0.8)");
+                gradientFill.addColorStop(1, "rgba(0, 255, 0, 0.2)");                
+                trend = "rgba(0,255,0,0.8)";
+            }
+            //-------------------- 上漲 -------------------------------
+            else if (parseFloat(price[0]) < parseFloat(price[length])){
+                gradientFill.addColorStop(0, "rgba(255, 0, 0, 0.8)");
+                gradientFill.addColorStop(1, "rgba(255, 0, 0, 0.2)");
+                trend = "rgba(255,0,0,0.8)";
+            }
+            //-------------------- 持平 -------------------------------
+            else{
+                gradientFill.addColorStop(0, "rgba(128, 128, 128, 0.8)");
+                gradientFill.addColorStop(1, "rgba(128, 128, 128, 0.2)");
+            }
+            //-------------------------------------------------
             var chartdata = {
                 labels: date,
                 datasets: [
@@ -27,26 +49,24 @@
                             else  
                                 echo "label:'".$_GET['company']."',";
                         ?>                     
-                        fill: false,
+                        fill: true,
                         lineTension: 0.1,
-                        backgroundColor: 'red',
-                        borderColor: 'rgb(255, 0, 0)',
+                        backgroundColor: gradientFill,
+                        borderColor: trend,
                         pointRadius: 10,
                         borderWidth: 5,
                         data: price,
                     }
                 ],	                 
-            };
-            var ctx = document.getElementById('myChart');
+            };            
             var lineGraph = new Chart(ctx, {
                 type: 'line',
                 data: chartdata,
-                // Configuration options go here          
                 options: {
 	            legend: {
                         display: true,                        
                         labels: {
-                            fontColor: 'red',
+                            fontColor: trend,
                         }
                     },
                     scales: {
