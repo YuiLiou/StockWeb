@@ -20,6 +20,7 @@
   <div id="main">
     <div class="btn-group">
       <button id="priceBtn">股價</button>
+      <button id="legalsBtn">三大法人</button>
       <button id="incomeBtn">損益表</button>
       <button id="monthlyBtn">月營收</button>
     </div>
@@ -37,7 +38,11 @@ $('#priceBtn').click(function() {
     document.getElementById('viewTable').innerHTML = "";
     <?php include 'template/priceChart.php'; ?>
 });
-
+/////////////////////// 三大法人 ///////////////////////
+$('#legalsBtn').click(function() {
+    document.getElementById('viewChart').innerHTML = "";
+    document.getElementById('viewTable').innerHTML = <?php include 'template/legalsTable.php'; ?>;
+});
 /////////////////////// 損益表 ///////////////////////
 $('#incomeBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "<canvas id='myChart'></canvas>";   

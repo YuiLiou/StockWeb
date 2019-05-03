@@ -20,9 +20,9 @@
   <div id="main">
     <div class="btn-group">
       <button id="movingBtn">漲幅</button>
+      <button id="legalsBtn">三大法人</button>
       <button id="PEBtn">本益比</button>
       <button id="yearYoYBtn">累計營收</button>
-      <button id="legalsBtn">三大法人</button>
     </div>
     <div id="companyList"></div>
   </div>  
