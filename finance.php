@@ -21,6 +21,7 @@
     <div class="btn-group">
       <button id="priceBtn">股價</button>
       <button id="legalsBtn">三大法人</button>
+      <button id="newsBtn">新聞</button>
       <button id="incomeBtn">損益表</button>
       <button id="monthlyBtn">月營收</button>
     </div>
@@ -43,13 +44,17 @@ $('#legalsBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
     document.getElementById('viewTable').innerHTML = <?php include 'template/legalsTable.php'; ?>;
 });
+/////////////////////// 個股新聞 ///////////////////////
+$('#newsBtn').click(function() {
+    document.getElementById('viewChart').innerHTML = "";
+    document.getElementById('viewTable').innerHTML = <?php include 'template/newsList.php'; ?>;
+});
 /////////////////////// 損益表 ///////////////////////
 $('#incomeBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "<canvas id='myChart'></canvas>";   
     document.getElementById('viewTable').innerHTML = "";
     <?php include 'template/incomeChart.php'; ?>
 });
-
 /////////////////////// 月營收 ///////////////////////
 $('#monthlyBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "";

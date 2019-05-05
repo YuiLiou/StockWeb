@@ -88,6 +88,14 @@
     color: white;
     border-radius: 15px;
   }
+  #newsList li a:hover {
+    background-color: rgb(115, 115, 115);
+    color: white;
+    border-radius: 15px;
+  }
+  #newsList {
+    margin-top: 20px;
+  }
   table, td{
     border:1px solid purple;
     border-collapse:collapse;
@@ -151,7 +159,12 @@ th, td {
   padding-top: 18px;
   padding-bottom: 14px;
 }
-
+.table100.ver1 {
+  position: relative;
+  height: 1000px;
+  overflow: auto;
+  display: block;
+}
 .table100.ver1 td {
   font-family: Montserrat-Regular;
   font-size: 23px;
@@ -180,7 +193,11 @@ th, td {
   background-color: #6c7ae0;
   color: #fff;
 }
-
+.my-custom-scrollbar {
+  position: relative;
+  height: 200px;
+  overflow: auto;
+}
 /*-----------------------------button group--------------------------------*/
   #main .btn-group button {
     background-color: #4CAF50; /* Green background */
