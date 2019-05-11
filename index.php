@@ -53,7 +53,12 @@ $('#legalsBtn').click(function() {
 
 /////////////////////// load:依照漲幅排序 ///////////////////////
 window.onload = function() {
-    $('#movingBtn').click();
+    <?php 
+        if (empty($_GET['month']))
+            echo "$('#movingBtn').click();";
+        else
+            echo "$('#yearYoYBtn').click();";
+    ?>
 };
 </script>
 </body>

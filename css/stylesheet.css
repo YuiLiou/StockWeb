@@ -88,6 +88,11 @@
     color: white;
     border-radius: 15px;
   }
+/****************** 月份選單 ******************************/
+  #slcMonth {
+    margin: 10px;
+  }
+/****************** 新聞列表 ************************/  
   #newsList li a:hover {
     background-color: rgb(115, 115, 115);
     color: white;
@@ -95,6 +100,10 @@
   }
   #newsList {
     margin-top: 20px;
+    position: relative;
+    height: 800px;
+    overflow: auto;
+    display: block;
   }
   table, td{
     border:1px solid purple;
@@ -104,6 +113,7 @@
     height: 50px;
     width: 300px;    
   } 
+/****************** 公司列表 ************************/  
   blockquote {
     border-radius: 20px;
     background: #f9f9f9;
@@ -161,7 +171,7 @@ th, td {
 }
 .table100.ver1 {
   position: relative;
-  height: 1000px;
+  height: 800px;
   overflow: auto;
   display: block;
 }
@@ -193,11 +203,6 @@ th, td {
   background-color: #6c7ae0;
   color: #fff;
 }
-.my-custom-scrollbar {
-  position: relative;
-  height: 200px;
-  overflow: auto;
-}
 /*-----------------------------button group--------------------------------*/
   #main .btn-group button {
     background-color: #4CAF50; /* Green background */
@@ -207,18 +212,15 @@ th, td {
     cursor: pointer; /* Pointer/hand icon */
     float: left; /* Float the buttons side by side */
   }
-
   /* Clear floats (clearfix hack) */
   #main .btn-group:after {
     content: "";
     clear: both;
     display: table;
   }
-
   #main .btn-group button:not(:last-child) {
     border-right: none; /* Prevent double borders */
   }
-
   /* Add a background color on hover */
   #main .btn-group button:hover {
     background-color: #3e8e41;

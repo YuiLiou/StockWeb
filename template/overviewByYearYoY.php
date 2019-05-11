@@ -1,20 +1,37 @@
 <?php
   require_once('db.php');
-  $sql = "select m.code, m.company, p.price, p.date, p.change, p.moving, p.PE, monthly.Yearly_YoY ".
-         "from company_map m, prices p, monthly, ".
-         "(select date from prices order by date desc limit 0,1) today, ".
-         "(select code from own where user = 'rusiang') o ,".
-         "(select month from monthly order by month desc limit 0,1) m2 ".
-         "where 1=1 ".
-         "and o.code = m.code ".
-         "and p.code = o.code ".
-         "and monthly.code = o.code ".
-         "and monthly.month = m2.month ".
-         "and p.date = today.date ".
-         "order by Yearly_YoY desc ";
+  ///////////////////////////////////// 月份選單 /////////////////////////////////////
+  $sql = "select distinct month ".
+         "from monthly ".
+         "order by month desc ";
   $result = $conn->query($sql);
 
-  echo "\""; 
+  echo "\"<select id='slcMonth' onchange='location=this.value;'>";  
+  foreach ($result as $row)
+  {
+      if (empty($_GET['month']))
+          $_GET['month'] = $row['month']; // 預設為當月
+      if ($_GET['month'] == $row['month']) // 顯示被選擇的月份
+          echo "<option selected='selected' value='index.php?month=".$row['month']."'>".$row['month']."</option>";
+      else
+          echo "<option value='index.php?month=".$row['month']."'>".$row['month']."</option>";
+  }
+  echo "</select><br>";
+
+  ///////////////////////////////////// 公司列表 /////////////////////////////////////
+  $sql = "select map.code, map.company, p.price, p.moving, p.change, m.Yearly_YoY ".
+         "from company_map map, prices p, monthly m, ".
+         "(select code from own where user = 'rusiang') o ,".
+         "(select date from prices order by date desc limit 0,1) today ".
+         "where 1=1 ".
+         "and map.code = o.code ".
+         "and p.code = o.code ".
+         "and p.date = today.date ".
+         "and m.code = o.code ".
+         "and m.month = '".$_GET['month']."' ".
+         "order by Yearly_YoY desc ";
+
+  $result = $conn->query($sql);
   foreach ($result as $row)
   {   
       echo "<a href=finance.php?company=".$row['code'].">";

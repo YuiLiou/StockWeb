@@ -1,17 +1,31 @@
 <?php
 require_once('db.php');
 if (empty($_GET)) {$_GET['company'] = '2330';}
+$sql = "select sum(sub.foreigner) f, sum(sub.dealer) d, sum(sub.investment) i, sum(sub.total) t ".
+       "from (select foreigner, dealer, investment, total ".
+             "from legals ".         
+             "where 1=1 ".
+             "and code = '".$_GET['company']."' ".
+             "order by date desc ".
+             "limit 0,30) sub";
+$result = $conn->query($sql);
+/////////////////////////// 買賣超摘要 /////////////////////////// 
+echo "\"";
+$row = mysqli_fetch_assoc($result); 
+echo "外資累計買賣超:".$row['f']."  ";
+echo "自營商累計買賣超:".$row['d']."  ";
+echo "投信累計買賣超:".$row['i']."  ";
+echo "總計買賣超:".$row['t']."<br>";
+/////////////////////////// 標題 ///////////////////////////
 $sql = "select date, foreigner, dealer, investment, total ".
        "from legals ".         
        "where 1=1 ".
        "and code = '".$_GET['company']."' ".
        "order by date desc ".
-       "limit 0,30";
+       "limit 0,30"; 
 $result = $conn->query($sql);
 $total_records = mysqli_num_rows($result);  // 取得記錄數
-
-/////////////////////////// 標題 /////////////////////////// 
-echo "\"<div class='table100 ver1 m-b-110' id='monthlyTbl'>".
+echo "<div class='table100 ver1 m-b-110' id='monthlyTbl'>".
      "<table data-vertable='ver1'>".
      "<thead>".
        "<tr class='row100 head'>".
