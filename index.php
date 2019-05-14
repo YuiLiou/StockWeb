@@ -7,12 +7,8 @@
 </head>
 <body>
 <!--//////////////////////// 標題 ////////////////////////-->
-  <div id="showcase">
-    <div class="container">
-      <a href="index.php"><h1>神秘的投資小站</h1></a>
-    </div>
-  </div>    
-
+  <?php include 'template/header.php'; ?>
+  
 <!--/////////////////////// 側標題 ///////////////////////-->
   <?php include 'template/sidebar.php'; ?>
 
@@ -54,10 +50,10 @@ $('#legalsBtn').click(function() {
 /////////////////////// load:依照漲幅排序 ///////////////////////
 window.onload = function() {
     <?php 
-        if (empty($_GET['month']))
-            echo "$('#movingBtn').click();";
-        else
+        if ($_POST['YoY'])
             echo "$('#yearYoYBtn').click();";
+        else
+            echo "$('#movingBtn').click();";
     ?>
 };
 </script>

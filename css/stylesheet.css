@@ -24,7 +24,7 @@
   #showcase {
     background-image: url("img/paper.jpg");
     background-position: center right;
-    min-height: 150px;
+    min-height: 120px;
     margin-bottom:30px;
     text-align:center;
   }

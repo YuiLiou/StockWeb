@@ -7,11 +7,7 @@
 </head>
 <body>
 <!--//////////////////////// 標題 ////////////////////////-->
-  <div id="showcase">
-    <div class="container">
-      <a href="index.php"><h1>神秘的投資小站</h1></a>
-    </div>
-  </div>
+  <?php include 'template/header.php'; ?>
 
 <!--/////////////////////// 側標題 ///////////////////////-->
   <?php include 'template/sidebar.php'; ?>  
@@ -24,6 +20,7 @@
       <button id="newsBtn">新聞</button>
       <button id="incomeBtn">損益表</button>
       <button id="monthlyBtn">月營收</button>
+      <button id="epsBtn">每股盈餘</button>
     </div>
     <div id="viewChart"></div>
     <div id="viewTable"></div>    
@@ -59,6 +56,11 @@ $('#incomeBtn').click(function() {
 $('#monthlyBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
     document.getElementById('viewTable').innerHTML = <?php include 'template/monthlyTable.php'; ?>;
+});
+/////////////////////// 每股盈餘 ///////////////////////
+$('#epsBtn').click(function() {
+    document.getElementById('viewChart').innerHTML = "";
+    document.getElementById('viewTable').innerHTML = <?php include 'template/epsTable.php'; ?>;
 });
 window.onload = function() {
     $('#priceBtn').click();

@@ -5,18 +5,22 @@
          "from monthly ".
          "order by month desc ";
   $result = $conn->query($sql);
-
+  $_POST['YoY'] = true;
   echo "\"<select id='slcMonth' onchange='location=this.value;'>";  
   foreach ($result as $row)
   {
       if (empty($_GET['month']))
+      {
           $_GET['month'] = $row['month']; // 預設為當月
+          $_POST['YoY'] = false;
+      }      
       if ($_GET['month'] == $row['month']) // 顯示被選擇的月份
           echo "<option selected='selected' value='index.php?month=".$row['month']."'>".$row['month']."</option>";
       else
           echo "<option value='index.php?month=".$row['month']."'>".$row['month']."</option>";
   }
-  echo "</select><br>";
+  echo "</select>";
+  echo "<br>";
 
   ///////////////////////////////////// 公司列表 /////////////////////////////////////
   $sql = "select map.code, map.company, p.price, p.moving, p.change, m.Yearly_YoY ".
