@@ -1,15 +1,5 @@
 <?php
   require_once('db.php');
-  $sql = "select m.code, m.company, p.price, p.date, p.change, p.moving, p.PE ".
-         "from company_map m, prices p, ".
-         "(select code from own where user = 'rusiang') o ".
-         "where 1=1 ".
-         "and o.code = m.code ".
-         "and p.code = o.code ".
-         "and p.date = '".$_POST['date']."' ".
-         "order by p.PE asc ";
-  $result = $conn->query($sql);
-
   echo "\""; 
   /*********************************************************************************/
   /* 日期下拉式選單跳轉的部份
@@ -17,6 +7,16 @@
   echo "  <input type='hidden' name='type' value='pe'>";
   echo "</form>";
   /*********************************************************************************/
+  ///////////////////////////////////// 公司列表 ///////////////////////////////////// 
+  $sql = "select m.code, m.company, p.price, p.date, p.change, p.moving, p.PE ".
+         "from company_map m, prices p ".
+         "where 1=1 ".
+         "and m.code in ('".$codes."') ".
+         "and p.code in ('".$codes."') ".
+         "and m.code = p.code ".
+         "and p.date = '".$_POST['date']."' ".
+         "order by p.PE asc ";
+  $result = $conn->query($sql);  
   foreach ($result as $row)
   {   
       echo "<a href=finance.php?company=".$row['code'].">";

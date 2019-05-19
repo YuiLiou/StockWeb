@@ -1,10 +1,5 @@
 <?php
   require_once('db.php');
-  ///////////////////////////////////// 月份選單 /////////////////////////////////////
-  $sql = "select distinct month ".
-         "from monthly ".
-         "order by month desc ";
-  $result = $conn->query($sql);
   echo "\"";
   /*********************************************************************************/
   /* 日期下拉式選單跳轉的部份
@@ -12,6 +7,12 @@
   echo "  <input type='hidden' name='type' value='yoy'>";
   echo "</form>";
   /*********************************************************************************/
+  ///////////////////////////////////// 月份選單 /////////////////////////////////////
+  $sql = "select distinct month ".
+         "from monthly ".
+         "order by month desc ";
+  $result = $conn->query($sql);
+  
   echo "<form action='index.php' method='POST'>";  
   echo "    <select id='slcMonth' name=month onchange='this.form.submit()'>";  
   foreach ($result as $row)
@@ -31,12 +32,13 @@
 
   ///////////////////////////////////// 公司列表 /////////////////////////////////////
   $sql = "select map.code, map.company, p.price, p.moving, p.change, m.Yearly_YoY ".
-         "from company_map map, prices p, monthly m, ".
-         "(select code from own where user = 'rusiang') o ".
+         "from company_map map, prices p, monthly m ".
          "where 1=1 ".
-         "and map.code = o.code ".
-         "and p.code = o.code ".
-         "and m.code = o.code ".
+         "and map.code in ('".$codes."') ".
+         "and p.code in ('".$codes."') ".
+         "and m.code in ('".$codes."') ".
+         "and map.code = p.code ".
+         "and p.code = m.code ".
          "and p.date = '".$_POST['date']."' ".
          "and m.month = '".$_POST['month']."' ".
          "order by Yearly_YoY desc ";

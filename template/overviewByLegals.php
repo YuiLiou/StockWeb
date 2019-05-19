@@ -1,17 +1,5 @@
 <?php
   require_once('db.php');
-  $sql = "select m.code, m.company, p.price, p.date, p.change, p.moving, p.PE, l.total ".
-         "from company_map m, prices p, legals l, ".
-         "(select code from own where user = 'rusiang') o ".         
-         "where 1=1 ".
-         "and m.code = o.code ".
-         "and p.code = o.code ".
-         "and l.code = o.code ".
-         "and l.date = '".$_POST['date']."' ".
-         "and p.date = '".$_POST['date']."' ".
-         "order by total desc ";
-  $result = $conn->query($sql);
-
   echo "\""; 
   /*********************************************************************************/
   /* 日期下拉式選單跳轉的部份
@@ -19,6 +7,19 @@
   echo "  <input type='hidden' name='type' value='legals'>";
   echo "</form>";
   /*********************************************************************************/
+  ///////////////////////////////////// 公司列表 ///////////////////////////////////// 
+  $sql = "select m.code, m.company, p.price, p.date, p.change, p.moving, p.PE, l.total ".
+         "from company_map m, prices p, legals l ".
+         "where 1=1 ".
+         "and m.code in ('".$codes."') ".
+         "and p.code in ('".$codes."') ".
+         "and l.code in ('".$codes."') ".
+         "and m.code = p.code ".
+         "and p.code = l.code ".
+         "and l.date = '".$_POST['date']."' ".
+         "and p.date = '".$_POST['date']."' ".
+         "order by total desc ";
+  $result = $conn->query($sql);
   foreach ($result as $row)
   {   
       echo "<a href=finance.php?company=".$row['code'].">";

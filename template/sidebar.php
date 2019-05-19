@@ -2,10 +2,10 @@
 
 // connect to db
 require_once('db.php');
-$sql = "select o.code code,  m.company company ".
-       "from own o, company_map m ".
-       "where o.user = 'rusiang' and o.code = m.code ".
-       "order by o.code asc";
+$sql = "select code, company ".
+       "from company_map  ".
+       "where code in ('".$codes."') ".
+       "order by code asc";
 $result = $conn->query($sql);
 $data = array();
 echo "<section id='sidebar'>";
