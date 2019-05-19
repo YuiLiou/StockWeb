@@ -5,34 +5,40 @@
          "from monthly ".
          "order by month desc ";
   $result = $conn->query($sql);
-  $_POST['YoY'] = true;
-  echo "\"<select id='slcMonth' onchange='location=this.value;'>";  
+  echo "\"";
+  /*********************************************************************************/
+  /* 日期下拉式選單跳轉的部份
+  /*********************************************************************************/
+  echo "  <input type='hidden' name='type' value='yoy'>";
+  echo "</form>";
+  /*********************************************************************************/
+  echo "<form action='index.php' method='POST'>";  
+  echo "    <select id='slcMonth' name=month onchange='this.form.submit()'>";  
   foreach ($result as $row)
   {
-      if (empty($_GET['month']))
+      if (empty($_POST['month']))
       {
-          $_GET['month'] = $row['month']; // 預設為當月
-          $_POST['YoY'] = false;
+          $_POST['month'] = $row['month']; // 預設為當月
       }      
-      if ($_GET['month'] == $row['month']) // 顯示被選擇的月份
-          echo "<option selected='selected' value='index.php?month=".$row['month']."'>".$row['month']."</option>";
+      if ($_POST['month'] == $row['month']) // 顯示被選擇的月份
+          echo "<option selected='selected' value='".$row['month']."'>".$row['month']."</option>";
       else
-          echo "<option value='index.php?month=".$row['month']."'>".$row['month']."</option>";
+          echo "<option value='".$row['month']."'>".$row['month']."</option>";
   }
-  echo "</select>";
-  echo "<br>";
+  echo "  </select>";
+  echo "  <input type='hidden' name='type' value='yoy'>";
+  echo "</form>";
 
   ///////////////////////////////////// 公司列表 /////////////////////////////////////
   $sql = "select map.code, map.company, p.price, p.moving, p.change, m.Yearly_YoY ".
          "from company_map map, prices p, monthly m, ".
-         "(select code from own where user = 'rusiang') o ,".
-         "(select date from prices order by date desc limit 0,1) today ".
+         "(select code from own where user = 'rusiang') o ".
          "where 1=1 ".
          "and map.code = o.code ".
          "and p.code = o.code ".
-         "and p.date = today.date ".
          "and m.code = o.code ".
-         "and m.month = '".$_GET['month']."' ".
+         "and p.date = '".$_POST['date']."' ".
+         "and m.month = '".$_POST['month']."' ".
          "order by Yearly_YoY desc ";
 
   $result = $conn->query($sql);

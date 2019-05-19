@@ -19,7 +19,9 @@
       <button id="legalsBtn">三大法人</button>
       <button id="PEBtn">本益比</button>
       <button id="yearYoYBtn">累計營收</button>
+      <button id="seasonBtn">每季總匯</button>
     </div>
+    <?php include 'template/selDate.php'; ?>
     <div id="companyList"></div>
   </div>  
 
@@ -28,8 +30,7 @@
 <script>
 /////////////////////// 依照漲幅排序 ///////////////////////
 $('#movingBtn').click(function() { 
-    document.getElementById('companyList').innerHTML = <?php include 'template/overviewByMoving.php'; ?>;   
-    
+    document.getElementById('companyList').innerHTML = <?php include 'template/overviewByMoving.php'; ?>;       
 });
 
 /////////////////////// 依照本益比排序 ///////////////////////
@@ -38,7 +39,7 @@ $('#PEBtn').click(function() {
 });
 
 /////////////////////// 依照累計營收排序 ///////////////////////
-$('#yearYoYBtn').click(function() { 
+$('#yearYoYBtn').click(function() {
     document.getElementById('companyList').innerHTML = <?php include 'template/overviewByYearYoY.php'; ?>;
 });
 
@@ -47,13 +48,29 @@ $('#legalsBtn').click(function() {
     document.getElementById('companyList').innerHTML = <?php include 'template/overviewByLegals.php'; ?>;
 });
 
+/////////////////////// 每季總匯 ///////////////////////
+$('#seasonBtn').click(function() {
+    document.getElementById('companyList').innerHTML = <?php include 'template/overviewBySeason.php'; ?>;
+});
+
 /////////////////////// load:依照漲幅排序 ///////////////////////
 window.onload = function() {
     <?php 
-        if ($_POST['YoY'])
-            echo "$('#yearYoYBtn').click();";
+        if (isset($_POST['type']))
+        {
+            if ($_POST['type'] == 'yoy')
+                echo "$('#yearYoYBtn').click();";
+            else if ($_POST['type'] == 'legals')
+                echo "$('#legalsBtn').click();";
+            else if ($_POST['type'] == 'pe')
+                echo "$('#PEBtn').click();";
+            else if ($_POST['type'] == 'season')
+                echo "$('#seasonBtn').click();";
+            else if ($_POST['type'] == 'price')
+                echo "$('#movingBtn').click();";
+        }
         else
-            echo "$('#movingBtn').click();";
+            echo "$('#movingBtn').click();";        
     ?>
 };
 </script>

@@ -1,17 +1,23 @@
 <?php
   require_once('db.php');
+
+  ///////////////////////////////////// 公司列表 ///////////////////////////////////// 
   $sql = "select m.code, m.company, p.price, p.date, p.change, p.moving, p.PE ".
          "from company_map m, prices p, ".
-         "(select date from prices order by date desc limit 0,1) today, ".
          "(select code from own where user = 'rusiang') o ".
          "where 1=1 ".
          "and o.code = m.code ".
          "and p.code = o.code ".
-         "and p.date = today.date ".
+         "and p.date = '".$_POST['date']."' ".
          "order by p.moving desc ";
   $result = $conn->query($sql);
-
-  echo "\""; 
+  echo "\"";
+  /*********************************************************************************/
+  /* 日期下拉式選單跳轉的部份
+  /*********************************************************************************/
+  echo "  <input type='hidden' name='type' value='price'>";
+  echo "</form>";
+  /*********************************************************************************/
   foreach ($result as $row)
   {   
       echo "<a href=finance.php?company=".$row['code'].">";
