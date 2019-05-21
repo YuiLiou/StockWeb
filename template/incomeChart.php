@@ -16,7 +16,7 @@
             var beforeTaxRate = [];
             var afterTaxRate = [];
             for(var i in response) {
-                season.push(response[i]['season']);
+                season.push(response[i]['year'] + response[i]['season']);
                 grossRate.push(response[i]['grossRate']);
                 operatingRate.push(response[i]['operatingRate']);
                 beforeTaxRate.push(response[i]['beforeTaxRate']);

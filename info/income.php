@@ -8,7 +8,7 @@ require_once('db.php');
 $sql = "select * ".
        "from income ".
        "where code = '".$_GET['company']."' ".
-       "order by season asc";
+       "order by year asc, season asc";
 $result = $conn->query($sql);
 $data = array();
 foreach ($result as $row)

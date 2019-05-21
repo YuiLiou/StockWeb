@@ -12,8 +12,6 @@
          "from company_map m, prices p, legals l ".
          "where 1=1 ".
          "and m.code in ('".$codes."') ".
-         "and p.code in ('".$codes."') ".
-         "and l.code in ('".$codes."') ".
          "and m.code = p.code ".
          "and p.code = l.code ".
          "and l.date = '".$_POST['date']."' ".

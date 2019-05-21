@@ -12,7 +12,6 @@
          "from prices p, company_map m ".
          "where 1=1 ".
          "and m.code in ('".$codes."') ".
-         "and p.code in ('".$codes."') ".
          "and p.code = m.code ".
          "and p.date = '".$_POST['date']."' ".
          "order by p.moving desc ";

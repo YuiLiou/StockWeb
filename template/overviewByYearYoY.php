@@ -35,8 +35,6 @@
          "from company_map map, prices p, monthly m ".
          "where 1=1 ".
          "and map.code in ('".$codes."') ".
-         "and p.code in ('".$codes."') ".
-         "and m.code in ('".$codes."') ".
          "and map.code = p.code ".
          "and p.code = m.code ".
          "and p.date = '".$_POST['date']."' ".
