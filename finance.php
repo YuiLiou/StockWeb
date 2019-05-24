@@ -14,6 +14,7 @@
 
 <!--/////////////////////// 主頁面 ///////////////////////-->
   <div id="main">
+    <?php include 'individual/subTitle.php'; ?>  
     <div class="btn-group">
       <button id="priceBtn">股價</button>
       <button id="legalsBtn">三大法人</button>
@@ -21,7 +22,8 @@
       <button id="incomeBtn">損益表</button>
       <button id="monthlyBtn">月營收</button>
       <button id="epsBtn">每股盈餘</button>
-    </div>
+      <button id="dividendBtn">股利政策</button>
+    </div>    
     <div id="viewChart"></div>
     <div id="viewTable"></div>    
   </div>  
@@ -61,6 +63,11 @@ $('#monthlyBtn').click(function() {
 $('#epsBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
     document.getElementById('viewTable').innerHTML = <?php include 'individual/epsTable.php'; ?>;
+});
+/////////////////////// 股利政策 ///////////////////////
+$('#dividendBtn').click(function() {
+    document.getElementById('viewChart').innerHTML = "";
+    document.getElementById('viewTable').innerHTML = <?php include 'individual/dividendTable.php'; ?>;
 });
 window.onload = function() {
     $('#priceBtn').click();
