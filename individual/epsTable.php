@@ -1,5 +1,4 @@
 <?php
-require_once('db.php');
 if (empty($_GET))
     $_GET['company'] = '2330';
 

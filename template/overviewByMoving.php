@@ -15,6 +15,7 @@
          "and p.code = m.code ".
          "and p.date = '".$_POST['date']."' ".
          "order by p.moving desc ";
+
   $result = $conn->query($sql);
   foreach ($result as $row)
   {   

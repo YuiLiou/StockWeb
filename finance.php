@@ -34,33 +34,33 @@
 $('#priceBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "<canvas id='myChart'></canvas>";   
     document.getElementById('viewTable').innerHTML = "";
-    <?php include 'template/priceChart.php'; ?>
+    <?php include 'individual/priceChart.php'; ?>
 });
 /////////////////////// 三大法人 ///////////////////////
 $('#legalsBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
-    document.getElementById('viewTable').innerHTML = <?php include 'template/legalsTable.php'; ?>;
+    document.getElementById('viewTable').innerHTML = <?php include 'individual/legalsTable.php'; ?>;
 });
 /////////////////////// 個股新聞 ///////////////////////
 $('#newsBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
-    document.getElementById('viewTable').innerHTML = <?php include 'template/newsList.php'; ?>;
+    document.getElementById('viewTable').innerHTML = <?php include 'individual/newsList.php'; ?>;
 });
 /////////////////////// 損益表 ///////////////////////
 $('#incomeBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "<canvas id='myChart'></canvas>";   
     document.getElementById('viewTable').innerHTML = "";
-    <?php include 'template/incomeChart.php'; ?>
+    <?php include 'individual/incomeChart.php'; ?>
 });
 /////////////////////// 月營收 ///////////////////////
 $('#monthlyBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
-    document.getElementById('viewTable').innerHTML = <?php include 'template/monthlyTable.php'; ?>;
+    document.getElementById('viewTable').innerHTML = <?php include 'individual/monthlyTable.php'; ?>;
 });
 /////////////////////// 每股盈餘 ///////////////////////
 $('#epsBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
-    document.getElementById('viewTable').innerHTML = <?php include 'template/epsTable.php'; ?>;
+    document.getElementById('viewTable').innerHTML = <?php include 'individual/epsTable.php'; ?>;
 });
 window.onload = function() {
     $('#priceBtn').click();

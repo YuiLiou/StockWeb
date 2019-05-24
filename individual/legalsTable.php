@@ -1,5 +1,4 @@
 <?php
-require_once('db.php');
 if (empty($_GET)) {$_GET['company'] = '2330';}
 $sql = "select sum(sub.foreigner) f, sum(sub.dealer) d, sum(sub.investment) i, sum(sub.total) t ".
        "from (select foreigner, dealer, investment, total ".

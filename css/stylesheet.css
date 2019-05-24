@@ -152,6 +152,7 @@
 table {
   width: 100%;
   background-color: #fff;
+  table-layout: fixed;
 }
 
 th, td {
@@ -198,6 +199,8 @@ th, td {
   line-height: 1.4;
   text-transform: uppercase;
   background-color: #36304a;
+  position:sticky;
+  top:0;
 }
 .table100.ver1 .row100 td:hover {
   background-color: #6c7ae0;

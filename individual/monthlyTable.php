@@ -1,14 +1,11 @@
 <?php
-require_once('db.php');
 if (empty($_GET))
-    $sql = "select * ".
-           "from monthly ".
-           "order by month desc";
-else
-    $sql = "select * ".
-           "from monthly ".
-           "where code = '".$_GET['company']."' ".
-           "order by month desc";
+    $_GET['company'] = '2330';
+$sql = "select * ".
+       "from monthly ".
+       "where code = '".$_GET['company']."' ".
+       "order by month desc ".
+       "limit 0,30 ";
 $result = $conn->query($sql);
 $total_records = mysqli_num_rows($result);  // 取得記錄數
 

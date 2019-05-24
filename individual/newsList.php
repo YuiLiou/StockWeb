@@ -1,5 +1,4 @@
 <?php
-require_once('db.php');
 if (empty($_GET))
     $_GET['company'] = '2330';
 
@@ -19,5 +18,4 @@ for ($i=0;$i<$total_records;$i++){
     echo  "<li><a href='".$row['url']."' target='_blank'>".$row['date']." ".$row['title']."</a></li>";
 }
 echo "</ul></nav></div>\"";
-
 ?>
