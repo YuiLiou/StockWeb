@@ -36,7 +36,8 @@
   $tYear = substr($_POST['season'],0,4);
   $pYear = (string)((int)substr($_POST['season'],0,4)-1);
   $tSeason = substr($_POST['season'],4,6);
-  $sql = "select map.company, p.code, p.price, ".
+  $sql = "select map.company, p.code, p.price, p.PE, ".
+         "(d.cash/p.price)*100 dividend ,".
          "tSeason.grossRate tGross, pSeason.grossRate pGross, ".
          "tSeason.operatingRate tOperating, pSeason.operatingRate pOperating, ".
          "tSeason.eps tEps, pSeason.eps pEps, ".
@@ -57,14 +58,18 @@
          "      and e.year = i.year ".
          "      and e.season = i.season ".
          "      and e.season = '".$tSeason."' ) pSeason, ".
+         "      (select code, cash ".                                 /**************現金股息*****************/
+         "       from dividend ".
+         "       where code in ('".$codes."') ".
+         "       and year = ".($tYear-1911-1)." ) d, ".
          "      prices p, company_map map ".
          "where 1=1 ".
          "and p.date = '".$_POST['date']."' ".
          "and tSeason.code = p.code ".
          "and tSeason.code = pSeason.code ".
          "and tSeason.code = map.code ".
+         "and tSeason.code = d.code ".
          "order by code ";
-
   $result = $conn->query($sql);
   echo "<div class='table100 ver1 m-b-110' id='monthlyTbl'>";
   echo "  <table data-vertable='ver1'>";
@@ -72,11 +77,13 @@
   echo "      <tr class='row100 head'>";
   echo "        <th>公司</th>";
   echo "        <th>股價</th>";
+  echo "        <th>現金值利率</th>";
+  echo "        <th>本益比</th>";
   echo "        <th>eps</th>";
   echo "        <th>去年同期eps</th>";
-  echo "        <th>增減比例</th>";
-  echo "        <th>毛利率</th>";
-  echo "        <th>營利率</th>";
+  echo "        <th>EPS增減</th>";
+  echo "        <th>毛利率增減</th>";
+  echo "        <th>營利率增減</th>";
   echo "      </tr>";
   echo "    </thead>";
   echo "    <tbody>";  
@@ -84,8 +91,10 @@
   foreach ($result as $row)
   {  
       echo  "<tr class='row100'>";
-      echo    "<td>".$row['company'].'('.$row['code'].")</td>";
+      echo    "<td>".$row['company']."</td>";
       echo    "<td>".$row['price']."</td>";
+      echo    "<td>".round($row['dividend'],2)."%</td>";
+      echo    "<td>".$row['PE']."</td>";
       echo    "<td>".$row['tEps']."</td>";
       echo    "<td>".$row['pEps']."</td>";
       /*************************** EPS增減 ***************************/
