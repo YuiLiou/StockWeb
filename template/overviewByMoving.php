@@ -8,7 +8,7 @@
   echo "</form>";
   /*********************************************************************************/
   ///////////////////////////////////// 公司列表 ///////////////////////////////////// 
-  $sql = "select m.code, m.company, p.price, p.date, p.change, p.moving, p.PE ".
+  $sql = "select m.code, m.company, p.price, p.date, p.change, p.moving, p.ma5 ".
          "from prices p, company_map m ".
          "where 1=1 ".
          "and m.code in ('".$codes."') ".
@@ -31,8 +31,14 @@
           echo "<down>".$row['change']."(".$row['moving']."%)</down>";
       else
           echo "<same>".$row['change']."(".$row['moving']."%)</same>";
-      /////////////////////////////// 第三行：本益比  ///////////////////////////////
-      echo "<br><p>本益比:".$row['PE']."</p>";
+      /////////////////////////////// 第三行：週線  ///////////////////////////////
+      echo "<br><p>週線:".$row['ma5']."</p>&nbsp;&nbsp;&nbsp;";
+      if ($row['price'] > $row['ma5'])
+          echo "<up>(+".round($row['price']-$row['ma5'],2).")</up>";
+      else if ($row['price'] < $row['ma5'])
+          echo "<down>(".round($row['price']-$row['ma5'],2).")</up>";
+      else
+          echo "<same>(持平)</same>";
       echo "</blockquote>";
       echo "</a>";
   }
