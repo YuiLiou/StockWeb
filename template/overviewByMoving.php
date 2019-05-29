@@ -8,14 +8,16 @@
   echo "</form>";
   /*********************************************************************************/
   ///////////////////////////////////// 公司列表 ///////////////////////////////////// 
-  $sql = "select m.code, m.company, p.price, p.date, p.change, p.moving, p.ma5 ".
-         "from prices p, company_map m ".
+  $sql = "select m.code, m.company, p.price, p.date, p.change, p.moving, ma.value ".
+         "from prices p, company_map m, ma ".
          "where 1=1 ".
          "and m.code in ('".$codes."') ".
          "and p.code = m.code ".
+         "and ma.code = m.code ".
          "and p.date = '".$_POST['date']."' ".
+         "and ma.date = p.date ".
+         "and ma.span = 5 ".
          "order by p.moving desc ";
-
   $result = $conn->query($sql);
   foreach ($result as $row)
   {   
@@ -32,11 +34,11 @@
       else
           echo "<same>".$row['change']."(".$row['moving']."%)</same>";
       /////////////////////////////// 第三行：週線  ///////////////////////////////
-      echo "<br><p>週線:".$row['ma5']."</p>&nbsp;&nbsp;&nbsp;";
-      if ($row['price'] > $row['ma5'])
-          echo "<up>(+".round($row['price']-$row['ma5'],2).")</up>";
-      else if ($row['price'] < $row['ma5'])
-          echo "<down>(".round($row['price']-$row['ma5'],2).")</up>";
+      echo "<br><p>週線:".round($row['value'],2)."</p>&nbsp;&nbsp;&nbsp;";
+      if ($row['price'] > $row['value'])
+          echo "<up>(+".round($row['price']-$row['value'],2).")</up>";
+      else if ($row['price'] < $row['value'])
+          echo "<down>(".round($row['price']-$row['value'],2).")</up>";
       else
           echo "<same>(持平)</same>";
       echo "</blockquote>";
