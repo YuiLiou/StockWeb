@@ -21,7 +21,8 @@
       <button id="PEBtn">本益比</button>
       <button id="yearYoYBtn">累計營收</button>
       <button id="seasonBtn">每季總匯</button>
-    </div>
+      <button onclick="window.location.href='codeMgr/viewCode.php'">管理持股</button>
+    </div>    
     <?php include 'template/selDate.php'; ?>
     <div id="companyList"></div>
   </div>  

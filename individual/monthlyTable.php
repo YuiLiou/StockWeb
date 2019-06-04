@@ -1,6 +1,24 @@
 <?php
 if (empty($_GET))
     $_GET['company'] = '2330';
+echo "\"";
+/*********************************************************************************/
+/* 成長幾個月                                                                      
+/*********************************************************************************/
+$lastTime = date("Ym", strtotime("-12 months"));
+$sql = "select count(1) cnt ".
+       "from monthly ".
+       "where 1=1 ".
+       "and code = '".$_GET['company']."' ".
+       "and YoY > 1 ".
+       "and month >= ".$lastTime." ";
+$result = $conn->query($sql);
+$row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
+echo $lastTime." 起YoY成長 ".$row['cnt']." 個月";
+
+/*********************************************************************************/
+/* 每月營收                                              
+/*********************************************************************************/
 $sql = "select * ".
        "from monthly ".
        "where code = '".$_GET['company']."' ".
@@ -10,7 +28,7 @@ $result = $conn->query($sql);
 $total_records = mysqli_num_rows($result);  // 取得記錄數
 
 /////////////////////////// 標題 /////////////////////////// 
-echo "\"<div class='table100 ver1' id='monthlyTbl'>".
+echo "<div class='table100 ver1' id='monthlyTbl'>".
      "<table data-vertable='ver1'>".
      "<thead>".
        "<tr class='row100 head'>".
