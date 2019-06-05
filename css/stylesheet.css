@@ -147,65 +147,6 @@
   blockquote same {
     color: gray;
   }
-/*//////////////////////////////////////////////////////////////////
-[ Table ]*/
-table {
-  width: 100%;
-  background-color: #fff;
-  table-layout: fixed;
-}
-
-th, td {
-  font-weight: unset;
-  padding-right: 10px;
-  text-align:center;
-}
-
-.row100.head th {
-  padding-top: 24px;
-  padding-bottom: 20px;
-}
-
-.row100 td {
-  padding-top: 18px;
-  padding-bottom: 14px;
-}
-.table100.ver1 {
-  position: relative;
-  height: 800px;
-  overflow: auto;
-  display: block;
-}
-.table100.ver1 td {
-  font-family: Montserrat-Regular;
-  font-size: 23px;
-  color: #808080;
-  line-height: 1.4;
-}
-
-.table100.ver1 td.up {
-  color: red;
-}
-.table100.ver1 td.down {
-  color: green;
-}
-.table100.ver1 td.same {
-  color: gray;
-}
-.table100.ver1 th {
-  font-family: Montserrat-Medium;
-  font-size: 23px;
-  color: #fff;
-  line-height: 1.4;
-  text-transform: uppercase;
-  background-color: #36304a;
-  position:sticky;
-  top:0;
-}
-.table100.ver1 .row100 td:hover {
-  background-color: #6c7ae0;
-  color: #fff;
-}
 /*-----------------------------button group--------------------------------*/
   #main .btn-group button {
     background-color: #4CAF50; /* Green background */

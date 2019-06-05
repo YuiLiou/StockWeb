@@ -53,7 +53,7 @@
                         borderWidth: 5,
                         data: price,
                     },{
-                        label: 'ma5',
+                        label: '週線',
                         fill:false,
                         lineTension: 0.1,
                         borderColor: '#6666FF',
@@ -61,7 +61,7 @@
                         borderWidth: 5,
                         data:ma5
                     },{
-                        label: 'ma20',
+                        label: '月線',
                         fill:false,
                         lineTension: 0.1,
                         borderColor: '#4C0099',
@@ -69,7 +69,7 @@
                         borderWidth: 5,
                         data:ma20
                     },{
-                        label: 'ma60',
+                        label: '季線',
                         fill:false,
                         lineTension: 0.1,
                         borderColor: '#202020',

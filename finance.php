@@ -3,6 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel=stylesheet type="text/css" href="css/stylesheet.css"> 
+<link rel=stylesheet type="text/css" href="css/styleTable.css"> 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 </head>
 <body>

@@ -3,6 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel=stylesheet type="text/css" href="css/stylesheet.css"> 
+<link rel=stylesheet type="text/css" href="css/styleTable.css"> 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 </head>
 <body>
@@ -21,7 +22,7 @@
       <button id="PEBtn">本益比</button>
       <button id="yearYoYBtn">累計營收</button>
       <button id="seasonBtn">每季總匯</button>
-      <button onclick="window.location.href='codeMgr/viewCode.php'">管理持股</button>
+      <button onclick="window.location.href='viewCode.php'">管理持股</button>
     </div>    
     <?php include 'template/selDate.php'; ?>
     <div id="companyList"></div>
