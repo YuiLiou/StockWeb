@@ -9,13 +9,15 @@
         contentType: "application/json",
         dataType: "json",         
         success: function(response) {         
-            var date = [];
-            var price = [];
+            var date = [], price = [], ma5 = [], ma20 = [], ma60 = [];
             var length = response.length-1;
             //-------------------- 由先而後塞入股價 --------------------
             for(var i=length; i>=0; i--) {
                 date.push(response[i]['date']);
                 price.push(response[i]['price']);
+                ma5.push(response[i]['ma5']); 
+                ma20.push(response[i]['ma20']); 
+                ma60.push(response[i]['ma60']); 
             }
             //-------------------- 設定折線圖顏色 --------------------
             var ctx = document.getElementById('myChart').getContext("2d");                        
@@ -41,14 +43,8 @@
             //-------------------------------------------------
             var chartdata = {
                 labels: date,
-                datasets: [
-                    {     
-                        <?php 
-                            if (empty($_GET))
-                                echo "label:'2330',";
-                            else  
-                                echo "label:'".$_GET['company']."',";
-                        ?>                     
+                datasets: [{ 
+                        label: 'price',                 
                         fill: true,
                         lineTension: 0.1,
                         backgroundColor: gradientFill,
@@ -56,6 +52,30 @@
                         pointRadius: 10,
                         borderWidth: 5,
                         data: price,
+                    },{
+                        label: 'ma5',
+                        fill:false,
+                        lineTension: 0.1,
+                        borderColor: '#6666FF',
+                        pointRadius: 1,
+                        borderWidth: 5,
+                        data:ma5
+                    },{
+                        label: 'ma20',
+                        fill:false,
+                        lineTension: 0.1,
+                        borderColor: '#4C0099',
+                        pointRadius: 1,
+                        borderWidth: 5,
+                        data:ma20
+                    },{
+                        label: 'ma60',
+                        fill:false,
+                        lineTension: 0.1,
+                        borderColor: '#202020',
+                        pointRadius: 1,
+                        borderWidth: 5,
+                        data:ma60
                     }
                 ],	                 
             };            
@@ -66,7 +86,7 @@
 	            legend: {
                         display: true,                        
                         labels: {
-                            fontColor: trend,
+                            fontColor: 'black'
                         }
                     },
                     scales: {

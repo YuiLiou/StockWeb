@@ -33,10 +33,10 @@
         $result = mysqli_query($conn,$sel_query);
         while($row = mysqli_fetch_assoc($result)) { 
           echo "<tr>";
-          echo "<td align='center'>".$count."</td>";
-          echo "<td align='center'>".$row["user"]."</td>";
-          echo "<td align='center'>".$row["code"]."</td>";
-          echo "<td align='center'><a href='deleteCode.php?user=".$row['user']."&code=".$row["code"]."'>Delete</a></td>";
+          echo "<td>".$count."</td>";
+          echo "<td>".$row["user"]."</td>";
+          echo "<td>".$row["code"]."</td>";
+          echo "<td><a href='deleteCode.php?user=".$row['user']."&code=".$row["code"]."'>Delete</a></td>";
           echo "</tr>";
           $count++; 
         } 
