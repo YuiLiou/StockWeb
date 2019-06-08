@@ -3,7 +3,7 @@ if (empty($_GET))
     $_GET['company'] = '2330';
 
 $sql = "select year, season, eps ".
-       "from eps ".
+       "from _eps ".
        "where code = '".$_GET['company']."' ".
        "order by year desc, season asc ";
 $result = $conn->query($sql);
@@ -24,13 +24,16 @@ echo "\"<div class='table100 ver1' id='monthlyTbl'>".
 /////////////////////////// 欄位 /////////////////////////// 
 $year_list = array();
 $td_count = 0;
-for ($i=0;$i<$total_records;$i++){ 
+for ($i=0;$i<$total_records;$i++)
+{ 
     $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
-    if (in_array($row['year'], $year_list)){
+    if (in_array($row['year'], $year_list))
+    {
         echo "<td>".$row['eps']."</td>";
         $td_count += 1;
     }
-    else{
+    else
+    {
         //////////////////// new row ///////////////////////
         if ($td_count != 0) for(;$td_count < 4; $td_count++) echo "<td>-</td>"; // 未滿一年補空值 
         array_push($year_list, $row['year']);

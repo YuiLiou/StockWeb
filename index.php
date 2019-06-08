@@ -21,6 +21,7 @@
       <button id="newsBtn">焦點新聞</button>
       <button id="PEBtn">本益比</button>
       <button id="yearYoYBtn">累計營收</button>
+      <button id="continuousBtn">連續紀錄</button>
       <button id="seasonBtn">每季總匯</button>
       <button onclick="window.location.href='viewCode.php'">管理持股</button>
     </div>    
@@ -61,6 +62,12 @@ $('#seasonBtn').click(function() {
     document.getElementById('slcDate').style.visibility = 'visible';
 });
 
+/////////////////////// 連續紀錄 ///////////////////////
+$('#continuousBtn').click(function() {
+    document.getElementById('companyList').innerHTML = <?php include 'template/overviewByContinuous.php'; ?>;
+    document.getElementById('slcDate').style.visibility = 'visible';
+});
+
 /////////////////////// 焦點新聞 ///////////////////////
 $('#newsBtn').click(function() {
     document.getElementById('companyList').innerHTML = <?php include 'template/newsList.php'; ?>;
@@ -84,6 +91,8 @@ window.onload = function() {
                 echo "$('#movingBtn').click();";
             else if ($_POST['type'] == 'news')
                 echo "$('#newsBtn').click();";
+            else if ($_POST['type'] == 'continuous')
+                echo "$('#continuousBtn').click();";
         }
         else
             echo "$('#movingBtn').click();";        
