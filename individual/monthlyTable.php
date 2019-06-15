@@ -34,6 +34,7 @@ echo "<div class='table100 ver1' id='monthlyTbl'>".
        "<tr class='row100 head'>".
          "<th style='width:15%;'>年度/月份</th>".
          "<th>月營收</th>".
+         "<th>月增率</th>".
          "<th>年增率</th>".
          "<th>累計營收</th>". 
          "<th>累計營收年增率</th>".
@@ -46,6 +47,13 @@ for ($i=0;$i<$total_records;$i++){
     echo  "<tr class='row100'>".
             "<td>".$row['month']."</td>". 
             "<td>".$row['current']."</td>";
+    // ----------------------------- MoM -----------------------------
+    if ($row['MoM'] > 0) 
+        echo "<td class='up'>".$row['MoM']."%</td>";
+    else if ($row['MoM'] < 0) 
+        echo "<td class='down'>".$row['MoM']."%</td>";
+    else 
+        echo "<td class='same'>".$row['MoM']."%</td>";
     // ----------------------------- YoY -----------------------------
     if ($row['YoY'] > 0) 
         echo "<td class='up'>".$row['YoY']."%</td>";

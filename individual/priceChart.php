@@ -44,7 +44,7 @@
             var chartdata = {
                 labels: date,
                 datasets: [{ 
-                        label: 'price',                 
+                        label: '當日',                 
                         fill: true,
                         lineTension: 0.1,
                         backgroundColor: gradientFill,
@@ -57,6 +57,7 @@
                         fill:false,
                         lineTension: 0.1,
                         borderColor: '#6666FF',
+                        backgroundColor: '#6666FF',
                         pointRadius: 1,
                         borderWidth: 5,
                         data:ma5
@@ -65,6 +66,7 @@
                         fill:false,
                         lineTension: 0.1,
                         borderColor: '#4C0099',
+                        backgroundColor: '#4C0099',
                         pointRadius: 1,
                         borderWidth: 5,
                         data:ma20
@@ -73,6 +75,7 @@
                         fill:false,
                         lineTension: 0.1,
                         borderColor: '#202020',
+                        backgroundColor: '#202020',
                         pointRadius: 1,
                         borderWidth: 5,
                         data:ma60

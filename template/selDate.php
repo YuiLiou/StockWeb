@@ -6,7 +6,7 @@
          "order by date desc ";
   $result = $conn->query($sql);
   echo "<form action='index.php' method='POST'>";  
-  echo "    <select id='slcDate' name=date onchange='this.form.submit()'>";  
+  echo "  <select id='slcDate' name=date onchange='this.form.submit()'>";  
   foreach ($result as $row)
   {
       if (empty($_POST['date']))
@@ -19,6 +19,7 @@
           echo "<option value='".$row['date']."'>".$row['date']."</option>";
   }
   echo "  </select>";
+
   ////////////////////////////////////////////////////////////////////////////////////////
   // 日期下拉式選單的部份未完,不同的分頁寫的不一樣 <input type='hidden' name='type' value='price'>
   // 寫在各自的overviewBy template

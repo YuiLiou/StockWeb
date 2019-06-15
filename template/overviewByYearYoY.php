@@ -6,13 +6,14 @@
   /*********************************************************************************/
   echo "  <input type='hidden' name='type' value='yoy'>";
   echo "</form>";
+
   /*********************************************************************************/
   ///////////////////////////////////// 月份選單 /////////////////////////////////////
   $sql = "select distinct month ".
          "from monthly ".
          "order by month desc ";
   $result = $conn->query($sql);
-  
+
   echo "<form action='index.php' method='POST'>";  
   echo "    <select id='slcMonth' name=month onchange='this.form.submit()'>";  
   foreach ($result as $row)
@@ -31,42 +32,59 @@
   echo "</form>";
 
   ///////////////////////////////////// 公司列表 /////////////////////////////////////
-  $sql = "select map.code, map.company, p.price, p.moving, p.change, m.Yearly_YoY ".
-         "from company_map map, prices p, monthly m ".
+  echo "<div class='table100 ver1 m-b-110' id='monthlyTbl'>";
+  echo "  <table data-vertable='ver1'>";
+  echo "    <thead>";
+  echo "      <tr class='row100 head'>";
+  echo "        <th>公司</th>";
+  echo "        <th>月營收</th>";
+  echo "        <th>月增率</th>";
+  echo "        <th>年增率</th>";
+  echo "        <th>累計營收</th>"; 
+  echo "        <th>累計營收年增率</th>";
+  echo "      </tr>";
+  echo "    </thead>";
+  echo "    <tbody>";  
+
+  $sql = "select m.*, map.company ".
+         "from company_map map, monthly m ".
          "where 1=1 ".
          "and map.code in ('".$codes."') ".
-         "and map.code = p.code ".
-         "and p.code = m.code ".
-         "and p.date = '".$_POST['date']."' ".
+         "and map.code = m.code ".
          "and m.month = '".$_POST['month']."' ".
          "order by Yearly_YoY desc ";
 
   $result = $conn->query($sql);
-  foreach ($result as $row)
-  {   
-      echo "<a href=finance.php?company=".$row['code'].">";
-      echo "<blockquote>";
-      /////////////////////////////// 第一行：公司名稱 ///////////////////////////////
-      echo "<p>".$row['company']." (".$row['code'].")</p><br>";
-      /////////////////////////////// 第二行：今日收盤價 ///////////////////////////////
-      echo "<p>".$row['price']."</p>&nbsp;&nbsp;&nbsp;";
-      if ($row['change'] > 0)
-          echo "<up>+".$row['change']."(".$row['moving']."%)</up>";
-      else if ($row['change'] < 0)
-          echo "<down>".$row['change']."(".$row['moving']."%)</down>";
-      else
-          echo "<same>".$row['change']."(".$row['moving']."%)</same>";
-      /////////////////////////////// 第三行：累計營收 ///////////////////////////////
-      echo "<br><p>累計營收:";
-      if ($row['Yearly_YoY'] > 0)
-          echo "<up>".$row['Yearly_YoY']."%</up></p>";
-      else if ($row['Yearly_YoY'] < 0)
-          echo "<down>".$row['Yearly_YoY']."%</down></p>";
-      else
-          echo "<same>".$row['Yearly_YoY']."%</same></p>";
-      echo "</blockquote>";
-      echo "</a>";
+  foreach ($result as $row){
+    echo  "<tr class='row100'>";
+    echo  "  <td>".$row['company']."(".$row['code'].")</td>";
+    echo  "  <td>".$row['current']."</td>";
+    // ----------------------------- MoM -----------------------------
+    if ($row['MoM'] > 0) 
+        echo "<td class='up'>".$row['MoM']."%</td>";
+    else if ($row['MoM'] < 0) 
+        echo "<td class='down'>".$row['MoM']."%</td>";
+    else 
+        echo "<td class='same'>".$row['MoM']."%</td>";
+    // ----------------------------- YoY -----------------------------
+    if ($row['YoY'] > 0) 
+        echo "<td class='up'>".$row['YoY']."%</td>";
+    else if ($row['YoY'] < 0) 
+        echo "<td class='down'>".$row['YoY']."%</td>";
+    else 
+        echo "<td class='same'>".$row['YoY']."%</td>";
+    // ----------------------------- Yearly -----------------------------
+    echo "<td>".$row['Yearly']."</td>";
+    // ----------------------------- Yearly_YoY -----------------------------
+    if ($row['Yearly_YoY'] > 0) 
+        echo "<td class='up'>".$row['Yearly_YoY']."%</td>";
+    else if ($row['Yearly_YoY'] < 0) 
+        echo "<td class='down'>".$row['Yearly_YoY']."%</td>";
+    else 
+        echo "<td class='same'>".$row['Yearly_YoY']."%</td>";
+    echo "</tr>";
   }
+  echo "</tbody></table></div>";
   echo "\""; 
   $result->close();
 ?>

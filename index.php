@@ -20,7 +20,7 @@
       <button id="legalsBtn">三大法人</button>
       <button id="newsBtn">焦點新聞</button>
       <button id="PEBtn">本益比</button>
-      <button id="yearYoYBtn">累計營收</button>
+      <button id="yearYoYBtn">月營收</button>
       <button id="continuousBtn">連續紀錄</button>
       <button id="seasonBtn">每季總匯</button>
       <button onclick="window.location.href='viewCode.php'">管理持股</button>
@@ -65,7 +65,7 @@ $('#seasonBtn').click(function() {
 /////////////////////// 連續紀錄 ///////////////////////
 $('#continuousBtn').click(function() {
     document.getElementById('companyList').innerHTML = <?php include 'template/overviewByContinuous.php'; ?>;
-    document.getElementById('slcDate').style.visibility = 'visible';
+    document.getElementById('slcDate').style.visibility = 'hidden';
 });
 
 /////////////////////// 焦點新聞 ///////////////////////
