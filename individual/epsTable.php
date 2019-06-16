@@ -29,7 +29,7 @@ for ($i=0;$i<$total_records;$i++)
     $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
     if (in_array($row['year'], $year_list))
     {
-        echo "<td>".$row['eps']."</td>";
+        echo "<td>".round($row['eps'],2)."</td>";
         $td_count += 1;
     }
     else
@@ -39,7 +39,7 @@ for ($i=0;$i<$total_records;$i++)
         array_push($year_list, $row['year']);
         echo "</tr><tr class='row100'>".
                 "<td>".$row['year']."</td>".
-                "<td>".$row['eps']."</td>";
+                "<td>".round($row['eps'],2)."</td>";
         $td_count = 1;
     } 
 }

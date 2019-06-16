@@ -5,7 +5,7 @@
          "from prices ".
          "order by date desc ";
   $result = $conn->query($sql);
-  echo "<form action='index.php' method='POST'>";  
+  echo "<form action='index.php' method='POST' class='form-inline pull-right'>";  
   echo "  <select id='slcDate' name=date onchange='this.form.submit()'>";  
   foreach ($result as $row)
   {

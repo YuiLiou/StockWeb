@@ -14,7 +14,7 @@
          "order by month desc ";
   $result = $conn->query($sql);
 
-  echo "<form action='index.php' method='POST'>";  
+  echo "<form action='index.php' method='POST' class='form-inline pull-right'>";  
   echo "    <select id='slcMonth' name=month onchange='this.form.submit()'>";  
   foreach ($result as $row)
   {
@@ -57,7 +57,7 @@
   $result = $conn->query($sql);
   foreach ($result as $row){
     echo  "<tr class='row100'>";
-    echo  "  <td>".$row['company']."(".$row['code'].")</td>";
+    echo  "  <td><a href=finance.php?company=".$row['code'].">".$row['company']."(".$row['code'].")</a></td>";
     echo  "  <td>".$row['current']."</td>";
     // ----------------------------- MoM -----------------------------
     if ($row['MoM'] > 0) 
