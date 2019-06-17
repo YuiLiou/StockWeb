@@ -1,49 +1,60 @@
 <?php
-if (empty($_GET))
-    $_GET['company'] = '2330';
+  if (empty($_GET))
+      $_GET['company'] = '2330';
+  echo "\"";
+  echo "<div class='table100 ver1' id='monthlyTbl'>".
+       "<table data-vertable='ver1'>".
+       "<thead>".
+         "<tr class='row100 head'>".
+           "<th></th>".
+           "<th>Q1</th>".
+           "<th>Q2</th>".
+           "<th>Q3</th>".
+           "<th>Q4</th>".          
+           "<th>總計</th>".          
+         "</tr>".
+       "</thead><tbody>";
 
-$sql = "select year, season, eps ".
-       "from _eps ".
-       "where code = '".$_GET['company']."' ".
-       "order by year desc, season asc ";
-$result = $conn->query($sql);
-$total_records = mysqli_num_rows($result);  // 取得記錄數
-/////////////////////////// 標題 /////////////////////////// 
-echo "\"<div class='table100 ver1' id='monthlyTbl'>".
-     "<table data-vertable='ver1'>".
-     "<thead>".
-       "<tr class='row100 head'>".
-         "<th style='width:15%;'></th>".
-         "<th style='width:15%;'>Q1</th>".
-         "<th style='width:15%;'>Q2</th>".
-         "<th style='width:15%;'>Q3</th>".
-         "<th style='width:15%;'>Q4</th>".          
-       "</tr>".
-     "</thead><tbody>";
+  $sql = "select a.year, ".
+         "       ifnull(a.eps,'-') Q1, ".
+         "       ifnull(b.eps,'-') Q2, ".
+         "       ifnull(c.eps,'-') Q3, ".
+         "       ifnull(d.eps,'-') Q4, ".
+         "       a.eps+ifnull(b.eps,0)+ifnull(c.eps,0)+ifnull(d.eps,0) total ".
+         "from ".
+         "    (select year, eps ".
+         "     from _eps ".
+         "     where code = '".$_GET['company']."' ".
+         "     and season = 'Q1' ) a ".
+         "    left join (select year, eps ".
+         "               from _eps ".
+         "               where code = '".$_GET['company']."' ".
+         "               and season = 'Q2' ) b ".
+         "    on a.year = b.year ".
+         "    left join (select year, eps ".
+         "               from _eps ".
+         "                where code = '".$_GET['company']."' ".
+         "                and season = 'Q3' ) c ".
+         "    on a.year = c.year ".
+         "    left join (select year, eps ".
+         "               from _eps ".
+         "               where code = '".$_GET['company']."' ".
+         "               and season = 'Q4' ) d ".
+         "    on a.year = d.year ".
+         "order by year desc ";
 
-/////////////////////////// 欄位 /////////////////////////// 
-$year_list = array();
-$td_count = 0;
-for ($i=0;$i<$total_records;$i++)
-{ 
-    $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
-    if (in_array($row['year'], $year_list))
-    {
-        echo "<td>".round($row['eps'],2)."</td>";
-        $td_count += 1;
-    }
-    else
-    {
-        //////////////////// new row ///////////////////////
-        if ($td_count != 0) for(;$td_count < 4; $td_count++) echo "<td>-</td>"; // 未滿一年補空值 
-        array_push($year_list, $row['year']);
-        echo "</tr><tr class='row100'>".
-                "<td>".$row['year']."</td>".
-                "<td>".round($row['eps'],2)."</td>";
-        $td_count = 1;
-    } 
-}
-echo "</tr></tbody></table></div>\"";
-$result->close();
+  $result = $conn->query($sql);
+  foreach ($result as $row){
+      echo "<tr class='row100'>";
+      echo "  <td>".$row['year']."</td>";
+      echo "  <td>".round($row['Q1'],2)."</td>";
+      echo "  <td>".round($row['Q2'],2)."</td>";
+      echo "  <td>".round($row['Q3'],2)."</td>";
+      echo "  <td>".round($row['Q4'],2)."</td>";
+      echo "  <td>".round($row['total'],2)."</td>";
+      echo "</tr>";
+  }
 
+  echo "</tr></tbody></table></div>";
+  echo "\"";
 ?>

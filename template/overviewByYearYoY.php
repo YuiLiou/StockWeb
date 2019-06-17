@@ -14,7 +14,7 @@
          "order by month desc ";
   $result = $conn->query($sql);
 
-  echo "<form action='index.php' method='POST' class='form-inline pull-right'>";  
+  echo "<form action='index.php' method='POST'>";  
   echo "    <select id='slcMonth' name=month onchange='this.form.submit()'>";  
   foreach ($result as $row)
   {
