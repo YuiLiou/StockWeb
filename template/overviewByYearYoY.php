@@ -1,21 +1,14 @@
 <?php
   require_once('db.php');
   echo "\"";
-  /*********************************************************************************/
-  /* 日期下拉式選單跳轉的部份
-  /*********************************************************************************/
-  echo "  <input type='hidden' name='type' value='yoy'>";
-  echo "</form>";
-
-  /*********************************************************************************/
+  
   ///////////////////////////////////// 月份選單 /////////////////////////////////////
   $sql = "select distinct month ".
          "from monthly ".
          "order by month desc ";
   $result = $conn->query($sql);
 
-  echo "<form action='index.php' method='POST'>";  
-  echo "    <select id='slcMonth' name=month onchange='this.form.submit()'>";  
+  echo "    <select id='slct' name=month onchange='this.form.submit()'>";  
   foreach ($result as $row)
   {
       if (empty($_POST['month']))

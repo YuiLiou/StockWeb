@@ -1,12 +1,7 @@
 <?php
   require_once('db.php');
   echo "\"";
-  /*********************************************************************************/
-  /* 日期下拉式選單跳轉的部份
-  /*********************************************************************************/
-  echo "  <input type='hidden' name='type' value='season'>";
-  echo "</form>";
-  /*********************************************************************************/
+  
   ///////////////////////////////////// 季節選單 /////////////////////////////////////
   $sql = "select year, season ".
          "from eps ".
@@ -14,8 +9,7 @@
          "order by year desc, season desc ";
   $result = $conn->query($sql);
   
-  echo "<form action='index.php' method='POST'>";  
-  echo "    <select id='selSeason' name='season' onchange='this.form.submit()'>";  
+  echo "    <select id='slct' name='season' onchange='this.form.submit()'>";  
   foreach ($result as $row)
   {
       $selSeason = $row['year'].$row['season'];

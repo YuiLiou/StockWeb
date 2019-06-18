@@ -6,7 +6,7 @@
          "order by date desc ";
   $result = $conn->query($sql);
   echo "<form action='index.php' method='POST'>";  
-  echo "  <select id='slcDate' name=date onchange='this.form.submit()'>";  
+  echo "  <select id='slct' name=date onchange='this.form.submit()' style='display:inline-inline;'>";  
   foreach ($result as $row)
   {
       if (empty($_POST['date']))
