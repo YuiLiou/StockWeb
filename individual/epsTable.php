@@ -55,6 +55,41 @@
       echo "</tr>";
   }
 
+  $sql = "select round(avg(a.eps),2) Q1, ".
+         "       round(avg(b.eps),2) Q2, ".
+         "       round(avg(c.eps),2) Q3, ".
+         "       round(avg(d.eps),2) Q4,  ".
+         "       round(avg(a.eps)+avg(b.eps)+avg(c.eps)+avg(d.eps),2) total ".
+         "from ".
+         "    (select eps ".
+         "     from _eps ".
+         "     where code = '".$_GET['company']."' ".
+         "     and season = 'Q1' ) a, ".
+         "    (select eps ".
+         "     from _eps ".
+         "     where code = '".$_GET['company']."' ".
+         "     and season = 'Q2' ) b, ".
+         "    (select eps ".
+         "     from _eps ".
+         "     where code = '".$_GET['company']."' ".
+         "     and season = 'Q3' ) c, ".
+         "    (select eps ".
+         "     from _eps ".
+         "     where code = '".$_GET['company']."' ".
+         "     and season = 'Q4' ) d ";
+
+  $result = $conn->query($sql);
+  foreach ($result as $row){
+      echo "<tr class='row100'>";
+      echo "  <td>平均</td>";
+      echo "  <td>".$row['Q1']."</td>";
+      echo "  <td>".$row['Q2']."</td>";
+      echo "  <td>".$row['Q3']."</td>";
+      echo "  <td>".$row['Q4']."</td>";
+      echo "  <td>".$row['total']."</td>";
+      echo "</tr>";
+  }
+
   echo "</tr></tbody></table></div>";
   echo "\"";
 ?>
