@@ -1,4 +1,14 @@
 <?php
+  function getRateTd($value)
+  {
+      if ($value > 0)
+          return "<td class='up'>".$value."%</td>";
+      else if($value < 0)
+          return "<td class='down'>".$value."%</td>";
+      else
+          return "<td class='same'>0%</td>";
+  }
+  
   require_once('db.php');
   echo "\"";
   
@@ -31,12 +41,16 @@
   $pYear = (string)((int)substr($_POST['season'],0,4)-1);
   $tSeason = substr($_POST['season'],4,6);
   $sql = "select map.company, p.code, p.price, p.PE, ".
-         "(d.cash/p.price)*100 dividend ,".
-         "tSeason.grossRate tGross, pSeason.grossRate pGross, ".
-         "tSeason.operatingRate tOperating, pSeason.operatingRate pOperating, ".
-         "tSeason.eps tEps, pSeason.eps pEps, ".
-         "(tSeason.eps-pSeason.eps)/pSeason.eps*100 epsRate ".
-         "from (select e.eps, e.code, i.grossRate, i.operatingRate ".  /**************當季*******************/
+         "(d.cash/p.price)*100 dividend, ".
+         "round((tSeason.grossRate-pSeason.grossRate)/pSeason.grossRate*100,2) grossRate, ".
+         "round((tSeason.operatingRate-pSeason.operatingRate)/pSeason.operatingRate*100,2) operatingRate, ".
+         "round((tSeason.eps-pSeason.eps)/pSeason.eps*100,2) epsRate, ".
+         "round((tSeason.income-pSeason.income)/pSeason.income*100,2) incomeRate, ".
+         "round((tSeason.beforeTaxRate-pSeason.beforeTaxRate)/pSeason.beforeTaxRate*100,2) beforeTax, ".
+         "round((tSeason.afterTaxRate-pSeason.afterTaxRate)/pSeason.afterTaxRate*100,2) afterTax ".
+         /**************當季*******************/
+         "from (select e.code, e.eps, i.grossRate, i.operatingRate, i.operatingIncome income, ".  
+         "      i.beforeTaxRate, i.afterTaxRate ".  
          "      from eps e, income i ".
          "      where e.code in ('".$codes."') ".
          "      and e.code = i.code ".
@@ -44,7 +58,9 @@
          "      and e.year = i.year ".
          "      and e.season = i.season ".
          "      and e.season = '".$tSeason."' ) tSeason, ".
-         "     (select e.eps, e.code, i.grossRate, i.operatingRate ".  /**************前季*******************/
+         /**************前季*******************/
+         "     (select e.code, e.eps, i.grossRate, i.operatingRate, i.operatingIncome income, ".
+         "      i.beforeTaxRate, i.afterTaxRate ".  
          "      from eps e, income i ".
          "      where e.code in ('".$codes."') ".
          "      and e.code = i.code ".
@@ -52,7 +68,8 @@
          "      and e.year = i.year ".
          "      and e.season = i.season ".
          "      and e.season = '".$tSeason."' ) pSeason, ".
-         "      (select code, cash ".                                 /**************現金股息*****************/
+         /**************現金股息*****************/
+         "      (select code, cash ".                                 
          "       from dividend ".
          "       where code in ('".$codes."') ".
          "       and year = '".((int)$tYear-1)."' ) d, ".
@@ -64,6 +81,7 @@
          "and tSeason.code = map.code ".
          "and tSeason.code = d.code ".
          "order by code ";
+
   $result = $conn->query($sql);
   echo "<div class='table100 ver1 m-b-110' id='monthlyTbl'>";
   echo "  <table data-vertable='ver1'>";
@@ -73,11 +91,12 @@
   echo "        <th>股價</th>";
   echo "        <th>現金值利率</th>";
   echo "        <th>本益比</th>";
-  echo "        <th>eps</th>";
-  echo "        <th>去年同期eps</th>";
-  echo "        <th>EPS增減</th>";
-  echo "        <th>毛利率增減</th>";
-  echo "        <th>營利率增減</th>";
+  echo "        <th>營業收入</th>";
+  echo "        <th>毛利率</th>";
+  echo "        <th>營業利益率</th>";
+  echo "        <th>稅前淨利率</th>";
+  echo "        <th>稅後淨利率</th>";
+  echo "        <th>EPS</th>";
   echo "      </tr>";
   echo "    </thead>";
   echo "    <tbody>";  
@@ -85,34 +104,16 @@
   foreach ($result as $row)
   {  
       echo  "<tr class='row100'>";
-    echo  "  <td><a href=finance.php?company=".$row['code'].">".$row['company']."</a></td>";
+      echo  "  <td><a href=finance.php?company=".$row['code'].">".$row['company']."</a></td>";
       echo    "<td>".$row['price']."</td>";
       echo    "<td>".round($row['dividend'],2)."%</td>";
       echo    "<td>".$row['PE']."</td>";
-      echo    "<td>".$row['tEps']."</td>";
-      echo    "<td>".$row['pEps']."</td>";
-      /*************************** EPS增減 ***************************/
-      if ($row['epsRate'] > 0) 
-          echo "<td class='up'>".round($row['epsRate'],2)."%</td>";
-      else if ($row['epsRate'] < 0) 
-          echo "<td class='down'>".round($row['epsRate'],2)."%</td>";
-      else 
-          echo "<td class='same'>".round($row['epsRate'],2)."%</td>";
-      /*************************** 毛利率增減 ***************************/
-      if ($row['tGross'] > $row['pGross'])
-          echo "<td class='up'>".($row['tGross'] - $row['pGross'])."%</td>";
-      else if($row['tGross'] < $row['pGross'])
-          echo "<td class='down'>".($row['tGross'] - $row['pGross'])."%</td>";
-      else
-          echo "<td class='same'>".($row['tGross'] - $row['pGross'])."%</td>";
-      /*************************** 營利率增減 ***************************/
-      if ($row['tOperating'] > $row['pOperating'])
-          echo "<td class='up'>".($row['tOperating'] - $row['pOperating'])."%</td>";
-      else if($row['tOperating'] < $row['pOperating'])
-          echo "<td class='down'>".($row['tOperating'] - $row['pOperating'])."%</td>";
-      else
-          echo "<td class='same'>".($row['tOperating'] - $row['pOperating'])."%</td>";
-
+      echo    getRateTd($row['incomeRate']);
+      echo    getRateTd($row['grossRate']);
+      echo    getRateTd($row['operatingRate']);
+      echo    getRateTd($row['beforeTax']);
+      echo    getRateTd($row['afterTax']);
+      echo    getRateTd($row['epsRate']);
       echo  "</tr>";
   }
 
