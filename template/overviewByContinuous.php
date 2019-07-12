@@ -1,27 +1,5 @@
 <?php
-  /*************************連續紀錄td*******************************/
-  function getContinuousTd($value)
-  {
-      if ($value == 1)
-          return "<td class='up'>轉虧為盈</td>";
-      else if ($value > 1)    
-          return "<td class='up'>連續".$value."季成長</td>";
-      else if ($value == -1)
-          return "<td class='down'>轉盈為虧</td>";
-      else if ($value < -1)    
-          return "<td class='down'>連續".-1*$value."季虧損</td>";
-  }
-  /**************************發送率td***********************************/
-  function getDispatchTd($value)
-  {
-      if ($value > 60) 
-          return "<td class='up'>".round($value,2)."%</td>"; 
-      else if ($value < 40)    
-          return "<td class='down'>".round($value,2)."%</td>";
-      else 
-          return "<td>".round($value,2)."</td>";
-  }
-
+  require_once('commonFunc.php');
   require_once('db.php');
   echo "\"";
 
@@ -176,9 +154,9 @@
   foreach ($result as $row){
     echo  "<tr class='row100'>";
     echo  "  <td><a href=finance.php?company=".$row['code'].">".$row['company']."(".$row['code'].")</a></td>";
-    echo getContinuousTd($row['epsPolar']);
-    echo getContinuousTd($row['grossPolar']);
-    echo getContinuousTd($row['operatingPolar']);
+    echo     getContinuousTd($row['epsPolar']);
+    echo     getContinuousTd($row['grossPolar']);
+    echo     getContinuousTd($row['operatingPolar']);
     if ($row['cashYears'] == 0)
       echo "<td class='down'>無配息</td>";
     else if ($row['cashYears'] > 1)    

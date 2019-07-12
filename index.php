@@ -46,7 +46,7 @@ $('#PEBtn').click(function() {
 
 /////////////////////// 依照累計營收排序 ///////////////////////
 $('#yearYoYBtn').click(function() {
-    document.getElementById('companyList').innerHTML = <?php include 'template/overviewByYearYoY.php'; ?>;
+    document.getElementById('companyList').innerHTML = <?php include 'template/overviewByMonthly.php'; ?>;
     document.getElementById('slct').style.visibility = 'hidden';
 });
 

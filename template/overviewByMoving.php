@@ -32,7 +32,7 @@
       else if ($row['change'] < 0)
           echo "<down>".$row['change']."(".$row['moving']."%)</down>";
       else
-          echo "<same>".$row['change']."(".$row['moving']."%)</same>";
+          echo "<same>0 (0%)</same>";
       /////////////////////////////// 第三行：週線  ///////////////////////////////
       echo "<br><p>週線:".round($row['value'],2)."</p>&nbsp;&nbsp;&nbsp;";
       if ($row['price'] > $row['value'])
@@ -40,7 +40,7 @@
       else if ($row['price'] < $row['value'])
           echo "<down>(".round($row['price']-$row['value'],2).")</up>";
       else
-          echo "<same>(持平)</same>";
+          echo "<same>(0%)</same>";
       echo "</blockquote>";
       echo "</a>";
   }

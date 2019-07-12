@@ -1,14 +1,5 @@
 <?php
-  function getRateTd($value)
-  {
-      if ($value > 0)
-          return "<td class='up'>".$value."%</td>";
-      else if($value < 0)
-          return "<td class='down'>".$value."%</td>";
-      else
-          return "<td class='same'>0%</td>";
-  }
-  
+  require_once('commonFunc.php');  
   require_once('db.php');
   echo "\"";
   
