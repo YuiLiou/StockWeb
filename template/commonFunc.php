@@ -9,6 +9,16 @@
       else
           return "<td class='same'>0%</td>";
   }
+  /*************************買賣超**********************************/
+  function getLegalsTd($value)
+  {
+      if ($value > 0)
+          return "<td class='up'>".$value."</td>";
+      else if($value < 0)
+          return "<td class='down'>".$value."</td>";
+      else
+          return "<td class='same'>0%</td>";
+  }
   /*************************連續紀錄td*******************************/
   function getContinuousTd($value)
   {
@@ -30,5 +40,15 @@
           return "<td class='down'>".round($value,2)."%</td>";
       else 
           return "<td>".round($value,2)."</td>";
+  }
+  /**************************股價漲跌td***********************************/
+  function getPriceMovingTd($change, $moving)
+  {
+      if ($change > 0)
+          return "<td class='up'>+".$change."(".$moving."%)</td>";
+      else if ($change < 0)
+          return "<td class='down'>".$change."(".$moving."%)</td>";
+      else
+          return "<td>0 (0%)</td>";
   }
 ?>

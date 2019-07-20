@@ -16,10 +16,8 @@
 <!--/////////////////////// 主頁面 ///////////////////////-->
   <div id="main">
     <div class="btn-group">
-      <button id="movingBtn">漲幅</button>
-      <button id="legalsBtn">三大法人</button>
+      <button id="movingBtn">近期動態</button>
       <button id="newsBtn">焦點新聞</button>
-      <button id="PEBtn">本益比</button>
       <button id="yearYoYBtn">月營收</button>
       <button id="continuousBtn">連續紀錄</button>
       <button id="seasonBtn">每季總匯</button>
@@ -38,22 +36,10 @@ $('#movingBtn').click(function() {
     document.getElementById('slct').style.visibility = 'visible';
 });
 
-/////////////////////// 依照本益比排序 ///////////////////////
-$('#PEBtn').click(function() { 
-    document.getElementById('companyList').innerHTML = <?php include 'template/overviewByPE.php'; ?>;    
-    document.getElementById('slct').style.visibility = 'visible';
-});
-
 /////////////////////// 依照累計營收排序 ///////////////////////
 $('#yearYoYBtn').click(function() {
     document.getElementById('companyList').innerHTML = <?php include 'template/overviewByMonthly.php'; ?>;
     document.getElementById('slct').style.visibility = 'hidden';
-});
-
-/////////////////////// 依照三大法人排序 ///////////////////////
-$('#legalsBtn').click(function() { 
-    document.getElementById('companyList').innerHTML = <?php include 'template/overviewByLegals.php'; ?>;
-    document.getElementById('slct').style.visibility = 'visible';
 });
 
 /////////////////////// 每季總匯 ///////////////////////

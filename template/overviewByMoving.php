@@ -1,4 +1,5 @@
 <?php
+  require_once('commonFunc.php');
   require_once('db.php');
   echo "\"";
   /*********************************************************************************/
@@ -7,43 +8,63 @@
   echo "  <input type='hidden' name='type' value='price'>";
   echo "</form>";
   /*********************************************************************************/
-  ///////////////////////////////////// 公司列表 ///////////////////////////////////// 
-  $sql = "select m.code, m.company, p.price, p.date, p.change, p.moving, ma.value ".
-         "from prices p, company_map m, ma ".
+  
+  ///////////////////////////////////// 公司列表 /////////////////////////////////////
+  echo "<div class='table100 ver1 m-b-110' id='monthlyTbl'>";
+  echo "  <table data-vertable='ver1'>";
+  echo "    <thead>";
+  echo "      <tr class='row100 head'>";
+  echo "        <th>公司</th>";
+  echo "        <th>收盤</th>";
+  echo "        <th>漲跌</th>";
+  echo "        <th>本益比</th>";
+  echo "        <th>殖利率</th>";
+  echo "        <th>週線</th>";
+  echo "        <th>月線</th>";
+  echo "        <th>法人</th>"; 
+  echo "      </tr>";
+  echo "    </thead>";
+  echo "    <tbody>";  
+
+  $pYear = (string)((int)substr($_POST['date'],0,4)-1);
+
+  $sql = "select m.code, m.company, p.price, p.date, p.change, p.moving, p.PE, ".
+         "round(ma5.value,2) ma5, round(ma20.value,2) ma20,".
+         "round((d.cash/p.price)*100,2) dividend, ".
+         "f.foreigner ".
+         "from prices p, company_map m, dividend d, ".
+         "(select code, date, value from ma where span=5) ma5, ".
+         "(select code, date, value from ma where span=20) ma20, ".
+         "(select code, date, foreigner from legals) f ".
          "where 1=1 ".
          "and m.code in ('".$codes."') ".
-         "and p.code = m.code ".
-         "and ma.code = m.code ".
+         "and m.code = p.code ".
+         "and m.code = ma5.code ".
+         "and m.code = ma20.code ".
+         "and m.code = d.code ".
+         "and m.code = f.code ".
          "and p.date = '".$_POST['date']."' ".
-         "and ma.date = p.date ".
-         "and ma.span = 5 ".
+         "and p.date = ma5.date ".
+         "and p.date = ma20.date ".
+         "and p.date = f.date ".
+         "and d.year = '".$pYear."' ".
          "order by p.moving desc ";
-  $result = $conn->query($sql);
+
+  $result = $conn->query($sql);    
   foreach ($result as $row)
   {   
-      echo "<a href=finance.php?company=".$row['code'].">";
-      echo "<blockquote>";
-      /////////////////////////////// 第一行：公司名稱 ///////////////////////////////
-      echo "<p>".$row['company']." (".$row['code'].")</p><br>";
-      /////////////////////////////// 第二行：今日收盤價 ///////////////////////////////
-      echo "<p>".$row['price']."</p>&nbsp;&nbsp;&nbsp;";
-      if ($row['change'] > 0)
-          echo "<up>+".$row['change']."(".$row['moving']."%)</up>";
-      else if ($row['change'] < 0)
-          echo "<down>".$row['change']."(".$row['moving']."%)</down>";
-      else
-          echo "<same>0 (0%)</same>";
-      /////////////////////////////// 第三行：週線  ///////////////////////////////
-      echo "<br><p>週線:".round($row['value'],2)."</p>&nbsp;&nbsp;&nbsp;";
-      if ($row['price'] > $row['value'])
-          echo "<up>(+".round($row['price']-$row['value'],2).")</up>";
-      else if ($row['price'] < $row['value'])
-          echo "<down>(".round($row['price']-$row['value'],2).")</up>";
-      else
-          echo "<same>(0%)</same>";
-      echo "</blockquote>";
-      echo "</a>";
+    echo  "<tr class='row100'>";
+    echo  "  <td><a href=finance.php?company=".$row['code'].">".$row['company']."(".$row['code'].")</a></td> ";
+    echo  "  <td>".$row['price']."</td> ";
+    echo  getPriceMovingTd($row['change'], $row['moving']);
+    echo  "  <td>".$row['PE']."</td>";
+    echo  "  <td>".$row['dividend']."%</td>";
+    echo  "  <td>".$row['ma5']."</td>";
+    echo  "  <td>".$row['ma20']."</td>";
+    echo  getLegalsTd($row['foreigner']);
+    echo  "</tr>";  
   }
+  echo "</tbody></table></div>";
   echo "\""; 
   $result->close();
 ?>
