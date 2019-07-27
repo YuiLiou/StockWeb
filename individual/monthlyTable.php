@@ -36,21 +36,28 @@
   /*********************************************************************************/
   /* 每月營收                                              
   /*********************************************************************************/
-  $sql = "select m.*, cons.months ".
+  $sql = "select m.*, cons.grows, record.rank ".
          "from monthly m, ".
+         /***************************************yoy成長月數************************************/
          "    (select m.month, ".
-         "            @rank := (case ".
-         "                         when (m.YoY > 0 and @rank > 0) then (@rank + 1) ".
-         "                         when (m.YoY > 0) then 1 ".
-         "                         when (m.YoY < 0 and @rank < 0) then (@rank - 1) ".
-         "                         when (m.YoY < 0) then -1 ".
+         "            @con := (case ".
+         "                         when (m.YoY > 0 and @con > 0) then (@con + 1) ".
+         "                         when (m.YoY > 0)              then 1 ".
+         "                         when (m.YoY < 0 and @con < 0) then (@con - 1) ".
+         "                         when (m.YoY < 0)              then -1 ".
          "                         else 0 ".
-         "                     end) months ".
+         "                     end) grows ".
+         "    from monthly m, (select @con := 0) a ".
+         "    where code = '".$_GET['company']."' ".
+         "    order by month asc) cons, ".
+         /***************************************營收排行************************************/
+         "    (select m.month, @rank := @rank +1 rank ".
          "    from monthly m, (select @rank := 0) a ".
          "    where code = '".$_GET['company']."' ".
-         "    order by month asc) cons ".
-         "where m.code = '".$_GET['company']."' ".
+         "    order by current desc) record ".
+         "where m.code  = '".$_GET['company']."' ".
          "and   m.month = cons.month ".
+         "and   m.month = record.month ".
          "order by m.month desc "; 
 
   $result = $conn->query($sql);
@@ -68,6 +75,7 @@
            "<th>累計營收</th>". 
            "<th>累計年增率</th>".
            "<th>成長月數</th>".
+           "<th>排行</th>".
          "</tr>".
        "</thead><tbody>";
 
@@ -82,7 +90,8 @@
       echo   getRateTd($row['YoY']); // 年增率
       echo   "<td>".$row['Yearly']."</td>"; // 年營收
       echo   getRateTd($row['Yearly_YoY']); // 累計年增率
-      echo   getMarkedTd($row['months']); // yoy成長月
+      echo   getMarkedTd($row['grows']); // yoy成長月
+      echo   "<td>".$row['rank']."</td>";
       echo "</tr>";
   }
   echo "</tbody></table></div>\"";
