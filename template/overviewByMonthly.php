@@ -45,6 +45,7 @@
   $sql = "select m.*, map.company, this_3.sCurrent, ".
          "    round((this_3.sCurrent-past_3.sCurrent)*100/past_3.sCurrent,2) grow ".
          "from company_map map, monthly m, ".
+         /*************************************最近三月************************************/
          "    (select code, sum(current) sCurrent ".
          "    from ( ".
          "        select code, current, ". 
@@ -57,6 +58,7 @@
          "        ) ranked ".
          "    where rank <= 3 ".
          "    group by code) this_3, ".         
+         /*************************************去年同期三月************************************/
          "    (select code, sum(current) sCurrent ".
          "    from ( ".
          "        select code, current, ". 

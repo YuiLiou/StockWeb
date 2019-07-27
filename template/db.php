@@ -19,9 +19,7 @@
   }
 
   ///////////////////////////////////// 公司列表 /////////////////////////////////////
-  $sql = "select code ".
-         "from own o ".
-         "where user = 'rusiang' ";
+  $sql = "select code from own o where user = 'rusiang' ";
   $result = $conn->query($sql);
   $aryCodes = array();
   $aryCompanies = array();
