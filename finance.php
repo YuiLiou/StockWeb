@@ -25,8 +25,8 @@
       <button id="epsBtn">每股盈餘</button>
       <button id="dividendBtn">股利政策</button>
     </div>    
-    <div id="viewChart"></div>
-    <div id="viewTable"></div>    
+    <div id="viewTable" style='min-height:100px;overflow:hidden;'></div>    
+    <div id="viewChart"></div> 
   </div>  
 
 <script type="text/javascript" src="js/jquery.min.js"></script>
@@ -52,7 +52,7 @@ $('#newsBtn').click(function() {
 /////////////////////// 損益表 ///////////////////////
 $('#incomeBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "<canvas id='myChart'></canvas>";   
-    document.getElementById('viewTable').innerHTML = "";
+    document.getElementById('viewTable').innerHTML = <?php include 'individual/incomeTable.php'?>;
     <?php include 'individual/incomeChart.php'; ?>
 });
 /////////////////////// 月營收 ///////////////////////
