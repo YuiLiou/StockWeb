@@ -3,7 +3,7 @@
       $_GET['company'] = '2330';
   echo "\"";
   /////////////////////////// 標題 /////////////////////////// 
-  echo "<div class='table100 ver1' id='monthlyTbl' style='height:450px;'>".
+  echo "<div class='table100 ver1' id='monthlyTbl'>".
        "<table data-vertable='ver1'>".
        "<thead>".
          "<tr class='row100 head'>".
@@ -22,17 +22,19 @@
          "       round((this.operatingRate-past.operatingRate)/past.operatingRate*100,2)nOperating, ".
          "       round((this.beforeTaxRate-past.beforeTaxRate)/past.beforeTaxRate*100,2)nBeforeTax, ".
          "       round((this.afterTaxRate-past.afterTaxRate)/past.afterTaxRate*100,2)nAfterTax ".
-         "from (select * ".
-         "      from income ".
+         "from (select i.*, @rank := @rank + 1 rnk ".
+         "      from income i, ".
+         "      (select @rank := 0)a ".
          "      where code = '".$_GET['company']."' ".
          "      order by year desc, season desc ".
-         "      limit 0,4) this, ".
-         "     (select * ".
-         "      from income ".
+         "      limit 0,1000) this, ".
+         "     (select i.*, @rank2 := @rank2 + 1 rnk ".
+         "      from income i, ".
+         "      (select @rank2 := 0)a ".
          "      where code = '".$_GET['company']."' ".
          "      order by year desc, season desc ".
-         "      limit 4,4) past ".
-         "where this.season = past.season ";
+         "      limit 4,1000) past ".
+         "where this.rnk = past.rnk ";
 
   $result = $conn->query($sql);
   $total_records = mysqli_num_rows($result);  // 取得記錄數
