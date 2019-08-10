@@ -13,6 +13,7 @@
            "<th>營業利益率</th>".
            "<th>稅前淨利率</th>". 
            "<th>稅後淨利率</th>".
+           "<th>本業收入</th>".
          "</tr>".
        "</thead><tbody>";
   
@@ -21,7 +22,8 @@
          "       round((this.grossRate-past.grossRate)/past.grossRate*100,2)nGross, ".
          "       round((this.operatingRate-past.operatingRate)/past.operatingRate*100,2)nOperating, ".
          "       round((this.beforeTaxRate-past.beforeTaxRate)/past.beforeTaxRate*100,2)nBeforeTax, ".
-         "       round((this.afterTaxRate-past.afterTaxRate)/past.afterTaxRate*100,2)nAfterTax ".
+         "       round((this.afterTaxRate-past.afterTaxRate)/past.afterTaxRate*100,2)nAfterTax, ".
+         "       round(this.operatingRate/this.beforeTaxRate*100,2) mainJob ".
          "from (select i.*, @rank := @rank + 1 rnk ".
          "      from income i, ".
          "      (select @rank := 0)a ".
@@ -48,6 +50,7 @@
       echo getRateTd($row['nOperating']);
       echo getRateTd($row['nBeforeTax']);
       echo getRateTd($row['nAfterTax']);
+      echo "<td>".$row['mainJob']."%</td>";
       echo "</tr>";
   }
   echo "</tbody></table>";

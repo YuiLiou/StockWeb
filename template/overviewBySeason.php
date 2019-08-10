@@ -38,8 +38,9 @@
          "round((tSeason.eps-pSeason.eps)/pSeason.eps*100,2) epsRate, ".
          "round((tSeason.income-pSeason.income)/pSeason.income*100,2) incomeRate, ".
          "round((tSeason.beforeTaxRate-pSeason.beforeTaxRate)/pSeason.beforeTaxRate*100,2) beforeTax, ".
-         "round((tSeason.afterTaxRate-pSeason.afterTaxRate)/pSeason.afterTaxRate*100,2) afterTax ".
-         /**************當季*******************/
+         "round((tSeason.afterTaxRate-pSeason.afterTaxRate)/pSeason.afterTaxRate*100,2) afterTax, ".
+         "round(tSeason.operatingRate/tSeason.beforeTaxRate*100,2) mainJob ".
+         /**************當季***x****************/
          "from (select e.code, e.eps, i.grossRate, i.operatingRate, i.operatingIncome income, ".  
          "      i.beforeTaxRate, i.afterTaxRate ".  
          "      from eps e, income i ".
@@ -88,6 +89,7 @@
   echo "        <th>稅前淨利率</th>";
   echo "        <th>稅後淨利率</th>";
   echo "        <th>EPS</th>";
+  echo "        <th>本業收入</th>";
   echo "      </tr>";
   echo "    </thead>";
   echo "    <tbody>";  
@@ -105,6 +107,7 @@
       echo    getRateTd($row['beforeTax']);
       echo    getRateTd($row['afterTax']);
       echo    getRateTd($row['epsRate']);
+      echo    "<td>".$row['mainJob']."%</td>";
       echo  "</tr>";
   }
 
