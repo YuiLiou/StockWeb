@@ -20,7 +20,8 @@
       <button id="priceBtn">股價</button>
       <button id="legalsBtn">三大法人</button>
       <button id="newsBtn">新聞</button>
-      <button id="incomeBtn">損益表</button>
+      <button id="incomeBtn">營益分析表</button>
+      <button id="income2Btn">綜合損益表</button>
       <button id="monthlyBtn">月營收</button>
       <button id="epsBtn">每股盈餘</button>
       <button id="dividendBtn">股利政策</button>
@@ -49,11 +50,16 @@ $('#newsBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
     document.getElementById('viewTable').innerHTML = <?php include 'individual/newsList.php'; ?>;
 });
-/////////////////////// 損益表 ///////////////////////
+/////////////////////// 營益分析表 ///////////////////////
 $('#incomeBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "<canvas id='myChart'></canvas>";   
     document.getElementById('viewTable').innerHTML = <?php include 'individual/incomeTable.php'?>;
     <?php include 'individual/incomeChart.php'; ?>
+});
+/////////////////////// 綜合損益表 ///////////////////////
+$('#income2Btn').click(function() {
+    document.getElementById('viewChart').innerHTML = "";
+    document.getElementById('viewTable').innerHTML = <?php include 'individual/income2Table.php'; ?>;
 });
 /////////////////////// 月營收 ///////////////////////
 $('#monthlyBtn').click(function() {
