@@ -18,6 +18,7 @@
     <?php include 'individual/subTitle.php'; ?>  
     <div class="btn-group">
       <button id="priceBtn">股價</button>
+      <button id="peBtn">本益比河流</button>
       <button id="legalsBtn">三大法人</button>
       <button id="newsBtn">新聞</button>
       <button id="incomeBtn">營益分析表</button>
@@ -39,6 +40,12 @@ $('#priceBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "<canvas id='myChart'></canvas>";   
     document.getElementById('viewTable').innerHTML = "";
     <?php include 'individual/priceChart.php'; ?>
+});
+/////////////////////// 本益比河流 ///////////////////////
+$('#peBtn').click(function() {
+    document.getElementById('viewChart').innerHTML = "<canvas id='myChart'></canvas>";   
+    document.getElementById('viewTable').innerHTML = "";
+    <?php include 'individual/peChart.php'; ?>
 });
 /////////////////////// 三大法人 ///////////////////////
 $('#legalsBtn').click(function() {
