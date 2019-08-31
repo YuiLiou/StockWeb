@@ -77,7 +77,15 @@ $('#dividendBtn').click(function() {
     document.getElementById('viewTable').innerHTML = <?php include 'individual/dividendTable.php'; ?>;
 });
 window.onload = function() {
-    $('#priceBtn').click();
+  <?php
+    if (isset($_POST['type']))
+    {
+        if ($_POST['type'] == 'income2')
+            echo "$('#income2Btn').click();";
+    }
+    else
+        echo "$('#priceBtn').click()";
+  ?>
 };
 </script>
 </body>
