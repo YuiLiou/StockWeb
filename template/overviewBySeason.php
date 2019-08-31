@@ -39,8 +39,9 @@
          "round((tSeason.income-pSeason.income)/pSeason.income*100,2) incomeRate, ".
          "round((tSeason.beforeTaxRate-pSeason.beforeTaxRate)/pSeason.beforeTaxRate*100,2) beforeTax, ".
          "round((tSeason.afterTaxRate-pSeason.afterTaxRate)/pSeason.afterTaxRate*100,2) afterTax, ".
-         "round(tSeason.operatingRate/tSeason.beforeTaxRate*100,2) mainJob ".
-         /**************當季***x****************/
+         "round(tSeason.operatingRate/tSeason.beforeTaxRate*100,2) mainJob, ".
+         "round(p.pe/((tSeason.eps-pSeason.eps)/pSeason.eps*100),2) peGrow ".
+         /**************當季*******************/
          "from (select e.code, e.eps, i.grossRate, i.operatingRate, i.operatingIncome income, ".  
          "      i.beforeTaxRate, i.afterTaxRate ".  
          "      from eps e, income i ".
@@ -83,6 +84,7 @@
   echo "        <th>股價</th>";
   echo "        <th>現金值利率</th>";
   echo "        <th>本益比</th>";
+  echo "        <th>本益成長比</th>";
   echo "        <th>營業收入</th>";
   echo "        <th>毛利率</th>";
   echo "        <th>營業利益率</th>";
@@ -101,6 +103,7 @@
       echo    "<td>".$row['price']."</td>";
       echo    "<td>".round($row['dividend'],2)."%</td>";
       echo    "<td>".$row['PE']."</td>";
+      echo    "<td>".$row['peGrow']."</td>";
       echo    getRateTd($row['incomeRate']);
       echo    getRateTd($row['grossRate']);
       echo    getRateTd($row['operatingRate']);
