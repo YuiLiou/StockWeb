@@ -43,6 +43,29 @@
   echo "      </tr>";
   echo "    </thead>";
   echo "    <tbody>";
+  /******************************************* 合併淨利 *******************************************/
+  $sql = "select this_y.col_name, this_y.value this_value, past_y.value past_value ".
+         "from (select i.col_name, i.value ".
+         "      from income_2 i ".
+         "      where 1=1 ".
+         "      and i.code = '".$_GET['company']."' ".
+         "      and i.year = '".$tYear."' ".
+         "      and i.season = '".$tSeason."' ".
+         "      and i.col_name = '本期淨利（淨損）') this_y, ".
+         "     (select i.col_name, i.value ".
+         "      from income_2 i ".
+         "      where 1=1 ".
+         "      and i.code = '".$_GET['company']."' ".
+         "      and i.year = '".$pYear."' ".
+         "      and i.season = '".$tSeason."' ".
+         "      and i.col_name = '本期淨利（淨損）') past_y ".
+         "where 1=1 ".
+         "and this_y.col_name = past_y.col_name ";
+
+  $result = $conn->query($sql);
+  $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
+  $this_benefit = $row['this_value'];
+  $past_benefit = $row['past_value'];
 
   $sql = "select this_y.col_name, this_y.value this_value, past_y.value past_value, ".
          "       round((this_y.value-past_y.value)/abs(past_y.value)*100,2) grow ".
@@ -59,7 +82,8 @@
          "      and i.year = '".$pYear."' ".
          "      and i.season = '".$tSeason."') past_y ".
          "where 1=1 ".
-         "and this_y.col_name = past_y.col_name ";
+         "and this_y.col_name = past_y.col_name ".
+         "order by this_y.col_name asc ";
 
   $result = $conn->query($sql);
   $total_records = mysqli_num_rows($result);  // 取得記錄數
@@ -68,10 +92,21 @@
       $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
       echo "<tr class='row100'>";
       echo "  <td>".$row['col_name']."</td>";
-      echo "  <td>".$row['this_value']."</td>";
+      if ($row['col_name'] == '淨利（淨損）歸屬於母公司業主')
+      {
+          echo "  <td>".$row['this_value']."(".round($row['this_value']/$this_benefit*100,2)."%)</td>";
+      }
+      else if ($row['col_name'] == '淨利（淨損）歸屬於非控制權益')
+      {
+          echo "  <td>".$row['this_value']."(".round($row['this_value']/$this_benefit*100,2)."%)</td>";
+      }
+      else
+      {
+          echo "  <td>".$row['this_value']."</td>";
+      }
       echo "  <td>".$row['past_value']."</td>";
       echo getRateTd($row['grow']);
-      echo "</tr>";
+      echo "</tr>";      
   }
   echo "    </tbody>";
   echo "  </table>";
