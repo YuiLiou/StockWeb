@@ -45,7 +45,7 @@
   echo "    <tbody>";
 
   $sql = "select this_y.col_name, this_y.value this_value, past_y.value past_value, ".
-         "       round((this_y.value-past_y.value)/past_y.value*100,2) grow ".
+         "       round((this_y.value-past_y.value)/abs(past_y.value)*100,2) grow ".
          "from (select i.col_name, i.value ".
          "      from income_2 i ".
          "      where 1=1 ".
