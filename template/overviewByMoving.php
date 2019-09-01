@@ -27,6 +27,7 @@
   echo "    <tbody>";  
 
   $pYear = (string)((int)substr($_POST['date'],0,4)-1);
+  $tRocYear = (string)((int)substr($_POST['date'],0,4)-1911);
 
   $sql = "select m.code, m.company, p.price, p.date, p.change, p.moving, p.PE, ".
          "round(ma5.value,2) ma5, round(ma20.value,2) ma20,".
@@ -55,11 +56,11 @@
   {   
     echo  "<tr class='row100'>";
     echo  "  <td><a href=finance.php?company=".$row['code'].">".$row['company']."(".$row['code'].")</a></td> ";
-    echo  "  <td>".$row['price']."</td> ";
+    echo  "  <td>".$row['price']."<a href='https://doc.twse.com.tw/server-java/t57sb01?step=1&colorchg=1&co_id=".$row['code']."&year=".$tRocYear."&seamon=&mtype=A&'>（財報）</a></td> ";
     echo  getPriceMovingTd($row['change'], $row['moving']);
-    echo  "  <td>".$row['PE']."</td>";
-    echo  "  <td>".$row['dividend']."%</td>";
-    echo  "  <td>".$row['ma5']."</td>";
+    echo  "  <td>".$row['PE']."<a href='https://doc.twse.com.tw/server-java/t57sb01?step=1&colorchg=1&co_id=".$row['code']."&year=".$tRocYear."&mtype=F&'>（股東會）</a></td>";
+    echo  "  <td><a href='https://tw.stock.yahoo.com/d/s/dividend_".$row['code'].".html'>".$row['dividend']."%</a></td>";
+    echo  "  <td>".$row['ma5']."<a href='https://norway.twsthr.info/StockHolders.aspx?stock=".$row['code']."'>（集保）</a></td>";
     echo  "  <td>".$row['ma20']."</td>";
     echo  getLegalsTd($row['foreigner']);
     echo  "</tr>";  
