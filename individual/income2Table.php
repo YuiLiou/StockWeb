@@ -67,6 +67,31 @@
   $this_benefit = $row['this_value'];
   $past_benefit = $row['past_value'];
 
+  /******************************************* 綜合損益 *******************************************/
+  $sql = "select this_y.col_name, this_y.value this_value, past_y.value past_value ".
+         "from (select i.col_name, i.value ".
+         "      from income_2 i ".
+         "      where 1=1 ".
+         "      and i.code = '".$_GET['company']."' ".
+         "      and i.year = '".$tYear."' ".
+         "      and i.season = '".$tSeason."' ".
+         "      and i.col_name = '本期綜合損益總額') this_y, ".
+         "     (select i.col_name, i.value ".
+         "      from income_2 i ".
+         "      where 1=1 ".
+         "      and i.code = '".$_GET['company']."' ".
+         "      and i.year = '".$pYear."' ".
+         "      and i.season = '".$tSeason."' ".
+         "      and i.col_name = '本期綜合損益總額') past_y ".
+         "where 1=1 ".
+         "and this_y.col_name = past_y.col_name ";
+
+  $result = $conn->query($sql);
+  $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
+  $this_sum_up = $row['this_value'];
+  $past_sum_up = $row['past_value'];
+
+  /******************************************* 全部欄位 *******************************************/
   $sql = "select this_y.col_name, this_y.value this_value, past_y.value past_value, ".
          "       round((this_y.value-past_y.value)/abs(past_y.value)*100,2) grow ".
          "from (select i.col_name, i.value ".
@@ -94,17 +119,29 @@
       echo "  <td>".$row['col_name']."</td>";
       if ($row['col_name'] == '淨利（淨損）歸屬於母公司業主')
       {
-          echo "  <td>".$row['this_value']."(".round($row['this_value']/$this_benefit*100,2)."%)</td>";
+          echo "  <td>".$row['this_value']."(".round($row['this_value']/$this_benefit*100,2)."%)</td>";      
+          echo "  <td>".$row['past_value']."(".round($row['past_value']/$past_benefit*100,2)."%)</td>";      
       }
-      else if ($row['col_name'] == '淨利（淨損）歸屬於非控制權益')
-      {
+      else if ($row['col_name'] == '淨利（淨損）歸屬於非控制權益')   
+      {   
           echo "  <td>".$row['this_value']."(".round($row['this_value']/$this_benefit*100,2)."%)</td>";
+          echo "  <td>".$row['past_value']."(".round($row['past_value']/$past_benefit*100,2)."%)</td>";      
+      }
+      else if ($row['col_name'] == '綜合損益總額歸屬於母公司業主')
+      {
+          echo "  <td>".$row['this_value']."(".round($row['this_value']/$this_sum_up*100,2)."%)</td>";
+          echo "  <td>".$row['past_value']."(".round($row['past_value']/$past_sum_up*100,2)."%)</td>";
+      }
+      else if ($row['col_name'] == '綜合損益總額歸屬於非控制權益')
+      {
+          echo "  <td>".$row['this_value']."(".round($row['this_value']/$this_sum_up*100,2)."%)</td>";
+          echo "  <td>".$row['past_value']."(".round($row['past_value']/$past_sum_up*100,2)."%)</td>";
       }
       else
-      {
-          echo "  <td>".$row['this_value']."</td>";
+      {      
+          echo "  <td>".$row['this_value']."</td>";      
+          echo "  <td>".$row['past_value']."</td>";
       }
-      echo "  <td>".$row['past_value']."</td>";
       echo getRateTd($row['grow']);
       echo "</tr>";      
   }
