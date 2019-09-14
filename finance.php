@@ -21,9 +21,10 @@
       <button id="peBtn">本益比河流</button>
       <button id="legalsBtn">三大法人</button>
       <button id="newsBtn">新聞</button>
+      <button id="monthlyBtn">月營收</button>
       <button id="incomeBtn">營益分析表</button>
       <button id="income2Btn">綜合損益表</button>
-      <button id="monthlyBtn">月營收</button>
+      <button id="propertyBtn">資產負債表</button>
       <button id="epsBtn">每股盈餘</button>
       <button id="dividendBtn">股利政策</button>
     </div>    
@@ -57,6 +58,11 @@ $('#newsBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
     document.getElementById('viewTable').innerHTML = <?php include 'individual/newsList.php'; ?>;
 });
+/////////////////////// 月營收 ///////////////////////
+$('#monthlyBtn').click(function() {
+    document.getElementById('viewChart').innerHTML = "";
+    document.getElementById('viewTable').innerHTML = <?php include 'individual/monthlyTable.php'; ?>;
+});
 /////////////////////// 營益分析表 ///////////////////////
 $('#incomeBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "<canvas id='myChart'></canvas>";   
@@ -68,10 +74,10 @@ $('#income2Btn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
     document.getElementById('viewTable').innerHTML = <?php include 'individual/income2Table.php'; ?>;
 });
-/////////////////////// 月營收 ///////////////////////
-$('#monthlyBtn').click(function() {
+/////////////////////// 資產負債表 ///////////////////////
+$('#propertyBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
-    document.getElementById('viewTable').innerHTML = <?php include 'individual/monthlyTable.php'; ?>;
+    document.getElementById('viewTable').innerHTML = <?php include 'individual/propertyTable.php'; ?>;
 });
 /////////////////////// 每股盈餘 ///////////////////////
 $('#epsBtn').click(function() {
