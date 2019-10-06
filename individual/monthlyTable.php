@@ -18,7 +18,7 @@
          "        ) ranked ".
          "    where rank <= 3 ".
          "    group by code) this_3, ".         
-         /*************************************去年同期三月************************************/
+         /*************************************去年同期三月********************************/
          "    (select code, sum(current) val ".
          "    from ( ".
          "        select code, current, @rank2 := @rank2 + 1 AS rank ".
@@ -50,7 +50,7 @@
          "    from monthly m, (select @con := 0) a ".
          "    where code = '".$_GET['company']."' ".
          "    order by month asc) cons, ".
-         /***************************************營收排行************************************/
+         /***************************************營收排行**************************************/
          "    (select m.month, @rank := @rank +1 rank ".
          "    from monthly m, (select @rank := 0) a ".
          "    where code = '".$_GET['company']."' ".
@@ -68,7 +68,7 @@
        "<table data-vertable='ver1'>".
        "<thead>".
          "<tr class='row100 head'>".
-           "<th style='width:15%;'>年度/月份</th>".
+           "<th>年度/月份</th>".
            "<th>營收</th>".
            "<th>月增率</th>".
            "<th>年增率</th>".
@@ -94,6 +94,54 @@
       echo   "<td>".$row['rank']."</td>";
       echo "</tr>";
   }
-  echo "</tbody></table></div>\"";
+  echo "</tbody></table></div>";
+
+  /*********************************************************************************/
+  /* 歷年累計營收                                              
+  /*********************************************************************************/
+  echo "<div class='table100 ver1' id='monthlyTbl'>".
+         "<table data-vertable='ver1'>".
+         "<thead>".
+           "<tr class='row100 head'>".
+             "<th>年度/月份</th>".
+             "<th>營收</th>".
+             "<th>月增率</th>".
+             "<th>年增率</th>".
+             "<th>累計營收</th>". 
+             "<th>累計年增率</th>".
+             "<th>成長月數</th>".
+             "<th>排行</th>".
+           "</tr>".
+         "</thead><tbody>";
+  $sql = "select * ".
+         "from monthly m ".
+         "where 1=1 ".
+         "and code = '".$_GET['company']."' ".
+         "and month like ( ".
+         "    select concat('%', substr(month,5,2)) ".
+         "    from monthly ".
+         "    where 1=1 ".
+         "    and code = '".$_GET['company']."' ".
+         "    order by month desc ".
+         "    limit 0,1) ".
+         "order by month desc "; 
+  $result = $conn->query($sql);
+  $total_records = mysqli_num_rows($result);    // 取得記錄數
+  for ($i=0;$i<$total_records;$i++)
+  { 
+      $row = mysqli_fetch_assoc($result);       //將陣列以欄位名索引
+      echo "<tr class='row100'>".
+             "<td>".$row['month']."</td>". 
+             "<td>".$row['current']."</td>";
+      echo   getRateTd($row['MoM']);            // 月增率
+      echo   getRateTd($row['YoY']);            // 年增率
+      echo   "<td>".$row['Yearly']."</td>";     // 年營收
+      echo   getRateTd($row['Yearly_YoY']);     // 累計年增率
+      //echo   getMarkedTd($row['grows']);        // yoy成長月
+      //echo   "<td>".$row['rank']."</td>";
+      echo "</tr>";
+  }
+  echo "</tbody></table></div>";
+  echo "\"";
   $result->close();
 ?>
