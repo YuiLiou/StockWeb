@@ -1,23 +1,51 @@
 <?php
   require_once('commonFunc.php');
- 
   if (empty($_GET)) {$_GET['company'] = '2330';}
+  echo "\"";
+
+  /*********************************************************************************/
+  /*『SQL』30日價差                                                          
+  /*********************************************************************************/
+  $sql = "select p1.price p1, p30.price p30, round((p1.price-p30.price)/p30.price*100,2) pavg ".
+         "from (select price ".
+         "      from prices ".
+         "      where 1=1 ".
+         "      and code = '".$_GET['company']."' ".
+         "      order by date desc ". 
+         "      limit 0,1) p1, ".
+         "     (select price ".
+         "      from prices ".
+         "      where 1=1 ".
+         "      and code = '".$_GET['company']."' ".
+         "      order by date desc ".
+         "      limit 29,1) p30 ";
+  $result = $conn->query($sql);
+  $row = mysqli_fetch_assoc($result);
+  echo "*********************************************************************<br>";
+  echo "*** 30日以來 ***<br>";
+  echo "【".$row['pavg']."%】".$row['p30']."元→".$row['p1']."元<br>";
+
+  /*********************************************************************************/
+  /*『SQL』30日累計買賣超                                                                      
+  /*********************************************************************************/
   $sql = "select sum(sub.foreigner) f, sum(sub.dealer) d, sum(sub.investment) i, sum(sub.total) t ".
          "from (select foreigner, dealer, investment, total ".
-               "from legals ".         
-               "where 1=1 ".
-               "and code = '".$_GET['company']."' ".
-               "order by date desc ".
-               "limit 0,30) sub";
+         "      from legals ".         
+         "      where 1=1 ".
+         "      and code = '".$_GET['company']."' ".
+         "      order by date desc ".
+         "      limit 0,30) sub ";
   $result = $conn->query($sql);
-  /////////////////////////// 買賣超摘要 /////////////////////////// 
-  echo "\"";
   $row = mysqli_fetch_assoc($result); 
-  echo "外資累計買賣超:".$row['f']."  ";
-  echo "自營商累計買賣超:".$row['d']."  ";
-  echo "投信累計買賣超:".$row['i']."  ";
-  echo "總計買賣超:".$row['t']."<br>";
-  /////////////////////////// 標題 ///////////////////////////
+  echo "『外資買賣超』".$row['f']."張<br>";
+  echo "『自營商買賣超』".$row['d']."張<br>";
+  echo "『投信買賣超』".$row['i']."張<br>";
+  echo "『總計買賣超』".$row['t']."張<br>";
+  echo "*********************************************************************<br>";
+  
+  /*********************************************************************************/
+  /*『SQL』30日法人買賣狀況                                                                      
+  /*********************************************************************************/
   $sql = "select date, foreigner, dealer, investment, total ".
          "from legals ".         
          "where 1=1 ".
@@ -26,6 +54,10 @@
          "limit 0,30"; 
   $result = $conn->query($sql);
   $total_records = mysqli_num_rows($result);  // 取得記錄數
+
+  /*********************************************************************************/
+  /*『HTML』30日法人買賣狀況                                                                      
+  /*********************************************************************************/
   echo "<div class='table100 ver1 m-b-110' id='monthlyTbl'>".
        "<table data-vertable='ver1'>".
        "<thead>".
@@ -38,7 +70,6 @@
          "</tr>".
        "</thead><tbody>";
 
-  /////////////////////////// 欄位 /////////////////////////// 
   for ($i=0;$i<$total_records;$i++){ 
       $row = mysqli_fetch_assoc($result); 
       echo  "<tr class='row100'>";
