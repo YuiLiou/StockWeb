@@ -25,6 +25,7 @@
       <button id="incomeBtn">營益分析表</button>
       <button id="income2Btn">綜合損益表</button>
       <button id="propertyBtn">資產負債表</button>
+      <button id="cashFlowBtn">現金流量表</button>
       <button id="epsBtn">每股盈餘</button>
       <button id="dividendBtn">股利政策</button>
     </div>    
@@ -78,6 +79,11 @@ $('#income2Btn').click(function() {
 $('#propertyBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
     document.getElementById('viewTable').innerHTML = <?php include 'individual/propertyTable.php'; ?>;
+});
+/////////////////////// 現金流量表 ///////////////////////
+$('#cashFlowBtn').click(function() {
+    document.getElementById('viewChart').innerHTML = "";
+    document.getElementById('viewTable').innerHTML = <?php include 'individual/cashFlowTable.php'; ?>;
 });
 /////////////////////// 每股盈餘 ///////////////////////
 $('#epsBtn').click(function() {
