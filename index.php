@@ -21,6 +21,7 @@
       <button id="yearYoYBtn">月營收</button>
       <button id="continuousBtn">連續紀錄</button>
       <button id="seasonBtn">每季總匯</button>
+      <button id="cashFlowBtn">現金流量</button>
       <button onclick="window.location.href='viewCode.php'">管理持股</button>
     </div>    
     <?php include 'template/selDate.php'; ?>
@@ -60,6 +61,12 @@ $('#newsBtn').click(function() {
     document.getElementById('slct').style.visibility = 'hidden';
 });
 
+/////////////////////// 現金流量 ///////////////////////
+$('#cashFlowBtn').click(function() {
+    document.getElementById('companyList').innerHTML = <?php include 'template/overviewByCashFlow.php'; ?>;
+    document.getElementById('slct').style.visibility = 'hidden';
+});
+
 /////////////////////// load:依照漲幅排序 ///////////////////////
 window.onload = function() {
     <?php 
@@ -79,6 +86,8 @@ window.onload = function() {
                 echo "$('#newsBtn').click();";
             else if ($_POST['type'] == 'continuous')
                 echo "$('#continuousBtn').click();";
+            else if ($_POST['type'] == 'cashFlow')
+                echo "$('#cashFlowBtn').click();";
         }
         else
             echo "$('#movingBtn').click();";        
