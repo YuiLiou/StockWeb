@@ -116,7 +116,26 @@
   {
       $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
       echo "<tr class='row100'>";
-      echo "  <td>".$row['col_name']."</td>";
+      /************************ 『HighLight』紅色為投資亮點，綠色為投資風險 ************************/
+      if ($row['col_name'] == '營業毛利（毛損）' or $row['col_name'] == '營業利益（損失）' 
+       or $row['col_name'] == '營業外收入及支出')
+      {
+          if ($row['grow'] > 0)
+              echo "  <td><font color='red'>".$row['col_name']."</td>";
+          else
+              echo "  <td><font color='green'>".$row['col_name']."</td>";
+      }
+      else if ($row['col_name'] == '營業費用')
+      {
+          if ($row['grow'] < 0)
+              echo "  <td><font color='red'>".$row['col_name']."</td>";
+          else
+              echo "  <td><font color='green'>".$row['col_name']."</td>";
+      }
+      else 
+          echo "  <td>".$row['col_name']."</td>";
+
+      /************************ 『Comment』歸屬比例 ********************************************/
       if ($row['col_name'] == '淨利（淨損）歸屬於母公司業主')
       {
           echo "  <td>".$row['this_value']."(".round($row['this_value']/$this_benefit*100,2)."%)</td>";      
