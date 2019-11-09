@@ -77,5 +77,54 @@
   }
   echo "    </tbody>";
   echo "  </table>";
-  echo "</div>\"";
+  echo "</div>";
+
+  /*********************************************************************************/
+  /*『SQL』現金流量表                                                                      
+  /*********************************************************************************/
+  $sql = "select col_name, v1, v2, v3, v4, v5, v6 ".
+         "from property_2 i ".
+         "where 1=1 ".
+         "and i.code = '".$_GET['company']."' ".
+         "and i.year = '".$tYear."' ".
+         "and i.season = '".$tSeason."' ".
+         "order by col_index ";
+  $result = $conn->query($sql);
+  $total_records = mysqli_num_rows($result);  // 取得記錄數
+  for ($i=0;$i<$total_records;$i++)
+  {  
+      $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
+      if ($i == 0)
+      {
+          echo "<div class='table100 ver1' id='monthlyTbl'>";
+          echo "  <table data-vertable='ver1'>";
+          echo "    <thead>";
+          echo "      <tr class='row100 head'>";
+          echo "        <th>".$row['col_name']."</th>";
+          echo "        <th>".$row['v1']."</th>";
+          echo "        <th>".$row['v2']."</th>";
+          echo "        <th>".$row['v3']."</th>";
+          echo "        <th>".$row['v4']."</th>";
+          echo "        <th>".$row['v5']."</th>";
+          echo "        <th>".$row['v6']."</th>";
+          echo "      </tr>";
+          echo "    </thead>";
+          echo "    <tbody>";
+      }
+      else 
+      {
+          echo "<tr>";
+          echo "<td>".$row['col_name']."</td>";    
+          echo "<td>".$row['v1']."</td>";    
+          echo "<td>".$row['v2']."</td>";  
+          echo "<td>".$row['v3']."</td>";  
+          echo "<td>".$row['v4']."</td>";  
+          echo "<td>".$row['v5']."</td>";  
+          echo "<td>".$row['v6']."</td>";  
+          echo "</tr>";  
+      }          
+  }
+  echo "    </tbody>";
+  echo "  </table>";
+  echo "</div>\""
 ?>
