@@ -7,6 +7,8 @@
   ///////////////////////////////////// 季節選單 /////////////////////////////////////
   $sql = "select year, season ".
          "from income_2 ".
+         "where 1=1 ".
+         "and code = '".$_GET['company']."' ".
          "group by year, season ".
          "order by year desc, season desc ";
   $result = $conn->query($sql);
