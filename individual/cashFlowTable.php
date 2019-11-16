@@ -5,6 +5,8 @@
   ///////////////////////////////////// 季節選單 /////////////////////////////////////
   $sql = "select year, season ".
          "from cash_flow ".
+         "where 1=1 ".
+         "and code = '".$_GET['company']."' ".
          "group by year, season ".
          "order by year desc, season desc ";
   $result = $conn->query($sql);
@@ -24,7 +26,7 @@
           echo "<option value='".$selSeason."'>".$selSeason."</option>";
   }
   echo "  </select>";
-  echo "  <input type='hidden' name='type' value='income2'>";
+  echo "  <input type='hidden' name='type' value='cashFlow'>";
   echo "</form>";
 
   $tYear = substr($_POST['season'],0,4);

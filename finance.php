@@ -1,3 +1,10 @@
+<?php
+  /**********************************************************************************/
+  /* Date     Author   ChangeList
+  /* --------------------------------------------------------------------------------  
+  /* 20191116 rusiang  資產負債表,現金流量表切換季節留在原頁  
+  /**********************************************************************************/  
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -101,6 +108,10 @@ window.onload = function() {
     {
         if ($_POST['type'] == 'income2')
             echo "$('#income2Btn').click();";
+        else if ($_POST['type'] == 'property')
+            echo "$('#propertyBtn').click();";
+        else if ($_POST['type'] == 'cashFlow')
+            echo "$('#cashFlowBtn').click();";
     }
     else
         echo "$('#priceBtn').click()";

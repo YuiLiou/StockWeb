@@ -29,7 +29,7 @@
           echo "<option value='".$selSeason."'>".$selSeason."</option>";
   }
   echo "  </select>";
-  echo "  <input type='hidden' name='type' value='income2'>";
+  echo "  <input type='hidden' name='type' value='property'>";
   echo "</form>";
 
   $tYear = substr($_POST['season'],0,4);
