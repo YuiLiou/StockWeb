@@ -32,6 +32,14 @@
   $pYear = (string)((int)substr($_POST['season'],0,4)-1);
   $tSeason = substr($_POST['season'],4,6);
   
+  /////////////////////////////////////『指標說明』/////////////////////////////////////
+  echo "*********************************************************************<br>";
+  echo "*** 指標說明 ***<br>";
+  echo "本期綜合損益總額 = 綜合損益總額歸屬於母公司業主 + 綜合損益總額歸屬於非控制權益 <br>";
+  echo "本期綜合損益總額 = 本期淨利（淨損）+ 其他綜合損益（淨額）<br>";
+  echo "本期淨利（淨損）= 淨利（淨損）歸屬於母公司業主 + 淨利（淨損）歸屬於非控制權益 <br>";
+  echo "*********************************************************************<br>";
+
   echo "<div class='table100 ver1' id='monthlyTbl'>";
   echo "  <table data-vertable='ver1'>";
   echo "    <thead>";
@@ -117,14 +125,18 @@
       $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
       echo "<tr class='row100'>";
       /************************ 『HighLight』紅色為投資亮點，綠色為投資風險 ************************/
+      /************************ 『HighLight』增加為亮點，減少為風險        ************************/
       if ($row['col_name'] == '營業毛利（毛損）' or $row['col_name'] == '營業利益（損失）' 
-       or $row['col_name'] == '營業外收入及支出')
+       or $row['col_name'] == '營業外收入及支出' or $row['col_name'] == '本期綜合損益總額'
+       or $row['col_name'] == '本期淨利（淨損）' or $row['col_name'] == '淨利（淨損）歸屬於母公司業主'
+       or $row['col_name'] == '綜合損益總額歸屬於母公司業主')
       {
           if ($row['grow'] > 0)
               echo "  <td><font color='red'>".$row['col_name']."</td>";
           else
               echo "  <td><font color='green'>".$row['col_name']."</td>";
       }
+      /************************ 『HighLight』減少為亮點，增加為風險        ************************/
       else if ($row['col_name'] == '營業費用')
       {
           if ($row['grow'] < 0)
