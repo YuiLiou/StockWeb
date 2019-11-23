@@ -138,7 +138,8 @@
       if ($row['col_name'] == '營業毛利（毛損）' or $row['col_name'] == '營業利益（損失）' 
        or $row['col_name'] == '營業外收入及支出' or $row['col_name'] == '本期綜合損益總額'
        or $row['col_name'] == '本期淨利（淨損）' or $row['col_name'] == '淨利（淨損）歸屬於母公司業主'
-       or $row['col_name'] == '綜合損益總額歸屬於母公司業主' or $row['col_name'] == '營業收入')
+       or $row['col_name'] == '綜合損益總額歸屬於母公司業主' or $row['col_name'] == '營業收入'
+       or $row['col_name'] == '稅前淨利（淨損）')
       {
           if ($row['grow'] > 0)
               echo "  <td><font color='red'>".$row['col_name']."</td>";
