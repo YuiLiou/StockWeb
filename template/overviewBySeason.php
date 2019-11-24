@@ -39,7 +39,7 @@
          "round((tSeason.income-pSeason.income)/pSeason.income*100,2) incomeRate, ".
          "round((tSeason.beforeTaxRate-pSeason.beforeTaxRate)/pSeason.beforeTaxRate*100,2) beforeTax, ".
          "round((tSeason.afterTaxRate-pSeason.afterTaxRate)/pSeason.afterTaxRate*100,2) afterTax, ".
-         "round(tSeason.operatingRate/tSeason.beforeTaxRate*100,2) mainJob, ".
+         "round(tSeason.operatingRate/tSeason.beforeTaxRate*100,2) mainJob, ". 
          "round(p.pe/((tSeason.eps-pSeason.eps)/pSeason.eps*100),2) peGrow ".
          /**************當季*******************/
          "from (select e.code, e.eps, i.grossRate, i.operatingRate, i.operatingIncome income, ".  
