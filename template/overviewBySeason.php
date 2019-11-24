@@ -1,4 +1,9 @@
 <?php
+  /**********************************************************************************/
+  /* Date     Author   ChangeList
+  /* --------------------------------------------------------------------------------  
+  /* 20191124 rusiang  計算毛利率成長，分母使用絕對值 
+  /**********************************************************************************/  
   require_once('commonFunc.php');  
   require_once('db.php');
   echo "\"";
@@ -33,14 +38,14 @@
   $tSeason = substr($_POST['season'],4,6);
   $sql = "select map.company, p.code, p.price, p.PE, ".
          "(d.cash/p.price)*100 dividend, ".
-         "round((tSeason.grossRate-pSeason.grossRate)/pSeason.grossRate*100,2) grossRate, ".
-         "round((tSeason.operatingRate-pSeason.operatingRate)/pSeason.operatingRate*100,2) operatingRate, ".
-         "round((tSeason.eps-pSeason.eps)/pSeason.eps*100,2) epsRate, ".
-         "round((tSeason.income-pSeason.income)/pSeason.income*100,2) incomeRate, ".
-         "round((tSeason.beforeTaxRate-pSeason.beforeTaxRate)/pSeason.beforeTaxRate*100,2) beforeTax, ".
-         "round((tSeason.afterTaxRate-pSeason.afterTaxRate)/pSeason.afterTaxRate*100,2) afterTax, ".
+         "round((tSeason.grossRate-pSeason.grossRate)/abs(pSeason.grossRate)*100,2) grossRate, ".
+         "round((tSeason.operatingRate-pSeason.operatingRate)/abs(pSeason.operatingRate)*100,2) operatingRate, ".
+         "round((tSeason.eps-pSeason.eps)/abs(pSeason.eps)*100,2) epsRate, ".
+         "round((tSeason.income-pSeason.income)/abs(pSeason.income)*100,2) incomeRate, ".
+         "round((tSeason.beforeTaxRate-pSeason.beforeTaxRate)/abs(pSeason.beforeTaxRate)*100,2) beforeTax, ".
+         "round((tSeason.afterTaxRate-pSeason.afterTaxRate)/abs(pSeason.afterTaxRate)*100,2) afterTax, ".
          "round(tSeason.operatingRate/tSeason.beforeTaxRate*100,2) mainJob, ". 
-         "round(p.pe/((tSeason.eps-pSeason.eps)/pSeason.eps*100),2) peGrow ".
+         "round(p.pe/((tSeason.eps-pSeason.eps)/abs(pSeason.eps)*100),2) peGrow ".
          /**************當季*******************/
          "from (select e.code, e.eps, i.grossRate, i.operatingRate, i.operatingIncome income, ".  
          "      i.beforeTaxRate, i.afterTaxRate ".  
