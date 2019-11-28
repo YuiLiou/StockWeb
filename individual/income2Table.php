@@ -3,6 +3,7 @@
   /* Date     Author   ChangeList
   /* --------------------------------------------------------------------------------  
   /* 20191117 rusiang  標記投資亮點/風險，如所得稅費用減少為亮點  
+  /* 20191128 rusiang  新增歷年營運指標盤點  
   /**********************************************************************************/  
   if (empty($_GET))
       $_GET['company'] = '2330';
@@ -48,18 +49,104 @@
   echo "本期淨利（淨損） = 稅前淨利（淨損）           + 所得稅費用（利益） <br>";
   echo "營業毛利（毛損） = 營業收入                  + 營業成本 <br>";
   echo "*********************************************************************<br>";
+  
+  /************************************ 歷年營運盤點 *******************************************/
+  $sql = "select t1.year, t1.value v1, t2.value v2, t3.value v3, t4.value v4, ".
+         "                t5.value v5, t6.value v6, t7.value v7, t8.value v8  ".
+         "from (select i.value, i.year ".
+         "      from income_2 i ".
+         "      where 1=1 ".
+         "      and i.code = '".$_GET['company']."' ".
+         "      and i.season = 'Q4' ".
+         "      and i.col_name = '營業成本') t1, ".
+         "     (select i.value, i.year ".
+         "      from income_2 i ".
+         "      where 1=1 ".
+         "      and i.code = '".$_GET['company']."' ".
+         "      and i.season = 'Q4' ".
+         "      and i.col_name = '營業收入') t2, ".
+         "     (select i.value, i.year ".
+         "      from income_2 i ".
+         "      where 1=1 ".
+         "      and i.code = '".$_GET['company']."' ".
+         "      and i.season = 'Q4' ".
+         "      and i.col_name = '營業毛利（毛損）') t3, ".
+         "     (select i.value, i.year ".
+         "      from income_2 i ".
+         "      where 1=1 ".
+         "      and i.code = '".$_GET['company']."' ".
+         "      and i.season = 'Q4' ".
+         "      and i.col_name = '營業費用') t4, ".
+         "     (select i.value, i.year ".
+         "      from income_2 i ".
+         "      where 1=1 ".
+         "      and i.code = '".$_GET['company']."' ".
+         "      and i.season = 'Q4' ".
+         "      and i.col_name = '營業利益（損失）') t5, ".
+         "     (select i.value, i.year ".
+         "      from income_2 i ".
+         "      where 1=1 ".
+         "      and i.code = '".$_GET['company']."' ".
+         "      and i.season = 'Q4' ".
+         "      and i.col_name = '所得稅費用（利益）') t6, ". 
+         "     (select i.value, i.year ".
+         "      from income_2 i ".
+         "      where 1=1 ".
+         "      and i.code = '".$_GET['company']."' ".
+         "      and i.season = 'Q4' ".
+         "      and i.col_name = '本期淨利（淨損）') t7, ". 
+         "     (select i.value, i.year ".
+         "      from income_2 i ".
+         "      where 1=1 ".
+         "      and i.code = '".$_GET['company']."' ".
+         "      and i.season = 'Q4' ".
+         "      and i.col_name = '綜合損益總額歸屬於母公司業主') t8 ".
+         "where 1=1 ".
+         "and t1.year = t2.year ".
+         "and t1.year = t3.year ".
+         "and t1.year = t4.year ".
+         "and t1.year = t5.year ".
+         "and t1.year = t6.year ".
+         "and t1.year = t7.year ".
+         "and t1.year = t8.year ".
+         "order by year asc ";
 
   echo "<div class='table100 ver1' id='monthlyTbl'>";
   echo "  <table data-vertable='ver1'>";
   echo "    <thead>";
   echo "      <tr class='row100 head'>";
-  echo "        <th></th>";
-  echo "        <th>".$tYear.$tSeason."</th>";
-  echo "        <th>".$pYear.$tSeason."</th>";
-  echo "        <th>成長</th>";
+  echo "        <th>年度</th>";
+  echo "        <th>營業成本</th>";
+  echo "        <th>營業收入</th>";
+  echo "        <th>營業毛利</th>";
+  echo "        <th>營業費用</th>";
+  echo "        <th>營業利益</th>";
+  echo "        <th>所得稅費用</th>";
+  echo "        <th>本期淨利</th>";
+  echo "        <th>母公司損益</th>";
   echo "      </tr>";
   echo "    </thead>";
   echo "    <tbody>";
+  $result = $conn->query($sql);
+  $total_records = mysqli_num_rows($result);  // 取得記錄數
+  for ($i=0;$i<$total_records;$i++)
+  {
+      $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引  
+      echo "<tr>";
+      echo "  <td>".$row['year']."</td>";
+      echo "  <td>".$row['v1']."</td>";
+      echo "  <td>".$row['v2']."</td>";
+      echo "  <td>".$row['v3']."</td>";
+      echo "  <td>".$row['v4']."</td>";
+      echo "  <td>".$row['v5']."</td>";
+      echo "  <td>".$row['v6']."</td>";
+      echo "  <td>".$row['v7']."</td>";
+      echo "  <td>".$row['v8']."</td>";
+      echo "</tr>";
+  }
+  echo "    </tbody>";
+  echo "  </table>";
+
   /******************************************* 合併淨利 *******************************************/
   $sql = "select this_y.col_name, this_y.value this_value, past_y.value past_value ".
          "from (select i.col_name, i.value ".
@@ -127,6 +214,16 @@
          "and this_y.col_name = past_y.col_name ".
          "order by this_y.col_name asc ";
 
+  echo "  <table data-vertable='ver1'>";
+  echo "    <thead>";
+  echo "      <tr class='row100 head'>";
+  echo "        <th></th>";
+  echo "        <th>".$tYear.$tSeason."</th>";
+  echo "        <th>".$pYear.$tSeason."</th>";
+  echo "        <th>成長</th>";
+  echo "      </tr>";
+  echo "    </thead>";
+  echo "    <tbody>";
   $result = $conn->query($sql);
   $total_records = mysqli_num_rows($result);  // 取得記錄數
   for ($i=0;$i<$total_records;$i++)
