@@ -51,62 +51,69 @@
   echo "*********************************************************************<br>";
   
   /************************************ 歷年營運盤點 *******************************************/
-  $sql = "select t1.year, t1.value v1, t2.value v2, t3.value v3, t4.value v4, ".
-         "                t5.value v5, t6.value v6, t7.value v7, t8.value v8, t9.value v9  ".
-         "from (select i.value, i.year ".
+  $sql = "select t1.year, t1.season, ".
+         "       t1.value v1, t2.value v2, t3.value v3, t4.value v4, ".
+         "       t5.value v5, t6.value v6, t7.value v7, t8.value v8, ".
+         "       t9.value v9, t10.eps  ".
+         "from (select i.value, i.year, i.season ".
          "      from income_2 i ".
          "      where 1=1 ".
          "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = 'Q4' ".
+         "      and i.season = '".$tSeason."' ".
          "      and i.col_name = '營業成本') t1, ".
          "     (select i.value, i.year ".
          "      from income_2 i ".
          "      where 1=1 ".
          "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = 'Q4' ".
+         "      and i.season = '".$tSeason."' ".
          "      and i.col_name = '營業收入') t2, ".
          "     (select i.value, i.year ".
          "      from income_2 i ".
          "      where 1=1 ".
          "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = 'Q4' ".
+         "      and i.season = '".$tSeason."' ".
          "      and i.col_name = '營業毛利（毛損）') t3, ".
          "     (select i.value, i.year ".
          "      from income_2 i ".
          "      where 1=1 ".
          "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = 'Q4' ".
+         "      and i.season = '".$tSeason."' ".
          "      and i.col_name = '營業費用') t4, ".
          "     (select i.value, i.year ".
          "      from income_2 i ".
          "      where 1=1 ".
          "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = 'Q4' ".
+         "      and i.season = '".$tSeason."' ".
          "      and i.col_name = '營業利益（損失）') t5, ".
          "     (select i.value, i.year ".
          "      from income_2 i ".
          "      where 1=1 ".
          "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = 'Q4' ".
+         "      and i.season = '".$tSeason."' ".
          "      and i.col_name = '營業外收入及支出') t6, ".
          "     (select i.value, i.year ".
          "      from income_2 i ".
          "      where 1=1 ".
          "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = 'Q4' ".
+         "      and i.season = '".$tSeason."' ".
          "      and i.col_name = '所得稅費用（利益）') t7, ". 
          "     (select i.value, i.year ".
          "      from income_2 i ".
          "      where 1=1 ".
          "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = 'Q4' ".
+         "      and i.season = '".$tSeason."' ".
          "      and i.col_name = '本期淨利（淨損）') t8, ". 
          "     (select i.value, i.year ".
          "      from income_2 i ".
          "      where 1=1 ".
          "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = 'Q4' ".
-         "      and i.col_name = '綜合損益總額歸屬於母公司業主') t9 ".
+         "      and i.season = '".$tSeason."' ".
+         "      and i.col_name = '綜合損益總額歸屬於母公司業主') t9, ".
+         "     (select i.eps, i.year ".
+         "      from _eps i ".
+         "      where 1=1 ".
+         "      and i.code = '".$_GET['company']."' ".
+         "      and i.season = '".$tSeason."') t10 ".
          "where 1=1 ".
          "and t1.year = t2.year ".
          "and t1.year = t3.year ".
@@ -116,6 +123,7 @@
          "and t1.year = t7.year ".
          "and t1.year = t8.year ".
          "and t1.year = t9.year ".
+         "and t1.year = t10.year ".
          "order by year asc ";
 
   echo "<div class='table100 ver1' id='monthlyTbl'>";
@@ -132,6 +140,7 @@
   echo "        <th>所得稅費用</th>";
   echo "        <th>本期淨利</th>";
   echo "        <th>母公司損益</th>";
+  echo "        <th>EPS</th>";
   echo "      </tr>";
   echo "    </thead>";
   echo "    <tbody>";
@@ -141,7 +150,7 @@
   {
       $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引  
       echo "<tr>";
-      echo "  <td>".$row['year']."</td>";
+      echo "  <td>".$row['year'].$row['season']."</td>";
       echo "  <td>".$row['v1']."</td>";
       echo "  <td>".$row['v2']."</td>";
       echo "  <td>".$row['v3']."</td>";
@@ -151,6 +160,7 @@
       echo "  <td>".$row['v7']."</td>";
       echo "  <td>".$row['v8']."</td>";
       echo "  <td>".$row['v9']."</td>";
+      echo "  <td>".$row['eps']."</td>";
       echo "</tr>";
   }
   echo "    </tbody>";
