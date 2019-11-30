@@ -51,7 +51,7 @@
   /*********************************************************************************/
   /*『SQL』30日法人買賣狀況                                                                      
   /*********************************************************************************/
-  $sql = "select l.date, l.foreigner, l.dealer, l.investment, l.total, ".
+  $sql = "select p.price, p.moving, l.date, l.foreigner, l.dealer, l.investment, l.total, ".
          "round(l.foreigner/p.volume*100,2) fr, round(l.dealer/p.volume*100,2) dr, ".
          "round(l.investment/p.volume*100,2) ir, round(l.total/volume*100,2) tr ".
          "from legals l, prices p ".         
@@ -71,7 +71,9 @@
        "<table data-vertable='ver1'>".
        "<thead>".
          "<tr class='row100 head'>".
-           "<th style='width:15%;'>日期</th>".
+           "<th>日期</th>".
+           "<th>收盤</th>".
+           "<th>漲跌</th>".
            "<th>外資</th>".
            "<th>外資比率</th>".
            "<th>自營商</th>".
@@ -87,6 +89,8 @@
       $row = mysqli_fetch_assoc($result); 
       echo  "<tr class='row100'>";
       echo    "<td>".$row['date']."</td>";
+      echo    "<td>".$row['price']."</td>"; // 外資     
+      echo    getRateTd($row['moving']);
       echo    getMarkedTd($row['foreigner']); // 外資     
       echo    getRateTd($row['fr']); // 自營商    
       echo    getMarkedTd($row['dealer']); // 自營商   
