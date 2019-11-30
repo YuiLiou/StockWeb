@@ -56,12 +56,7 @@
          "    select year, season, sum(v1) investment ".
          "    from property_2 ".
          "    where 1=1 ".
-         "    and col_name in ('透過其他綜合損益按公允價值衡量之金融資產－非流動', ".
-         "    '備供出售金融資產－非流動淨額', ".
-         "    '以成本衡量之金融資產－非流動淨額', ".
-         "    '採用權益法之投資淨額', ".
-         "    '採用權益法之投資', ".
-         "    '按攤銷後成本衡量之金融資產－非流動') ".
+         "    and col_name in ('採用權益法之投資淨額', '採用權益法之投資') ".
          "    and code = '".$_GET['company']."' ".
          "    and season = 'Q4' ".
          "    group by year, season ) b ".
