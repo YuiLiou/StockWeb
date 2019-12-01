@@ -38,8 +38,8 @@
 
   $tYear = substr($_POST['season'],0,4);
   $tSeason = substr($_POST['season'],4,6);
-
-  echo "<a href='http://pchome.megatime.com.tw/stock/sto3/ock4/sid".$_GET['company'].".html'>【轉投資項目】</a><br>";
+  echo "【外部連結】";
+  echo "<a href='http://pchome.megatime.com.tw/stock/sto3/ock4/sid".$_GET['company'].".html'>轉投資項目</a><br>";
   echo "【歷年資產指標】<br>";
   /*********************************************************************************/
   /*『SQL』長期投資項目...tbd盈再率 (Table1)                                                                    

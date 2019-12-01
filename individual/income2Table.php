@@ -37,6 +37,9 @@
   $tYear = substr($_POST['season'],0,4);
   $pYear = (string)((int)substr($_POST['season'],0,4)-1);
   $tSeason = substr($_POST['season'],4,6);
+
+  echo "【外部連結】";
+  echo "<a href='https://mops.twse.com.tw/mops/web/t164sb04'>公開觀測站</a><br>";
   
   /************************************ 歷年營運盤點 *******************************************/
   $sql = "select t1.year, t1.season, ".
