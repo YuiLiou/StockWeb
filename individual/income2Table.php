@@ -4,6 +4,7 @@
   /* --------------------------------------------------------------------------------  
   /* 20191117 rusiang  標記投資亮點/風險，如所得稅費用減少為亮點  
   /* 20191128 rusiang  新增歷年營運指標盤點  
+  /* 20191214 rusiang  更新公開觀測連結
   /**********************************************************************************/  
   if (empty($_GET))
       $_GET['company'] = '2330';
@@ -40,7 +41,8 @@
   $ROCYear = (string)((int)$tYear-1911);
 
   echo "【公開觀測站】";
-  echo "<a href='https://doc.twse.com.tw/server-java/t57sb01?step=1&colorchg=1&co_id=".$_GET['company']."&year=".$ROCYear."&seamon=&mtype=A&'>電子書</a>；";
+  echo "<a href='https://doc.twse.com.tw/server-java/t57sb01?step=1&colorchg=1&co_id=".$_GET['company']."&year=".$ROCYear."&seamon=&mtype=A&'>財報</a>；";
+  echo "<a href='https://doc.twse.com.tw/server-java/t57sb01?step=1&colorchg=1&co_id=".$_GET['company']."&year=".$ROCYear."&mtype=F&'>股東會</a>；";
   echo "<a href='https://mops.twse.com.tw/mops/web/t164sb04'>綜合損益表</a><br>";
   
   /************************************ 歷年營運盤點 *******************************************/
