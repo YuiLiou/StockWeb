@@ -36,8 +36,8 @@
       <button id="epsBtn">每股盈餘</button>
       <button id="dividendBtn">股利政策</button>
     </div>    
-    <div id="viewTable"></div>    
     <div id="viewChart"></div> 
+    <div id="viewTable"></div>    
   </div>  
 
 <script type="text/javascript" src="js/jquery.min.js"></script>
