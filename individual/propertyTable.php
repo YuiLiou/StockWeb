@@ -53,7 +53,7 @@
          "    where 1=1 ".
          "    and col_name in ('股本') ".
          "    and code = '".$_GET['company']."' ".
-         "    and season = 'Q4') a ".
+         "    and season = '".$tSeason."') a ".
 //      「資產負債表」長期投資 --------------------------------------------------------------
          "left join ( ".
          "    select year, season, sum(v1) investment ".
@@ -61,7 +61,7 @@
          "    where 1=1 ".
          "    and col_name in ('採用權益法之投資淨額', '採用權益法之投資') ".
          "    and code = '".$_GET['company']."' ".
-         "    and season = 'Q4' ".
+         "    and season = '".$tSeason."' ".
          "    group by year, season ) b ".
          "on a.year = b.year and a.season = b.season ".
 //      「資產負債表」固定資產 --------------------------------------------------------------
@@ -71,7 +71,7 @@
          "    where 1=1 ".
          "    and col_name in ('不動產、廠房及設備', '投資性不動產淨額') ".
          "    and code = '".$_GET['company']."' ".
-         "    and season = 'Q4' ".
+         "    and season = '".$tSeason."' ".
          "    group by year, season ) c ".
          "on a.year = c.year and a.season = c.season ".
 //      「資產負債表」股東權益 --------------------------------------------------------------
@@ -81,7 +81,7 @@
          "    where 1=1 ".
          "    and col_name in ('歸屬於母公司業主之權益合計') ".
          "    and code = '".$_GET['company']."' ".
-         "    and season = 'Q4') d ".
+         "    and season = '".$tSeason."' ) d ".
          "on a.year = d.year and a.season = d.season ".
 //      「資產負債表」合約負債 --------------------------------------------------------------
          "left join ( ".
@@ -90,7 +90,7 @@
          "    where 1=1 ".
          "    and col_name in ('合約負債－流動') ".
          "    and code = '".$_GET['company']."' ".
-         "    and season = 'Q4') e ".
+         "    and season = '".$tSeason."') e ".
          "on a.year = e.year and a.season = e.season ".
 //       「綜合損益表」獲利 ----------------------------------------------------------------   
          "left join ( ".
@@ -98,7 +98,7 @@
          "    from income_2 i ".
          "    where 1=1 ".
          "    and i.code = '".$_GET['company']."' ".
-         "    and i.season = 'Q4' ".
+         "    and season = '".$tSeason."' ".
          "    and i.col_name = '綜合損益總額歸屬於母公司業主') f ".
          "on a.year = f.year and a.season = f.season ".
 //      「資產負債表」每股淨值 --------------------------------------------------------------
@@ -108,7 +108,7 @@
          "    where 1=1 ".
          "    and col_name in ('每股參考淨值') ".
          "    and code = '".$_GET['company']."' ".
-         "    and season = 'Q4') g ".
+         "    and season = '".$tSeason."') g ".
          "on a.year = g.year and a.season = g.season ";
          
   $result = $conn->query($sql);
