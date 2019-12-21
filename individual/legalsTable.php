@@ -8,28 +8,8 @@
   require_once('commonFunc.php');
   if (empty($_GET)) {$_GET['company'] = '2330';}
   echo "\"";
-
-  /*********************************************************************************/
-  /*『SQL』30日價差                                                          
-  /*********************************************************************************/
-  $sql = "select round((p1.price-p30.price)/p30.price*100,2) pavg ".
-         "from (select price ".
-         "      from prices ".
-         "      where 1=1 ".
-         "      and code = '".$_GET['company']."' ".
-         "      order by date desc ". 
-         "      limit 0,1) p1, ".
-         "     (select price ".
-         "      from prices ".
-         "      where 1=1 ".
-         "      and code = '".$_GET['company']."' ".
-         "      order by date desc ".
-         "      limit 29,1) p30 ";
-  $result = $conn->query($sql);
-  $row = mysqli_fetch_assoc($result);
   echo "*********************************************************************<br>";
-  echo "*** 30日以來 ***";
-  $avgMoving30 = $row['pavg'];
+  echo "*** 30日以來 ***(漲幅為30日以來漲幅)";
   /*********************************************************************************/
   /*『SQL』30日累計買賣超                                                                      
   /*********************************************************************************/
@@ -52,6 +32,7 @@
        "</thead>";
   echo "<tbody>";
   $sql = "select round(p30.p,2) p30, l30.f, l30.d, l30.i, l30.t, ".
+         "       round((p001.price-p030.price)/p030.price*100,2) moving30, ". 
          "       round(l30.f/p30.v*100,2) f30, round(l30.d/p30.v*100,2) d30, ".
          "       round(l30.i/p30.v*100,2) i30, round(l30.t/p30.v*100,2) t30 ".
          "from ".
@@ -78,7 +59,24 @@
          "    order by date desc ".
          "    limit 0,30 ".
          "  ) p30 ".
-         ")p30 ";
+         ")p30, ".
+         "( ".
+         "  select price ".
+         "  from prices ".
+         "  where 1=1 ".
+         "  and code = '".$_GET['company']."' ".
+         "  order by date desc ". 
+         "  limit 0,1 ".
+         ") p001, ".
+         "( ".
+         "  select price ".
+         "  from prices ".
+         "  where 1=1 ".
+         "  and code = '".$_GET['company']."' ".
+         "  order by date desc ".
+         "  limit 29,1 ".
+         ") p030 ";
+
   $result = $conn->query($sql);
   $total_records = mysqli_num_rows($result);  // 取得記錄數
   for ($i=0;$i<$total_records;$i++)
@@ -87,7 +85,7 @@
       echo "<tr class='row100'>";
       echo " <td>30</td>";
       echo " <td>".$row['p30']."</td>";
-      echo " <td>".$avgMoving30."</td>";
+      echo getRateTd($row['moving30']);
       echo getMarkedTd($row['f']);
       echo getRateTd($row['f30']);
       echo getMarkedTd($row['d']);
