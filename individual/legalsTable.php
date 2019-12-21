@@ -3,13 +3,12 @@
   /* Date     Author   ChangeList
   /* --------------------------------------------------------------------------------  
   /* 20191130 rusiang  新增法人買賣佔大盤比率 
-  /* 20191221 rusiang  計算30日大盤 
+  /* 20191221 rusiang  計算1/5/20/60日大盤 
   /**********************************************************************************/  
   require_once('commonFunc.php');
   if (empty($_GET)) {$_GET['company'] = '2330';}
   echo "\"";
-  echo "*********************************************************************<br>";
-  echo "*** 30日以來 ***(漲幅為30日以來漲幅)";
+  echo "【平均買賣超】<br>";
   /*********************************************************************************/
   /*『SQL』30日累計買賣超                                                                      
   /*********************************************************************************/
@@ -31,80 +30,74 @@
          "</tr>".
        "</thead>";
   echo "<tbody>";
-  $sql = "select round(p30.p,2) p30, l30.f, l30.d, l30.i, l30.t, ".
-         "       round((p001.price-p030.price)/p030.price*100,2) moving30, ". 
-         "       round(l30.f/p30.v*100,2) f30, round(l30.d/p30.v*100,2) d30, ".
-         "       round(l30.i/p30.v*100,2) i30, round(l30.t/p30.v*100,2) t30 ".
-         "from ".
-         "( ".
-         "  select sum(l30.foreigner) f, sum(l30.dealer) d, sum(l30.investment) i, sum(l30.total) t ".
-         "  from ".
-         "  ( ".
-         "    select foreigner, dealer, investment, total ".
-         "    from legals ".        
-         "    where 1=1 ".
-         "    and code = '".$_GET['company']."' ".
-         "    order by date desc ".
-         "    limit 0,30 ".
-         "  ) l30 ".
-         ") l30, ".
-         "( ".
-         "  select avg(p30.price) p, sum(p30.volume) v ".
-         "  from ".
-         "  ( ".
-         "    select price, volume ".
-         "    from prices ".
-         "    where 1=1 ".
-         "    and code = '".$_GET['company']."' ".
-         "    order by date desc ".
-         "    limit 0,30 ".
-         "  ) p30 ".
-         ")p30, ".
-         "( ".
-         "  select price ".
-         "  from prices ".
-         "  where 1=1 ".
-         "  and code = '".$_GET['company']."' ".
-         "  order by date desc ". 
-         "  limit 0,1 ".
-         ") p001, ".
-         "( ".
-         "  select price ".
-         "  from prices ".
-         "  where 1=1 ".
-         "  and code = '".$_GET['company']."' ".
-         "  order by date desc ".
-         "  limit 29,1 ".
-         ") p030 ";
+  $days = array(1,5,20,60);
+  foreach ($days as $d) 
+  {
+    $sql = "select round(p30.p,2) p30, ".                             // 平均收盤價
+           "       round((p001.price-p30.p)/p30.p*100,2) moving30, ". // 漲幅
+           "       round(l30.f/p30.v*100,2) f30, l30.f, ".            // 外資
+           "       round(l30.d/p30.v*100,2) d30, l30.d, ".            // 自營商
+           "       round(l30.i/p30.v*100,2) i30, l30.i, ".            // 投信
+           "       round(l30.t/p30.v*100,2) t30, l30.t  ".            // 總計
+           "from ".
+           "( ". /***近日法人總買賣量***/
+           "  select sum(l30.foreigner) f, sum(l30.dealer) d, sum(l30.investment) i, sum(l30.total) t ".
+           "  from ".
+           "  ( ".
+           "    select foreigner, dealer, investment, total ".
+           "    from legals ".        
+           "    where 1=1 ".
+           "    and code = '".$_GET['company']."' ".
+           "    order by date desc ".
+           "    limit 0,".$d." ".
+           "  ) l30 ".
+           ") l30, ".
+           "( ". /***近日平均價格/總買賣量***/
+           "  select avg(p30.price) p, sum(p30.volume) v ".
+           "  from ".
+           "  ( ".
+           "    select price, volume ".
+           "    from prices ".
+           "    where 1=1 ".
+           "    and code = '".$_GET['company']."' ".
+           "    order by date desc ".
+           "    limit 0,".$d." ".
+           "  ) p30 ".
+           ")p30, ".
+           "( ". /***前日收盤價***/
+           "  select price ".
+           "  from prices ".
+           "  where 1=1 ".
+           "  and code = '".$_GET['company']."' ".
+           "  order by date desc ". 
+           "  limit 0,1 ".
+           ") p001 ";
 
-  $result = $conn->query($sql);
-  $total_records = mysqli_num_rows($result);  // 取得記錄數
-  for ($i=0;$i<$total_records;$i++)
-  { 
-      $row = mysqli_fetch_assoc($result);
-      echo "<tr class='row100'>";
-      echo " <td>30</td>";
-      echo " <td>".$row['p30']."</td>";
-      echo getRateTd($row['moving30']);
-      echo getMarkedTd($row['f']);
-      echo getRateTd($row['f30']);
-      echo getMarkedTd($row['d']);
-      echo getRateTd($row['d30']);
-      echo getMarkedTd($row['i']);
-      echo getRateTd($row['i30']); 
-      echo getMarkedTd($row['t']);
-      echo getRateTd($row['t30']);
-      echo "</tr>";
+    $result = $conn->query($sql);
+    $row = mysqli_fetch_assoc($result);
+    echo "<tr class='row100'>";
+    echo " <td>".$d."</td>";
+    echo " <td>".$row['p30']."</td>";
+    echo getRateTd($row['moving30']);
+    echo getMarkedTd($row['f']);
+    echo getRateTd($row['f30']);
+    echo getMarkedTd($row['d']);
+    echo getRateTd($row['d30']);
+    echo getMarkedTd($row['i']);
+    echo getRateTd($row['i30']); 
+    echo getMarkedTd($row['t']);
+    echo getRateTd($row['t30']);
+    echo "</tr>";  
   }
   echo "</tbody></table>";
-  echo "*********************************************************************<br>";
+  echo "【每日買賣超】<br>";
   
   /*********************************************************************************/
   /*『SQL』30日法人買賣狀況                                                                      
   /*********************************************************************************/
   $sql = "select p.price, p.moving, l.date, l.foreigner, l.dealer, l.investment, l.total, ".
          "round(l.foreigner/p.volume*100,2) fr, round(l.dealer/p.volume*100,2) dr, ".
-         "round(l.investment/p.volume*100,2) ir, round(l.total/volume*100,2) tr ".
+         "round(l.investment/p.volume*100,2) ir, round(l.total/p.volume*100,2) tr ".
          "from legals l, prices p ".         
          "where 1=1 ".
          "and l.code = '".$_GET['company']."' ".
