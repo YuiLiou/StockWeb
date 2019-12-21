@@ -2,7 +2,8 @@
   /**********************************************************************************/
   /* Date     Author   ChangeList
   /* --------------------------------------------------------------------------------  
-  /* 20191130 rusiang  新增法人買賣佔大盤比率  
+  /* 20191130 rusiang  新增法人買賣佔大盤比率 
+  /* 20191221 rusiang  計算30日大盤 
   /**********************************************************************************/  
   require_once('commonFunc.php');
   if (empty($_GET)) {$_GET['company'] = '2330';}
@@ -11,7 +12,7 @@
   /*********************************************************************************/
   /*『SQL』30日價差                                                          
   /*********************************************************************************/
-  $sql = "select p1.price p1, p30.price p30, round((p1.price-p30.price)/p30.price*100,2) pavg ".
+  $sql = "select round((p1.price-p30.price)/p30.price*100,2) pavg ".
          "from (select price ".
          "      from prices ".
          "      where 1=1 ".
@@ -27,25 +28,77 @@
   $result = $conn->query($sql);
   $row = mysqli_fetch_assoc($result);
   echo "*********************************************************************<br>";
-  echo "*** 30日以來 ***<br>";
-  echo "【".$row['pavg']."%】".$row['p30']."元→".$row['p1']."元<br>";
-
+  echo "*** 30日以來 ***";
+  $avgMoving30 = $row['pavg'];
   /*********************************************************************************/
   /*『SQL』30日累計買賣超                                                                      
   /*********************************************************************************/
-  $sql = "select sum(sub.foreigner) f, sum(sub.dealer) d, sum(sub.investment) i, sum(sub.total) t ".
-         "from (select foreigner, dealer, investment, total ".
-         "      from legals ".        
-         "      where 1=1 ".
-         "      and code = '".$_GET['company']."' ".
-         "      order by date desc ".
-         "      limit 0,30) sub ";
+  echo "<div class='table100 ver1 m-b-110' id='monthlyTbl'>";
+  echo "<table data-vertable='ver1'>";
+  echo "<thead>".
+         "<tr class='row100 head'>".
+           "<th>天數</th>".
+           "<th>收盤</th>".
+           "<th>漲跌</th>".
+           "<th>外資</th>".
+           "<th>外資比率</th>".
+           "<th>自營商</th>".
+           "<th>自營商比率</th>".
+           "<th>投信</th>". 
+           "<th>投信比率</th>". 
+           "<th>總計</th>".
+           "<th>比率</th>".
+         "</tr>".
+       "</thead>";
+  echo "<tbody>";
+  $sql = "select round(p30.p,2) p30, l30.f, l30.d, l30.i, l30.t, ".
+         "       round(l30.f/p30.v*100,2) f30, round(l30.d/p30.v*100,2) d30, ".
+         "       round(l30.i/p30.v*100,2) i30, round(l30.t/p30.v*100,2) t30 ".
+         "from ".
+         "( ".
+         "  select sum(l30.foreigner) f, sum(l30.dealer) d, sum(l30.investment) i, sum(l30.total) t ".
+         "  from ".
+         "  ( ".
+         "    select foreigner, dealer, investment, total ".
+         "    from legals ".        
+         "    where 1=1 ".
+         "    and code = '".$_GET['company']."' ".
+         "    order by date desc ".
+         "    limit 0,30 ".
+         "  ) l30 ".
+         ") l30, ".
+         "( ".
+         "  select avg(p30.price) p, sum(p30.volume) v ".
+         "  from ".
+         "  ( ".
+         "    select price, volume ".
+         "    from prices ".
+         "    where 1=1 ".
+         "    and code = '".$_GET['company']."' ".
+         "    order by date desc ".
+         "    limit 0,30 ".
+         "  ) p30 ".
+         ")p30 ";
   $result = $conn->query($sql);
-  $row = mysqli_fetch_assoc($result); 
-  echo "『外資買賣超』".$row['f']."張<br>";
-  echo "『自營商買賣超』".$row['d']."張<br>";
-  echo "『投信買賣超』".$row['i']."張<br>";
-  echo "『總計買賣超』".$row['t']."張<br>";
+  $total_records = mysqli_num_rows($result);  // 取得記錄數
+  for ($i=0;$i<$total_records;$i++)
+  { 
+      $row = mysqli_fetch_assoc($result);
+      echo "<tr class='row100'>";
+      echo " <td>30</td>";
+      echo " <td>".$row['p30']."</td>";
+      echo " <td>".$avgMoving30."</td>";
+      echo getMarkedTd($row['f']);
+      echo getRateTd($row['f30']);
+      echo getMarkedTd($row['d']);
+      echo getRateTd($row['d30']);
+      echo getMarkedTd($row['i']);
+      echo getRateTd($row['i30']); 
+      echo getMarkedTd($row['t']);
+      echo getRateTd($row['t30']);
+      echo "</tr>";
+  }
+  echo "</tbody></table>";
   echo "*********************************************************************<br>";
   
   /*********************************************************************************/
@@ -67,8 +120,8 @@
   /*********************************************************************************/
   /*『HTML』30日法人買賣狀況                                                                      
   /*********************************************************************************/
-  echo "<div class='table100 ver1 m-b-110' id='monthlyTbl'>".
-       "<table data-vertable='ver1'>".
+  //echo "<div class='table100 ver1 m-b-110' id='monthlyTbl'>".
+  echo "<table data-vertable='ver1'>".
        "<thead>".
          "<tr class='row100 head'>".
            "<th>日期</th>".
@@ -85,7 +138,8 @@
          "</tr>".
        "</thead><tbody>";
 
-  for ($i=0;$i<$total_records;$i++){ 
+  for ($i=0;$i<$total_records;$i++)
+  { 
       $row = mysqli_fetch_assoc($result); 
       echo  "<tr class='row100'>";
       echo    "<td>".$row['date']."</td>";
