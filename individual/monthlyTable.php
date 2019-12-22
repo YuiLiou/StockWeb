@@ -1,44 +1,65 @@
 <?php
+  /**********************************************************************************/
+  /* Date     Author   ChangeList
+  /* --------------------------------------------------------------------------------  
+  /* 20191222 rusiang  新增成長性分析 
+  /**********************************************************************************/ 
   if (empty($_GET))
       $_GET['company'] = '2330';
   echo "\"";
 
   /*********************************************************************************/
-  /*『SQL』月/季/年增率                                                                      
+  /*『SQL』1/3/12營收年增率                                                                      
   /*********************************************************************************/
-  $sql = "select round(((this_3.val-past_3.val)/past_3.val*100),2) qoy, new_month, YoY, Yearly_YoY ".
-         "from ".
-         /******************************『季增率』最近三月************************************/
-         "    (select code, sum(current) val ".
-         "    from ( ".
-         "        select code, current, @rank := @rank + 1 AS rank ".
-         "        from monthly, (select @rank := 0)a ".
-         "        where code = '".$_GET['company']."' ".
-         "        order by month desc ".
-         "    ) ranked ".
-         "    where rank <= 3 ".
-         "    group by code) this_3, ".         
-         /******************************『季增率』去年三月************************************/
-         "    (select code, sum(current) val ".
-         "    from ( ".
-         "        select code, current, @rank2 := @rank2 + 1 AS rank ".
-         "        from monthly, (select @rank2 := 0)a ".
-         "        where code = '".$_GET['company']."' ".
-         "        order by month desc ".
-         "    ) ranked ".
-         "    where rank > 12 and rank <= 15 ".
-         "    group by code) past_3, ".
-         "    (select concat('%', substr(month,5,2)) as new_month, YoY, Yearly_YoY ".
+  echo "【成長性分析】<br>";
+  $months = array(1,3,12);
+  foreach ($months as $m) 
+  {
+      $sql = "select round(((this_3.val-past_3.val)/past_3.val*100),2) growth ".
+             "from ".
+             /******************************『今年營收總和』************************************/
+             "    (select code, sum(current) val ".
+             "    from ( ".
+             "        select code, current, @rank := @rank + 1 AS rank ".
+             "        from monthly, (select @rank := 0)a ".
+             "        where code = '".$_GET['company']."' ".
+             "        order by month desc ".
+             "    ) ranked ".
+             "    where rank <= ".$m." ".
+             "    group by code) this_3, ".         
+             /******************************『去年營收總和』************************************/
+             "    (select code, sum(current) val ".
+             "    from ( ".
+             "        select code, current, @rank2 := @rank2 + 1 AS rank ".
+             "        from monthly, (select @rank2 := 0)a ".
+             "        where code = '".$_GET['company']."' ".
+             "        order by month desc ".
+             "    ) ranked ".
+             "    where rank > 12 and rank <= ".($m+12)." ".
+             "    group by code) past_3 ";
+      $result = $conn->query($sql);
+      $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引    
+      if ($m == 1)
+          echo "當月營收年增率:".$row['growth']."%<br>";
+      else if($m == 3)
+          echo "短期營收年增率:".$row['growth']."%<br>";
+      else if($m == 12)
+          echo "長期營收年增率:".$row['growth']."%<br>"; 
+  }
+
+  /*********************************************************************************/
+  /*『SQL』最新月份                                                                      
+  /*********************************************************************************/
+  $sql = "select new_month ".
+         "from ( ".
+         "    select concat('%', substr(month,5,2)) as new_month ".
          "    from monthly m ".
          "    where code = '".$_GET['company']."' ".
          "    order by month desc ".
-         "    limit 0,1) n "; 
- 
+         "    limit 0,1 ".
+         ") n ";
   $result = $conn->query($sql);
-  $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
-  echo "『月成長』".$row['YoY']."%<br>";       
-  echo "『季成長』".$row['qoy']."%<br>";       
-  echo "『年成長』".$row['Yearly_YoY']."%<br>";       
+  $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引     
   $_GET['new_month'] = $row['new_month']; // 最新月份
 
   /*********************************************************************************/
@@ -74,6 +95,7 @@
   /*********************************************************************************/
   /*『HTML』每月營收                                              
   /*********************************************************************************/ 
+  echo "【每月營收】";
   echo "<div class='table100 ver1' id='monthlyTbl'>".
        "<table data-vertable='ver1'>".
        "<thead>".
@@ -140,6 +162,7 @@
   /*********************************************************************************/
   /*『HTML』歷年累計營收                                              
   /*********************************************************************************/
+  echo "【歷年累計營收】";
   echo "<div class='table100 ver1' id='monthlyTbl'>".
          "<table data-vertable='ver1'>".
          "<thead>".
