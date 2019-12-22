@@ -49,7 +49,7 @@
                         lineTension: 0.1,
                         backgroundColor: gradientFill,
                         borderColor: trend,
-                        pointRadius: 10,
+                        pointRadius: 3,
                         borderWidth: 5,
                         data: price,
                     },{
