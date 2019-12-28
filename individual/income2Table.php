@@ -43,6 +43,7 @@
   echo "【公開觀測站】";
   echo "<a href='https://doc.twse.com.tw/server-java/t57sb01?step=1&colorchg=1&co_id=".$_GET['company']."&year=".$ROCYear."&seamon=&mtype=A&'>財報</a>；";
   echo "<a href='https://doc.twse.com.tw/server-java/t57sb01?step=1&colorchg=1&co_id=".$_GET['company']."&year=".$ROCYear."&mtype=F&'>股東會</a>；";
+  echo "<a href='https://mops.twse.com.tw/mops/web/t100sb07_1'>法說會</a>；";
   echo "<a href='https://mops.twse.com.tw/mops/web/t164sb04'>綜合損益表</a><br>";
   
   /************************************ 歷年營運盤點 *******************************************/
