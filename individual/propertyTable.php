@@ -6,6 +6,7 @@
   /* 20191123 rusiang  新增股本＆每股淨值＆股東權益＆ROE＆合約負債  
   /* 20191130 rusiang  新增策略分析說明
   /* 20191228 rusiang  新增股本成長率
+  /* 20191228 rusiang  新增杜邦分析
   /**********************************************************************************/  
   if (empty($_GET))
       $_GET['company'] = '2330';
@@ -46,7 +47,10 @@
   /*『SQL』長期投資項目...tbd盈再率 (Table1)                                                                    
   /*********************************************************************************/
   $sql = "select a.year, a.season, profit, investment, house, shareholder, ".
-         "       round(profit/shareholder*100,2) ROE, share, contract, stockvalue ".
+         "       round(profit/shareholder*100,2) ROE, share, contract, stockvalue, ".
+         "       round(profit/h.value*100,2) profitRate, ".           // 淨利率
+         "       round(h.value/i.value*100,2) assetTurnOver, ".       // 資產週轉率
+         "       round(i.value/shareholder*100,2) equityMultiplier ". // 權益乘數 
          "from ( ".
 //      「資產負債表」股本 ----------------------------------------------------------------
          "    select year, season, value share ".
@@ -100,7 +104,7 @@
          "    where 1=1 ".
          "    and i.code = '".$_GET['company']."' ".
          "    and season = '".$tSeason."' ".
-         "    and i.col_name = '綜合損益總額歸屬於母公司業主') f ".
+         "    and i.col_name = '本期淨利（淨損）') f ".
          "on a.year = f.year and a.season = f.season ".
 //      「資產負債表」每股淨值 --------------------------------------------------------------
          "left join ( ".
@@ -110,21 +114,42 @@
          "    and col_name in ('每股參考淨值') ".
          "    and code = '".$_GET['company']."' ".
          "    and season = '".$tSeason."') g ".
-         "on a.year = g.year and a.season = g.season ";
+         "on a.year = g.year and a.season = g.season ".
+//      「綜合損益表」營業收入 --------------------------------------------------------------
+         "left join ( ".
+         "    select year, season, value ".
+         "    from income_2 ".
+         "    where 1=1 ".
+         "    and code = '".$_GET['company']."' ".
+         "    and season = '".$tSeason."' ".
+         "    and col_name = '營業收入') h ".
+         "on a.year = h.year and a.season = h.season ".
+//      「資產負債表」資產總計 --------------------------------------------------------------
+         "left join ( ".
+         "    select year, season, value ".
+         "    from property ".
+         "    where 1=1 ".
+         "    and col_name in ('資產總計') ".
+         "    and code = '".$_GET['company']."' ".
+         "    and season = '".$tSeason."') i ".
+         "on a.year = i.year and a.season = i.season ";
          
   $result = $conn->query($sql);
   $total_records = mysqli_num_rows($result);  // 取得記錄數
-  echo "<div class='table100 ver1' id='monthlyTbl'>";
+  echo "<div class='table100 ver1' id='monthlyTbl' style='height:600px;'>";
   echo "  <table data-vertable='ver1'>";
   echo "    <thead>";
   echo "      <tr class='row100 head'>";
   echo "        <th>年份</th>";
   echo "        <th>股本</th>";
   echo "        <th>每股淨值</th>";
-  echo "        <th>長期投資項目</th>";
+  echo "        <th>長期投資</th>";
   echo "        <th>固定資產</th>";
-  echo "        <th>綜合損益歸屬母公司</th>";
+  echo "        <th>淨利</th>";
+  echo "        <th>淨利率</th>";
+  echo "        <th>資產週轉率</th>";
   echo "        <th>股東權益</th>";
+  echo "        <th>權益乘數</th>";
   echo "        <th>ROE</th>";
   echo "        <th>合約負債</th>";
   echo "      </tr>";
@@ -142,7 +167,10 @@
       echo "    <td>".$row['investment']."</td>";
       echo "    <td>".$row['house']."</td>";
       echo "    <td>".$row['profit']."</td>";
+      echo "    <td>".$row['profitRate']."%</td>";
+      echo "    <td>".$row['assetTurnOver']."%</td>";
       echo "    <td>".$row['shareholder']."</td>";
+      echo "    <td>".$row['equityMultiplier']."</td>";
       echo "    <td>".$row['ROE']."</td>";
       echo "    <td>".$row['contract']."</td>";
       echo "  </tr>";
@@ -154,13 +182,17 @@
   echo "    </tbody>";
   echo "  </table>";
   if ($share_s != $share_e)
-      echo "股本成長率".round((($share_e/$share_s)-1)*100,2)."%<br>";
-  //echo "</div>";
+      echo "股本成長率 = ".round((($share_e/$share_s)-1)*100,2)."%<br>";
+  echo "ROE = 利潤率 × 資產周轉率 × 權益乘數 = (淨收入 / 營業收入) × (營業收入 / 資產) × (資產/ 股東權益)<br>";
+  echo "1.淨利率代表獲利能力，分析損益表，比較營收、獲利金額、獲利率的變化。<br>";
+  echo "2.總資產週轉率代表管理階層運用總資產創造營收的能力，強化分析資產比例和營運天數。<br>";  
+  echo "3.權益乘數代表財務槓桿的運用程度，強化分析負債內容，看是好債還是壞債。<br>";  
+  echo "</div>";
   /* back up */
   // 『SQL』資產負債簡表 (Table2) ////////////////////////////////////////////
   $pYear = (string)((int)substr($_POST['season'],0,4)-1);
   
-  //echo "<div class='table100 ver1' id='monthlyTbl'>";
+  echo "<div class='table100 ver1' id='monthlyTbl'>";
   echo "【簡明表】<br>";
   echo "  <table data-vertable='ver1'>";
   echo "    <thead>";
