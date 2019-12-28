@@ -4,6 +4,7 @@
   /* --------------------------------------------------------------------------------  
   /* 20191130 rusiang  新增法人買賣佔大盤比率 
   /* 20191221 rusiang  計算1/5/20/60日大盤 
+  /* 20191228 rusiang  成交量佔股本比率
   /**********************************************************************************/  
   require_once('commonFunc.php');
   if (empty($_GET)) {$_GET['company'] = '2330';}
@@ -26,7 +27,8 @@
            "<th>投信</th>". 
            "<th>投信比率</th>". 
            "<th>總計</th>".
-           "<th>比率</th>".
+           "<th>法人佔成交量比率</th>".
+           "<th>成交量佔股本比率</th>".
          "</tr>".
        "</thead>";
   echo "<tbody>";
@@ -38,7 +40,8 @@
            "       round(l30.f/p30.v*100,2) f30, l30.f, ".            // 外資
            "       round(l30.d/p30.v*100,2) d30, l30.d, ".            // 自營商
            "       round(l30.i/p30.v*100,2) i30, l30.i, ".            // 投信
-           "       round(l30.t/p30.v*100,2) t30, l30.t  ".            // 總計
+           "       round(l30.t/p30.v*100,2) t30, l30.t, ".            // 總計
+           "       round(p30.v/share.num*100,2) s30     ".            // 成交量佔股本比
            "from ".
            "( ". /***近日法人總買賣量***/
            "  select sum(l30.foreigner) f, sum(l30.dealer) d, sum(l30.investment) i, sum(l30.total) t ".
@@ -71,7 +74,15 @@
            "  and code = '".$_GET['company']."' ".
            "  order by date desc ". 
            "  limit 0,1 ".
-           ") p001 ";
+           ") p001, ".
+           "( ". /***發行股數***/
+           "  select value/10 num ".
+           "  from property p ".
+           "  where p.code = '".$_GET['company']."' ".
+           "  and p.col_name = '股本' ".
+           "  order by year desc, season desc ".
+           "  limit 0,1 ".
+           ") share ";
 
     $result = $conn->query($sql);
     $row = mysqli_fetch_assoc($result);
@@ -87,6 +98,7 @@
     echo getRateTd($row['i30']); 
     echo getMarkedTd($row['t']);
     echo getRateTd($row['t30']);
+    echo getRateTd($row['s30']);
     echo "</tr>";  
   }
   echo "</tbody></table>";
@@ -97,11 +109,21 @@
   /*********************************************************************************/
   $sql = "select p.price, p.moving, l.date, l.foreigner, l.dealer, l.investment, l.total, ".
          "round(l.foreigner/p.volume*100,2) fr, round(l.dealer/p.volume*100,2) dr, ".
-         "round(l.investment/p.volume*100,2) ir, round(l.total/p.volume*100,2) tr ".
-         "from legals l, prices p ".         
+         "round(l.investment/p.volume*100,2) ir, round(l.total/p.volume*100,2) tr, ".
+         "round(p.volume/share.num*100,2) s ".
+         "from legals l, prices p, ".
+         "( ". /***發行股數***/
+         "  select code, value/10 num ".
+         "  from property p ".
+         "  where p.code = '".$_GET['company']."' ".
+         "  and p.col_name = '股本' ".
+         "  order by year desc, season desc ".
+         "  limit 0,1 ".
+         ") share ".   
          "where 1=1 ".
          "and l.code = '".$_GET['company']."' ".
          "and l.code = p.code ".
+         "and l.code = share.code ".
          "and l.date = p.date ".
          "order by date desc ".
          "limit 0,30"; 
@@ -125,7 +147,8 @@
            "<th>投信</th>". 
            "<th>投信比率</th>". 
            "<th>總計</th>".
-           "<th>比率</th>".
+           "<th>法人佔成交量比率</th>".
+           "<th>成交量佔股本比率</th>".
          "</tr>".
        "</thead><tbody>";
 
@@ -134,16 +157,17 @@
       $row = mysqli_fetch_assoc($result); 
       echo  "<tr class='row100'>";
       echo    "<td>".$row['date']."</td>";
-      echo    "<td>".$row['price']."</td>"; // 外資     
-      echo    getRateTd($row['moving']);
+      echo    "<td>".$row['price']."</td>";   // 股價     
+      echo    getRateTd($row['moving']);      // 漲幅
       echo    getMarkedTd($row['foreigner']); // 外資     
-      echo    getRateTd($row['fr']); // 自營商    
-      echo    getMarkedTd($row['dealer']); // 自營商   
-      echo    getRateTd($row['dr']); // 自營商   
-      echo    getMarkedTd($row['investment']); // 投信
-      echo    getRateTd($row['ir']); // 自營商    
-      echo    getMarkedTd($row['total']); // 三大法人   
-      echo    getRateTd($row['tr']); // 自營商   
+      echo    getRateTd($row['fr']);          // 外資比率
+      echo    getMarkedTd($row['dealer']);    // 自營商   
+      echo    getRateTd($row['dr']);          // 自營商比率   
+      echo    getMarkedTd($row['investment']);// 投信
+      echo    getRateTd($row['ir']);          // 投信比率    
+      echo    getMarkedTd($row['total']);     // 總計   
+      echo    getRateTd($row['tr']);          // 法人佔成交量比率  
+      echo    getRateTd($row['s']);           // 成交量佔股本比率    
       echo "</tr>";
   }
   echo "</tbody></table></div>\"";
