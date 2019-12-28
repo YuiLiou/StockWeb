@@ -84,7 +84,7 @@
          "    select year, season, value shareholder ".
          "    from property ".
          "    where 1=1 ".
-         "    and col_name in ('歸屬於母公司業主之權益合計') ".
+         "    and col_name in ('權益總計','權益總額') ".
          "    and code = '".$_GET['company']."' ".
          "    and season = '".$tSeason."' ) d ".
          "on a.year = d.year and a.season = d.season ".
@@ -129,7 +129,7 @@
          "    select year, season, value ".
          "    from property ".
          "    where 1=1 ".
-         "    and col_name in ('資產總計') ".
+         "    and col_name in ('資產總計','資產總額') ".
          "    and code = '".$_GET['company']."' ".
          "    and season = '".$tSeason."') i ".
          "on a.year = i.year and a.season = i.season ";
