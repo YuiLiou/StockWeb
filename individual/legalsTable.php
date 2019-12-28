@@ -41,7 +41,7 @@
            "       round(l30.d/p30.v*100,2) d30, l30.d, ".            // 自營商
            "       round(l30.i/p30.v*100,2) i30, l30.i, ".            // 投信
            "       round(l30.t/p30.v*100,2) t30, l30.t, ".            // 總計
-           "       round(p30.v/share.num*100,2) s30     ".            // 成交量佔股本比
+           "       round((p30.v/share.num)/".$d."*100,2) s30 ".       // 成交量佔股本比
            "from ".
            "( ". /***近日法人總買賣量***/
            "  select sum(l30.foreigner) f, sum(l30.dealer) d, sum(l30.investment) i, sum(l30.total) t ".
