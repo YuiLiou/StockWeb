@@ -5,6 +5,7 @@
   /* 20191116 rusiang  新增長期投資項目＆固定資產＆綜合損益  
   /* 20191123 rusiang  新增股本＆每股淨值＆股東權益＆ROE＆合約負債  
   /* 20191130 rusiang  新增策略分析說明
+  /* 20191228 rusiang  新增股本成長率
   /**********************************************************************************/  
   if (empty($_GET))
       $_GET['company'] = '2330';
@@ -122,13 +123,15 @@
   echo "        <th>每股淨值</th>";
   echo "        <th>長期投資項目</th>";
   echo "        <th>固定資產</th>";
-  echo "        <th>綜合損益總額歸屬於母公司業主</th>";
+  echo "        <th>綜合損益歸屬母公司</th>";
   echo "        <th>股東權益</th>";
   echo "        <th>ROE</th>";
   echo "        <th>合約負債</th>";
   echo "      </tr>";
   echo "    </thead>";
   echo "    <tbody>";
+  $share_s = 0;
+  $share_e = 0;
   for ($i=0;$i<$total_records;$i++)
   {  
       $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
@@ -143,9 +146,15 @@
       echo "    <td>".$row['ROE']."</td>";
       echo "    <td>".$row['contract']."</td>";
       echo "  </tr>";
-  }
+      if ($i == 0)
+          $share_s = $row['share'];
+      else 
+          $share_e = $row['share'];
+  } 
   echo "    </tbody>";
   echo "  </table>";
+  if ($share_s != $share_e)
+      echo "股本成長率".round((($share_e/$share_s)-1)*100,2)."%<br>";
   //echo "</div>";
   /* back up */
   // 『SQL』資產負債簡表 (Table2) ////////////////////////////////////////////
