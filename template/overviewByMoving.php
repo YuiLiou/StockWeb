@@ -48,7 +48,8 @@
          "and p.date = ma5.date ".
          "and p.date = ma20.date ".
          "and p.date = f.date ".
-         "and d.year = '".$pYear."' ".
+         "and d.year = (select year from dividend order by year desc limit 0,1) ".
+//       "and d.year = '".$pYear."' ".
          "order by p.moving desc ";
 
   $result = $conn->query($sql);    

@@ -217,7 +217,7 @@
          "and p.code = i.code ".
          "and p.date = '".$_POST['date']."' ".
          "and d2.code = i.code ".
-         "and d2.year = '".((int)$tYear-1)."' ".
+         "and d2.year = (select year from dividend order by year desc limit 0,1) ".
          "and e.code = i.code ".
          "and e.year = i.year ".
          "order by i.gross_cons desc ";

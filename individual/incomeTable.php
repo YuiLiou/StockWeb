@@ -122,7 +122,8 @@
          "and i.year = '".$tYear."' ".
          "and i.season = '".$tSeason."' ".
          "and d.code = p.code ".
-         "and d.year = '".$pYear."' ".
+         "and d.year = (select year from dividend order by year desc limit 0,1) ".
+//       "and d.year = '".$pYear."' ".
          "order by code asc ";
   $result = $conn->query($sql);
   $total_records = mysqli_num_rows($result);  // 取得記錄數

@@ -70,7 +70,8 @@
          "      (select code, cash ".                                 
          "       from dividend ".
          "       where code in ('".$codes."') ".
-         "       and year = '".((int)$tYear-1)."' ) d, ".
+         "       and year = (select year from dividend order by year desc limit 0,1) )d, ".
+//       "       and year = '".((int)$tYear-1)."' ) d, ".
          "      prices p, company_map map ".
          "where 1=1 ".
          "and p.date = '".$_POST['date']."' ".
