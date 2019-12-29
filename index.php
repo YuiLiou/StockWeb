@@ -52,7 +52,7 @@ $('#seasonBtn').click(function() {
 /////////////////////// 連續紀錄 ///////////////////////
 $('#continuousBtn').click(function() {
     document.getElementById('companyList').innerHTML = <?php include 'template/overviewByContinuous.php'; ?>;
-    document.getElementById('slct').style.visibility = 'hidden';
+    document.getElementById('slct').style.visibility = 'visible';
 });
 
 /////////////////////// 焦點新聞 ///////////////////////

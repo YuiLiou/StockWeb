@@ -30,6 +30,8 @@
           return "<td class='down'>轉盈為虧</td>";
       else if ($value < -1)    
           return "<td class='down'>連續".-1*$value."季虧損</td>";
+      else if ($value == 0)    
+          return "<td>持平</td>";
   }
   /**************************發送率td***********************************/
   function getDispatchTd($value)

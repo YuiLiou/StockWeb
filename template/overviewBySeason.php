@@ -87,7 +87,7 @@
   echo "      <tr class='row100 head'>";
   echo "        <th>公司</th>";
   echo "        <th>股價</th>";
-  echo "        <th>現金值利率</th>";
+  echo "        <th>現金殖利率</th>";
   echo "        <th>本益比</th>";
   echo "        <th>本益成長比</th>";
   echo "        <th>營業收入</th>";
