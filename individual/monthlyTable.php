@@ -3,6 +3,7 @@
   /* Date     Author   ChangeList
   /* --------------------------------------------------------------------------------  
   /* 20191222 rusiang  新增成長性分析 
+  /* 20200105 rusiang  新增月均價 
   /**********************************************************************************/ 
   if (empty($_GET))
       $_GET['company'] = '2330';
@@ -65,7 +66,14 @@
   /*********************************************************************************/
   /*『SQL』每月營收                                              
   /*********************************************************************************/
-  $sql = "select m.*, cons.grows, record.rank ".
+  $sql = "select m.*, cons.grows, record.rank, ".
+         /***************************************月均價**************************************/
+         "      ( ".
+         "        select round(avg(price),2) ".
+         "        from prices ".
+         "        where code = '".$_GET['company']."' ".
+         "        and date like concat(m.month,'%') ".
+         "      ) monthPrice ".
          "from monthly m, ".
          /***************************************yoy成長月數************************************/
          "    (select m.month, ".
@@ -87,7 +95,7 @@
          "where m.code  = '".$_GET['company']."' ".
          "and   m.month = cons.month ".
          "and   m.month = record.month ".
-         "order by m.month desc "; 
+         "order by m.month desc ";
 
   $result = $conn->query($sql);
   $total_records = mysqli_num_rows($result);  // 取得記錄數
@@ -108,6 +116,7 @@
            "<th>累計年增率</th>".
            "<th>成長月數</th>".
            "<th>排行</th>".
+           "<th>月均價</th>".
          "</tr>".
        "</thead><tbody>";
 
@@ -123,6 +132,7 @@
       echo   getRateTd($row['Yearly_YoY']); // 累計年增率
       echo   getMarkedTd($row['grows']); // yoy成長月
       echo   "<td>".$row['rank']."</td>";
+      echo   "<td>".$row['monthPrice']."</td>";
       echo "</tr>";
   }
   echo "</tbody></table></div>";
