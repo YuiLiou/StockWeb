@@ -83,7 +83,7 @@
   /*『SQL』四季累計                                                                     
   /*********************************************************************************/
   echo "【四季累計】<br>";
-  echo "<div class='table100 ver1' id='monthlyTbl' style='height:200px;'>".
+  echo "<div class='table100 ver1' id='monthlyTbl' style='height:250px;'>".
        "<table data-vertable='ver1'>".
        "<thead>".
        "  <tr class='row100 head'>".
@@ -127,7 +127,8 @@
   echo "  </tr>";
   // 平均股價 ////////////////////////////////////////////////////////////// 
   echo "  <tr>"; 
-  echo "    <td>平均股價/本益比</td>"; 
+  echo "    <td>平均股價</td>"; 
+  $peList = "<td>平均本益比</td>";
   for ($i=3; $i>=0; $i--)  
   {
       $sql = "select round(avg(price),2) price, round(avg(pe),2) pe ".
@@ -174,10 +175,11 @@
              ") ";
       $result = $conn->query($sql);
       $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引   
-      echo "<td>".$row['price'].'/'.$row['pe']."</td>";
-
+      echo "<td>".$row['price']."</td>";
+      $peList .=  "<td>".$row['pe']."</td>";
   }  
   echo "  </tr>";
+  echo "  <tr>".$peList."</tr>";
   echo "</tbody>";
   echo "</table>";
   echo "</div>";
