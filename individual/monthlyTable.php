@@ -4,6 +4,7 @@
   /* --------------------------------------------------------------------------------  
   /* 20191222 rusiang  新增成長性分析 
   /* 20200105 rusiang  新增月均價 
+  /* 20200111 rusiang  新增本益比 
   /**********************************************************************************/ 
   if (empty($_GET))
       $_GET['company'] = '2330';
@@ -73,7 +74,14 @@
          "        from prices ".
          "        where code = '".$_GET['company']."' ".
          "        and date like concat(m.month,'%') ".
-         "      ) monthPrice ".
+         "      ) monthPrice, ".
+         /***************************************本益比**************************************/
+         "      ( ".
+         "        select round(avg(pe),2) ".
+         "        from prices ".
+         "        where code = '".$_GET['company']."' ".
+         "        and date like concat(m.month,'%') ".
+         "      ) monthPE ".
          "from monthly m, ".
          /***************************************yoy成長月數************************************/
          "    (select m.month, ".
@@ -117,6 +125,7 @@
            "<th>成長月數</th>".
            "<th>排行</th>".
            "<th>月均價</th>".
+           "<th>本益比</th>".
          "</tr>".
        "</thead><tbody>";
 
@@ -133,6 +142,7 @@
       echo   getMarkedTd($row['grows']); // yoy成長月
       echo   "<td>".$row['rank']."</td>";
       echo   "<td>".$row['monthPrice']."</td>";
+      echo   "<td>".$row['monthPE']."</td>";
       echo "</tr>";
   }
   echo "</tbody></table></div>";
