@@ -3,6 +3,7 @@
   /* Date     Author   ChangeList
   /* --------------------------------------------------------------------------------  
   /* 20200101 rusiang  新增本期表現  
+  /* 20200111 rusiang  新增四季累計  
   /**********************************************************************************/  
   if (empty($_GET))
       $_GET['company'] = '2330';
@@ -77,7 +78,110 @@
   $result = $conn->query($sql);
   $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引   
   echo "最新月營收成長：".$row['Yearly_YoY']."%<br>";
-   
+
+  /*********************************************************************************/
+  /*『SQL』四季累計                                                                     
+  /*********************************************************************************/
+  echo "【四季累計】<br>";
+  echo "<div class='table100 ver1' id='monthlyTbl' style='height:200px;'>".
+       "<table data-vertable='ver1'>".
+       "<thead>".
+       "  <tr class='row100 head'>".
+           "<th></th>";
+  $sql = "select year ".
+         "from ".
+         "( ".
+         "  select concat(year, season) year ".
+         "  from _eps ".
+         "  where code = '".$_GET['company']."' ".
+         "  order by year desc, season desc ".
+         "  limit 0, 4 ".
+         ") a ".
+         "order by year asc "; 
+  $result = $conn->query($sql);
+  foreach ($result as $row)
+  {
+      echo "<th>".$row['year']."</th>";    
+  }
+  echo "  </tr>";
+  echo "</thead>";
+  echo "<tbody>";
+  // 累計eps ////////////////////////////////////////////////////////////// 
+  echo "  <tr>"; 
+  echo "    <td>EPS</td>"; 
+  for ($i=3; $i>=0; $i--)  
+  {
+      $sql = "select round(sum(eps), 2) eps_sum ".
+             "from ".
+             "( ".
+             "  select eps ".
+             "  from _eps ".
+             "  where code = '".$_GET['company']."' ".
+             "  order by year desc, season desc ".
+             "  limit ".$i.", 4 ".
+             ") a " ; 
+      $result = $conn->query($sql);
+      $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引   
+      echo "<td>".$row['eps_sum']."</td>";
+  } 
+  echo "  </tr>";
+  // 平均股價 ////////////////////////////////////////////////////////////// 
+  echo "  <tr>"; 
+  echo "    <td>平均股價/本益比</td>"; 
+  for ($i=3; $i>=0; $i--)  
+  {
+      $sql = "select round(avg(price),2) price, round(avg(pe),2) pe ".
+             "from prices p, ".
+             "( ".
+             "  select year, season ".
+             "  from _eps ".
+             "  where code = '".$_GET['company']."' ".
+             "  order by year desc, season desc ".
+             "  limit ".$i.",1 ".
+             ") b ".
+             "where 1=1 ".
+             "and p.code = '".$_GET['company']."' ".
+             "and ".
+             "( ".
+             "  ( ".
+             "    b.season = 'Q4' and ( ".
+             "                          p.date like concat(b.year, '12%') or ".
+             "                          p.date like concat(b.year, '11%') or ".
+             "                          p.date like concat(b.year, '10%') ".
+             "                        )".
+             "  ) or ".
+             "  ( ".
+             "    b.season = 'Q3' and ( ".
+             "                          p.date like concat(b.year, '09%') or ".
+             "                          p.date like concat(b.year, '08%') or ".
+             "                          p.date like concat(b.year, '07%') ".
+             "                        )".
+             "  ) or ".
+             "  ( ".
+             "    b.season = 'Q2' and ( ".
+             "                          p.date like concat(b.year, '06%') or ".
+             "                          p.date like concat(b.year, '05%') or ".
+             "                          p.date like concat(b.year, '04%') ".
+             "                        )".
+             "  ) or ".
+             "  ( ".
+             "    b.season = 'Q1' and ( ".
+             "                          p.date like concat(b.year, '03%') or ".
+             "                          p.date like concat(b.year, '02%') or ".
+             "                          p.date like concat(b.year, '01%') ".
+             "                        )".
+             "  ) ".
+             ") ";
+      $result = $conn->query($sql);
+      $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引   
+      echo "<td>".$row['price'].'/'.$row['pe']."</td>";
+
+  }  
+  echo "  </tr>";
+  echo "</tbody>";
+  echo "</table>";
+  echo "</div>";
+
   /*********************************************************************************/
   /*『SQL』歷年表現                                                                     
   /*********************************************************************************/
