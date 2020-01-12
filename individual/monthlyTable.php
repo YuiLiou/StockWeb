@@ -5,6 +5,7 @@
   /* 20191222 rusiang  新增成長性分析 
   /* 20200105 rusiang  新增月均價 
   /* 20200111 rusiang  新增本益比 
+  /* 20200112 rusiang  修改營收排行寫法 
   /**********************************************************************************/ 
   if (empty($_GET))
       $_GET['company'] = '2330';
@@ -123,7 +124,6 @@
            "<th>累計營收</th>". 
            "<th>累計年增率</th>".
            "<th>成長月數</th>".
-           "<th>排行</th>".
            "<th>月均價</th>".
            "<th>本益比</th>".
          "</tr>".
@@ -134,13 +134,12 @@
       $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
       echo "<tr class='row100'>".
              "<td>".$row['month']."</td>". 
-             "<td>".$row['current']."</td>";
+             "<td>".$row['current']." (".$row['rank'].")</td>";
       echo   getRateTd($row['MoM']); // 月增率
       echo   getRateTd($row['YoY']); // 年增率
       echo   "<td>".$row['Yearly']."</td>"; // 年營收
       echo   getRateTd($row['Yearly_YoY']); // 累計年增率
       echo   getMarkedTd($row['grows']); // yoy成長月
-      echo   "<td>".$row['rank']."</td>";
       echo   "<td>".$row['monthPrice']."</td>";
       echo   "<td>".$row['monthPE']."</td>";
       echo "</tr>";
@@ -150,7 +149,7 @@
   /*********************************************************************************/
   /*『SQL』歷年累計營收                                              
   /*********************************************************************************/
-  $sql = "select m.*, cons.grows, record.rank ".
+  $sql = "select m.*, cons.grows, record.rank, record2.yearlyRank ".
          "from monthly m, ".
          /***************************************成長年數************************************/
          "    (select m.month, m.code, ".
@@ -172,11 +171,19 @@
          "    where 1=1 ".
          "    and code = '".$_GET['company']."' ".
          "    and month like '".$_GET['new_month']."' ".
-         "    order by current desc) record ".
+         "    order by current desc) record, ".
+         /***************************************累計營收排行**************************************/
+         "    (select m.month, @rank2 := @rank2 +1 yearlyRank ".
+         "    from monthly m, (select @rank2 := 0) a ".
+         "    where 1=1 ".
+         "    and code = '".$_GET['company']."' ".
+         "    and month like '".$_GET['new_month']."' ".
+         "    order by Yearly desc) record2 ". 
          "where 1=1 ".
          "and m.code = cons.code ".
          "and m.month = cons.month ".
          "and m.month = record.month ".
+         "and m.month = record2.month ".
          "order by month desc ";
 
   /*********************************************************************************/
@@ -194,24 +201,22 @@
              "<th>累計營收</th>". 
              "<th>累計年增率</th>".
              "<th>成長月數</th>".
-             "<th>排行</th>".
            "</tr>".
          "</thead><tbody>";
 
   $result = $conn->query($sql);
-  $total_records = mysqli_num_rows($result);    // 取得記錄數
+  $total_records = mysqli_num_rows($result);                             // 取得記錄數
   for ($i=0;$i<$total_records;$i++)
   { 
-      $row = mysqli_fetch_assoc($result);       //將陣列以欄位名索引
+      $row = mysqli_fetch_assoc($result);                                //將陣列以欄位名索引
       echo "<tr class='row100'>".
-             "<td>".$row['month']."</td>". 
-             "<td>".$row['current']."</td>";
-      echo   getRateTd($row['MoM']);            // 月增率
-      echo   getRateTd($row['YoY']);            // 年增率
-      echo   "<td>".$row['Yearly']."</td>";     // 年營收
-      echo   getRateTd($row['Yearly_YoY']);     // 累計年增率
-      echo   getMarkedTd($row['grows']);        // yoy成長月
-      echo   "<td>".$row['rank']."</td>";
+             "<td>".$row['month']."</td>".                               // 月份
+             "<td>".$row['current']." (".$row['rank'].")</td>";          // 月營收
+      echo   getRateTd($row['MoM']);                                     // 月增率
+      echo   getRateTd($row['YoY']);                                     // 年增率
+      echo   "<td>".$row['Yearly']." (".$row['yearlyRank'].")</td>";     // 年營收
+      echo   getRateTd($row['Yearly_YoY']);                              // 累計年增率
+      echo   getMarkedTd($row['grows']);                                 // yoy成長月
       echo "</tr>";
   }
   echo "</tbody></table></div>";
