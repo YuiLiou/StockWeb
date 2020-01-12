@@ -47,7 +47,7 @@
 /////////////////////// 股價走勢 ///////////////////////
 $('#priceBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "<canvas id='myChart'></canvas>";   
-    document.getElementById('viewTable').innerHTML = "";
+    document.getElementById('viewTable').innerHTML = <?php include 'individual/priceTable.php'; ?>;
     <?php include 'individual/priceChart.php'; ?>
 });
 /////////////////////// 本益比河流 ///////////////////////
