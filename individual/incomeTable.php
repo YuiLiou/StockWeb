@@ -4,6 +4,7 @@
   /* --------------------------------------------------------------------------------  
   /* 20191124 rusiang  計算毛利率成長，分母使用絕對值
   /* 20191214 rusiang  新增同業比較 
+  /* 20200112 rusiang  修正四率成長幅度算法 
   /**********************************************************************************/  
   if (empty($_GET))
       $_GET['company'] = '2330';
@@ -26,10 +27,10 @@
   
   $sql = "select concat(this.year, this.season)season, ".
          "       round((this.operatingIncome-past.operatingIncome)/abs(past.operatingIncome)*100,2)nIncome, ".
-         "       round((this.grossRate-past.grossRate)/abs(past.grossRate)*100,2)nGross, ".
-         "       round((this.operatingRate-past.operatingRate)/abs(past.operatingRate)*100,2)nOperating, ".
-         "       round((this.beforeTaxRate-past.beforeTaxRate)/abs(past.beforeTaxRate)*100,2)nBeforeTax, ".
-         "       round((this.afterTaxRate-past.afterTaxRate)/abs(past.afterTaxRate)*100,2)nAfterTax, ".
+         "       round((this.grossRate-past.grossRate),2)nGross, ".
+         "       round((this.operatingRate-past.operatingRate),2)nOperating, ".
+         "       round((this.beforeTaxRate-past.beforeTaxRate),2)nBeforeTax, ".
+         "       round((this.afterTaxRate-past.afterTaxRate),2)nAfterTax, ".
          "       round(this.operatingRate/this.beforeTaxRate*100,2) mainJob ".
          "from (select i.*, @rank := @rank + 1 rnk ".
          "      from income i, ".
