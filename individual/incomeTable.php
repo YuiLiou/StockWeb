@@ -5,11 +5,14 @@
   /* 20191124 rusiang  計算毛利率成長，分母使用絕對值
   /* 20191214 rusiang  新增同業比較 
   /* 20200112 rusiang  修正四率成長幅度算法 
+  /* 20200118 rusiang  新增同業本業比率 
   /**********************************************************************************/  
   if (empty($_GET))
       $_GET['company'] = '2330';
   echo "\"";
-  /////////////////////////// 指標成長 /////////////////////////// 
+  /*********************************************************************************/
+  /*『SQL』指標成長                                                               
+  /*********************************************************************************/
   echo "【指標成長】（本業比率太低者追月營收無意義）<br>";
   echo "<div class='table100 ver1' id='monthlyTbl'>".
        "<table data-vertable='ver1'>".
@@ -64,7 +67,9 @@
   echo "</tbody></table>";
   echo "</div>";
 
-  /////////////////////////// 同業比較 /////////////////////////// 
+  /*********************************************************************************/
+  /*『SQL』同業比較                                                               
+  /*********************************************************************************/
   echo "【同業比較】<br>";
   echo "<div class='table100 ver1' id='monthlyTbl'>".
        "<table data-vertable='ver1'>".
@@ -78,6 +83,7 @@
            "<th>營業利益率</th>".
            "<th>稅前利益率</th>".
            "<th>稅後利益率</th>".
+           "<th>本業比率</th>".
          "</tr>".
        "</thead><tbody>";
 
@@ -102,7 +108,8 @@
   $tSeason = $row['season'];
  
   $sql = "select p.code, p.price, p.pe, c.company, i.grossRate, i.operatingRate, i.beforeTaxRate, ".        
-         "       i.afterTaxRate, round((d.cash/p.price)*100,2) dividend ".
+         "       i.afterTaxRate, round((d.cash/p.price)*100,2) dividend, ".
+         "       round(i.operatingRate/i.beforeTaxRate*100,2) mainJob ".
          "from prices p, company_map c, dividend d, income i ".
          "where 1=1 ".
          ///同類股
@@ -140,6 +147,7 @@
       echo "<td>".$row['operatingRate']."%</td>";
       echo "<td>".$row['beforeTaxRate']."%</td>";
       echo "<td>".$row['afterTaxRate']."%</td>";
+      echo "<td>".$row['mainJob']."%</td>";
       echo "</tr>";
   }
   echo "</tbody></table>";
