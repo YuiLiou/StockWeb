@@ -113,7 +113,7 @@
   /*『HTML』每月營收                                              
   /*********************************************************************************/ 
   echo "【每月營收】";
-  echo "<div class='table100 ver1' id='monthlyTbl'>".
+  echo "<div class='table100 ver1' id='monthlyTbl' style='height:1100px;'>".
        "<table data-vertable='ver1'>".
        "<thead>".
          "<tr class='row100 head'>".
