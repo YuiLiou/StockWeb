@@ -9,7 +9,7 @@
         contentType: "application/json",
         dataType: "json",         
         success: function(response) {         
-            var date = [], price = [], pe8 = [], pe12 = [], pe16 = [];
+            var date = [], price = [], pe8 = [], pe12 = [], pe16 = [], pe20=[], pe24=[];
             var length = response.length-1;
             var ctx = document.getElementById('myChart').getContext("2d");
             for(var i=length; i>=0; i--) {
@@ -18,6 +18,8 @@
                 pe8.push(response[i]['pe8']); 
                 pe12.push(response[i]['pe12']); 
                 pe16.push(response[i]['pe16']); 
+                pe20.push(response[i]['pe20']); 
+                pe24.push(response[i]['pe24']); 
             }            
             var chartdata = {
                 labels: date,
@@ -43,8 +45,8 @@
                         label: '12倍',
                         fill:false,
                         lineTension: 0.1,
-                        borderColor: '#ffff00',
-                        backgroundColor: '#ffff00',
+                        borderColor: '#00cc66',
+                        backgroundColor: '#00cc66',
                         pointRadius: 1,
                         borderWidth: 5,
                         data:pe12
@@ -52,11 +54,29 @@
                         label: '16倍',
                         fill:false,
                         lineTension: 0.1,
+                        borderColor: '#ffff00',
+                        backgroundColor: '#ffff00',
+                        pointRadius: 1,
+                        borderWidth: 5,
+                        data:pe16
+                    },{
+                        label: '20倍',
+                        fill:false,
+                        lineTension: 0.1,
+                        borderColor: '#ff6600',
+                        backgroundColor: '#ff6600',
+                        pointRadius: 1,
+                        borderWidth: 5,
+                        data:pe20
+                    },{
+                        label: '24倍',
+                        fill:false,
+                        lineTension: 0.1,
                         borderColor: '#ff0000',
                         backgroundColor: '#ff0000',
                         pointRadius: 1,
                         borderWidth: 5,
-                        data:pe16
+                        data:pe24
                     }
                 ],	                 
             };            
