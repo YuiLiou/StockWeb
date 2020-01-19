@@ -67,7 +67,7 @@ $('#newsBtn').click(function() {
     document.getElementById('viewTable').innerHTML = <?php include 'individual/newsList.php'; ?>;
 });
 /////////////////////// 月營收 ///////////////////////
-$('#monthlyBtn').click(function() {
+$('#monthlyBtn').click(function() {    
     document.getElementById('viewChart').innerHTML = "";
     document.getElementById('viewTable').innerHTML = <?php include 'individual/monthlyTable.php'; ?>;
 });

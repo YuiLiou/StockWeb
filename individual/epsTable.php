@@ -5,8 +5,7 @@
   /* 20200101 rusiang  新增本期表現  
   /* 20200111 rusiang  新增四季累計  
   /**********************************************************************************/  
-  if (empty($_GET))
-      $_GET['company'] = '2330';
+  if (empty($_GET)) $_GET['company'] = '2330';
   echo "\"";
 
   /*********************************************************************************/
@@ -40,7 +39,7 @@
   /*********************************************************************************/
   /*『SQL』本期月營收                                                                     
   /*********************************************************************************/
-  $sql = "select m.Yearly_YoY ".
+  $sql = "select m.Yearly_YoY,current.month ".
          "from monthly m, ".
          "( ".
          "  select case ".
@@ -65,19 +64,21 @@
          "and code ='".$_GET['company']."'";
   $result = $conn->query($sql);
   $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引   
-  echo "本期月營收成長：".$row['Yearly_YoY']."%<br>"; 
+  if (isset($row['Yearly_YoY']))
+      echo $row['month']."營收累計年增率：".$row['Yearly_YoY']."%<br>"; 
 
   /*********************************************************************************/
   /*『SQL』最新月營收                                                                     
   /*********************************************************************************/
-  $sql = "select Yearly_YoY ".
+  $sql = "select Yearly_YoY,month ".
          "from monthly m ".
          "where code = '".$_GET['company']."' ".
          "order by month desc ".
          "limit 0,1";
   $result = $conn->query($sql);
   $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引   
-  echo "最新月營收成長：".$row['Yearly_YoY']."%<br>";
+  if (isset($row['Yearly_YoY']))
+      echo $row['month']."營收累計年增率：".$row['Yearly_YoY']."%<br>";
 
   /*********************************************************************************/
   /*『SQL』四季累計                                                                     
