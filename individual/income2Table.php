@@ -4,12 +4,14 @@
   /* --------------------------------------------------------------------------------  
   /* 20191117 rusiang  標記投資亮點/風險，如所得稅費用減少為亮點  
   /* 20191128 rusiang  新增歷年營運指標盤點  
-  /* 20191214 rusiang  更新公開觀測連結
+  /* 20191214 rusiang  更新公開觀測連結 
+  /* 20200119 rusiang  新增業外收支佔稅前淨利比 
   /**********************************************************************************/  
-  if (empty($_GET))
-      $_GET['company'] = '2330';
+  if (empty($_GET)) $_GET['company'] = '2330';
   echo "\"";
-  ///////////////////////////////////// 季節選單 /////////////////////////////////////
+  /*********************************************************************************/
+  /*【季節選單】                                              
+  /*********************************************************************************/
   $sql = "select year, season ".
          "from income_2 ".
          "where 1=1 ".
@@ -39,18 +41,22 @@
   $pYear = (string)((int)substr($_POST['season'],0,4)-1);
   $tSeason = substr($_POST['season'],4,6);
   $ROCYear = (string)((int)$tYear-1911);
-
+  /*********************************************************************************/
+  /*【公開觀測站】                                              
+  /*********************************************************************************/
   echo "【公開觀測站】";
   echo "<a href='https://doc.twse.com.tw/server-java/t57sb01?step=1&colorchg=1&co_id=".$_GET['company']."&year=".$ROCYear."&seamon=&mtype=A&'>財報</a>；";
   echo "<a href='https://doc.twse.com.tw/server-java/t57sb01?step=1&colorchg=1&co_id=".$_GET['company']."&year=".$ROCYear."&mtype=F&'>股東會</a>；";
   echo "<a href='https://mops.twse.com.tw/mops/web/t100sb07_1'>法說會</a>；";
   echo "<a href='https://mops.twse.com.tw/mops/web/t164sb04'>綜合損益表</a><br>";
-  
-  /************************************ 歷年營運盤點 *******************************************/
+
+  /*********************************************************************************/
+  /*【歷年營運盤點】                                              
+  /*********************************************************************************/
   $sql = "select t1.year, t1.season, ".
          "       t1.value v1, t2.value v2, t3.value v3, t4.value v4, ".
          "       t5.value v5, t6.value v6, t7.value v7, t8.value v8, ".
-         "       t9.value v9, t10.eps  ".
+         "       t9.value v9, t10.eps, round(t6.value/t11.value*100,2) v11 ".
          "from (select i.value, i.year, i.season ".
          "      from income_2 i ".
          "      where 1=1 ".
@@ -109,7 +115,13 @@
          "      from _eps i ".
          "      where 1=1 ".
          "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = '".$tSeason."') t10 ".
+         "      and i.season = '".$tSeason."') t10, ".
+         "     (select i.value, i.year ".
+         "      from income_2 i ".
+         "      where 1=1 ".
+         "      and i.code = '".$_GET['company']."' ".
+         "      and i.season = '".$tSeason."' ".
+         "      and i.col_name = '稅前淨利（淨損）') t11 ".
          "where 1=1 ".
          "and t1.year = t2.year ".
          "and t1.year = t3.year ".
@@ -120,6 +132,7 @@
          "and t1.year = t8.year ".
          "and t1.year = t9.year ".
          "and t1.year = t10.year ".
+         "and t1.year = t11.year ".
          "order by year asc ";
   echo "【歷年營運指標】<br>";
   echo "<div class='table100 ver1' id='monthlyTbl'>";
@@ -137,6 +150,7 @@
   echo "        <th>本期淨利</th>";
   echo "        <th>母公司損益</th>";
   echo "        <th>EPS</th>";
+  echo "        <th>業外收支佔稅前淨利比</th>";
   echo "      </tr>";
   echo "    </thead>";
   echo "    <tbody>";
@@ -157,10 +171,14 @@
       echo "  <td>".$row['v8']."</td>";
       echo "  <td>".$row['v9']."</td>";
       echo "  <td>".$row['eps']."</td>";
+      echo "  <td>".$row['v11']."%</td>";
       echo "</tr>";
   }
   echo "    </tbody>";
   echo "  </table>";
+  /*********************************************************************************/
+  /*【簡明表】                                              
+  /*********************************************************************************/
 
   /******************************************* 合併淨利 *******************************************/
   $sql = "select this_y.col_name, this_y.value this_value, past_y.value past_value ".
