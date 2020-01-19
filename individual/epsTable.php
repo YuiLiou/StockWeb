@@ -31,10 +31,13 @@
          "  limit 4,1 ".
          ") past ";
   $result = $conn->query($sql);
-  $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引   
-  echo "今年累計EPS：".$row['this_eps']."元<br>"; 
-  echo "去年累計EPS：".$row['past_eps']."元<br>"; 
-  echo "成長幅度：".$row['growth']."%<br>";
+  $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引  
+  if (isset($row['this_eps']))
+  { 
+      echo "今年累計EPS：".$row['this_eps']."元<br>"; 
+      echo "去年累計EPS：".$row['past_eps']."元<br>"; 
+      echo "成長幅度：".$row['growth']."%<br>";
+  }
 
   /*********************************************************************************/
   /*『SQL』本期月營收                                                                     
