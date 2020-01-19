@@ -6,6 +6,7 @@
   /* 20200105 rusiang  新增月均價 
   /* 20200111 rusiang  新增本益比 
   /* 20200112 rusiang  修改營收排行寫法 
+  /* 20200119 rusiang  新增12月最高價/本益比，最低價/本益比 
   /**********************************************************************************/ 
   if (empty($_GET))
       $_GET['company'] = '2330';
@@ -112,8 +113,9 @@
   /*********************************************************************************/
   /*『HTML』每月營收                                              
   /*********************************************************************************/ 
-  echo "【每月營收】";
-  echo "<div class='table100 ver1' id='monthlyTbl' style='height:1100px;'>".
+  echo "【每月營收】<br>";
+  $monthlyStr  = "";
+  $monthlyStr .= "<div class='table100 ver1' id='monthlyTbl' style='height:700px;'>".
        "<table data-vertable='ver1'>".
        "<thead>".
          "<tr class='row100 head'>".
@@ -125,26 +127,51 @@
            "<th>累計年增率</th>".
            "<th>成長月數</th>".
            "<th>月均價</th>".
-           "<th>本益比</th>".
+           "<th>月均本益比</th>".
          "</tr>".
        "</thead><tbody>";
-
+  $price_ary = array();
+  $pe_ary = array();
   for ($i=0;$i<$total_records;$i++)
   { 
-      $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
-      echo "<tr class='row100'>".
+      $row = mysqli_fetch_assoc($result);                       //將陣列以欄位名索引
+      $monthlyStr .= "<tr class='row100'>".
              "<td>".$row['month']."</td>". 
              "<td>".$row['current']." (".$row['rank'].")</td>";
-      echo   getRateTd($row['MoM']); // 月增率
-      echo   getRateTd($row['YoY']); // 年增率
-      echo   "<td>".$row['Yearly']."</td>"; // 年營收
-      echo   getRateTd($row['Yearly_YoY']); // 累計年增率
-      echo   getMarkedTd($row['grows']); // yoy成長月
-      echo   "<td>".$row['monthPrice']."</td>";
-      echo   "<td>".$row['monthPE']."</td>";
-      echo "</tr>";
+      $monthlyStr .= getRateTd($row['MoM']);                    // 月增率
+      $monthlyStr .= getRateTd($row['YoY']);                    // 年增率
+      $monthlyStr .= "<td>".$row['Yearly']."</td>";             // 年營收
+      $monthlyStr .= getRateTd($row['Yearly_YoY']);             // 累計年增率
+      $monthlyStr .= getMarkedTd($row['grows']);                // yoy成長月
+      $monthlyStr .= "<td>".$row['monthPrice']."</td>";
+      $monthlyStr .= "<td>".$row['monthPE']."</td>";
+      $monthlyStr .= "</tr>";
+      if ($i < 12) //過去12月的平均價/平均本益比
+      {
+          $price_ary[$row['month']] = $row['monthPrice'];
+          $pe_ary[$row['month']] = $row['monthPE'];
+      }
   }
-  echo "</tbody></table></div>";
+  $monthlyStr .= "</tbody></table></div>";  
+  asort($price_ary);
+  asort($pe_ary);
+  // 12過去月最高價/最低價 ///////////////////////////////////////////////////////////////////
+  foreach ( $price_ary as $key => $value )
+  {   
+      if ($key === array_key_first($price_ary))
+          echo "過去12月最低價:".$value."，發生於".$key."<br>";
+      else if ($key === array_key_last($price_ary))
+          echo "過去12月最高價:".$value."，發生於".$key."<br>";
+  }
+  // 12過去月最高本益比/最低本益比 /////////////////////////////////////////////////////////////
+  foreach ( $pe_ary as $key => $value )
+  {   
+      if ($key === array_key_first($pe_ary))
+          echo "過去12月最低本益比:".$value."，發生於".$key."<br>";
+      else if ($key === array_key_last($pe_ary))
+          echo "過去12月最高本益比:".$value."，發生於".$key."<br>";
+  }
+  echo $monthlyStr;
 
   /*********************************************************************************/
   /*『SQL』歷年累計營收                                              
