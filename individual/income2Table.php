@@ -136,7 +136,7 @@
          "and t1.year = t11.year ".
          "order by year asc ";
   echo "【歷年營運指標】<br>";
-  echo "<div class='table100 ver1' id='monthlyTbl'>";
+  echo "<div class='table100 ver1' id='monthlyTbl' style='height:500px;'>";
   echo "  <table data-vertable='ver1'>";
   echo "    <thead>";
   echo "      <tr class='row100 head'>";
@@ -177,6 +177,7 @@
   }
   echo "    </tbody>";
   echo "  </table>";
+  echo "</div>";
   /*********************************************************************************/
   /*【簡明表】                                              
   /*********************************************************************************/
@@ -251,6 +252,7 @@
              "order by this_y.col_name asc ";
     
       echo "【簡明表】<br>";
+      echo "<div class='table100 ver1' id='monthlyTbl'>";
       echo "  <table data-vertable='ver1'>";
       echo "    <thead>";
       echo "      <tr class='row100 head'>";

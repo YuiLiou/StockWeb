@@ -9,7 +9,7 @@
         contentType: "application/json",
         dataType: "json",         
         success: function(response) {         
-            var season = [], sale = [], manage = [], research = [], credit = [];
+            var season = [], sale = [], manage = [], research = [], credit = [], total = [];
             var length = response.length-1;
             var ctx = document.getElementById('myChart').getContext("2d");
             for(var i=length; i>=0; i--) 
@@ -19,6 +19,7 @@
                 manage.push(response[i]['manage']); 
                 research.push(response[i]['research']); 
                 credit.push(response[i]['credit']); 
+                total.push(response[i]['total']); 
             }            
             var chartdata = {
                 labels: season,
@@ -58,6 +59,15 @@
                         pointRadius: 1,
                         borderWidth: 5,
                         data:credit
+                    },{
+                        label: '營業費用率',
+                        fill:false,
+                        lineTension: 0.1,
+                        borderColor: '#ff6600',
+                        backgroundColor: '#ff6600',
+                        pointRadius: 1,
+                        borderWidth: 5,
+                        data:total
                     }
                 ],	                 
             };            
