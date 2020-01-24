@@ -2,7 +2,7 @@
   /**********************************************************************************/
   /* Date     Author   ChangeList
   /* --------------------------------------------------------------------------------  
-  /* 20191116 rusiang  資產負債表,現金流量表切換季節留在原頁  
+  /* 20191116 rusiang  資產負債表,現金流量表切換季節留在原頁
   /**********************************************************************************/  
 ?>
 <!DOCTYPE html>
@@ -81,6 +81,7 @@ $('#incomeBtn').click(function() {
 $('#income2Btn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
     document.getElementById('viewTable').innerHTML = <?php include 'individual/income2Table.php'; ?>;
+    <?php include 'individual/businessChart.php'; ?>
 });
 /////////////////////// 資產負債表 ///////////////////////
 $('#propertyBtn').click(function() {
