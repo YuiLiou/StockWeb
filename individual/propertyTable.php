@@ -9,9 +9,9 @@
   /* 20191228 rusiang  新增杜邦分析
   /* 20191228 rusiang  長短期金融借款負債比
   /* 20200125 rusiang  產出杜邦分析結果
+  /* 20200126 rusiang  Fix table1 SQL
   /**********************************************************************************/  
-  if (empty($_GET))
-      $_GET['company'] = '2330';
+  if (empty($_GET)) $_GET['company'] = '2330';
   echo "\"";
 
   ///////////////////////////////////// 季節選單 /////////////////////////////////////
@@ -50,91 +50,99 @@
   /*********************************************************************************/
   $sql = "select a.year, a.season, profit, investment, house, shareholder, ".
          "       round(profit/shareholder*100,2) ROE, share, contract, stockvalue, ".
-         "       round(profit/h.value*100,2) profitRate, ".           // 淨利率
-         "       round(h.value/i.value*100,2) assetTurnOver, ".       // 資產週轉率
-         "       round(i.value/shareholder*100,2) equityMultiplier ". // 權益乘數 
-         "from ( ".
+         "       round(profit/ope_income*100,2) profitRate, ".           // 淨利率
+         "       round(ope_income/asset*100,2) assetTurnOver, ".         // 資產週轉率
+         "       round(asset/shareholder*100,2) equityMultiplier ".      // 權益乘數 
+         "from ".
+         "( ".
 //      「資產負債表」股本 ----------------------------------------------------------------
-         "    select year, season, value share ".
-         "    from property ".
+         "    select year, season, value share, ".
+//      「資產負債表」長期投資 --------------------------------------------------------------
+         "    ( ".
+         "      select sum(v1) ".
+         "      from property_2 ".
+         "      where 1=1 ".
+         "      and col_name in ('採用權益法之投資淨額', '採用權益法之投資') ".
+         "      and code = p.code ".
+         "      and year = p.year ".
+         "      and season = p.season ".
+         "    ) investment, ".
+//      「資產負債表」固定資產 --------------------------------------------------------------
+         "    ( ".
+         "      select sum(v1) ".
+         "      from property_2 ".
+         "      where 1=1 ".
+         "      and col_name in ('不動產、廠房及設備', '投資性不動產淨額') ".
+         "      and code = p.code ".
+         "      and year = p.year ".
+         "      and season = p.season ".
+         "    ) house, ".      
+//      「資產負債表」股東權益 --------------------------------------------------------------
+         "    ( ".
+         "      select value ".
+         "      from property ".
+         "      where 1=1 ".
+         "      and col_name in ('權益總計','權益總額') ".
+         "      and code = p.code ".
+         "      and year = p.year ".
+         "      and season = p.season ".
+         "    ) shareholder, ".
+//      「資產負債表」合約負債 --------------------------------------------------------------
+         "    ( ".
+         "      select v1 ".
+         "      from property_2 ".
+         "      where 1=1 ".
+         "      and col_name in ('合約負債－流動') ".
+         "      and code = p.code ".
+         "      and year = p.year ".
+         "      and season = p.season ".
+         "    ) contract, ".
+//       「綜合損益表」獲利 ----------------------------------------------------------------   
+         "    ( ".
+         "      select i.value ".
+         "      from income_2 i ".
+         "      where 1=1 ".
+         "      and code = p.code ".
+         "      and year = p.year ".
+         "      and season = p.season ".
+         "      and i.col_name = '本期淨利（淨損）' ".
+         "    ) profit, ".
+//      「資產負債表」每股淨值 --------------------------------------------------------------
+         "    ( ".
+         "      select value ".
+         "      from property ".
+         "      where 1=1 ".
+         "      and col_name in ('每股參考淨值') ".
+         "      and code = p.code ".
+         "      and year = p.year ".
+         "      and season = p.season ".
+         "    ) stockvalue, ".
+//      「綜合損益表」營業收入 --------------------------------------------------------------
+         "    ( ".
+         "      select value ".
+         "      from income_2 ".
+         "      where 1=1 ".
+         "      and code = p.code ".
+         "      and year = p.year ".
+         "      and season = p.season ".
+         "      and col_name = '營業收入' ".
+         "    ) ope_income, ".
+//      「資產負債表」資產總計 --------------------------------------------------------------
+         "    ( ".
+         "      select value ".
+         "      from property ".
+         "      where 1=1 ".
+         "      and col_name in ('資產總計','資產總額') ".
+         "      and code = p.code ".
+         "      and year = p.year ".
+         "      and season = p.season ".
+         "    ) asset ".         
+         "    from property p ".
          "    where 1=1 ".
          "    and col_name in ('股本') ".
          "    and code = '".$_GET['company']."' ".
-         "    and season = '".$tSeason."') a ".
-//      「資產負債表」長期投資 --------------------------------------------------------------
-         "left join ( ".
-         "    select year, season, sum(v1) investment ".
-         "    from property_2 ".
-         "    where 1=1 ".
-         "    and col_name in ('採用權益法之投資淨額', '採用權益法之投資') ".
-         "    and code = '".$_GET['company']."' ".
          "    and season = '".$tSeason."' ".
-         "    group by year, season ) b ".
-         "on a.year = b.year and a.season = b.season ".
-//      「資產負債表」固定資產 --------------------------------------------------------------
-         "left join ( ".
-         "    select year, season, sum(v1) house ".
-         "    from property_2 ".
-         "    where 1=1 ".
-         "    and col_name in ('不動產、廠房及設備', '投資性不動產淨額') ".
-         "    and code = '".$_GET['company']."' ".
-         "    and season = '".$tSeason."' ".
-         "    group by year, season ) c ".
-         "on a.year = c.year and a.season = c.season ".
-//      「資產負債表」股東權益 --------------------------------------------------------------
-         "left join ( ".
-         "    select year, season, value shareholder ".
-         "    from property ".
-         "    where 1=1 ".
-         "    and col_name in ('權益總計','權益總額') ".
-         "    and code = '".$_GET['company']."' ".
-         "    and season = '".$tSeason."' ) d ".
-         "on a.year = d.year and a.season = d.season ".
-//      「資產負債表」合約負債 --------------------------------------------------------------
-         "left join ( ".
-         "    select year, season, v1 contract ".
-         "    from property_2 ".
-         "    where 1=1 ".
-         "    and col_name in ('合約負債－流動') ".
-         "    and code = '".$_GET['company']."' ".
-         "    and season = '".$tSeason."') e ".
-         "on a.year = e.year and a.season = e.season ".
-//       「綜合損益表」獲利 ----------------------------------------------------------------   
-         "left join ( ".
-         "    select i.year, i.season, i.value profit ".
-         "    from income_2 i ".
-         "    where 1=1 ".
-         "    and i.code = '".$_GET['company']."' ".
-         "    and season = '".$tSeason."' ".
-         "    and i.col_name = '本期淨利（淨損）') f ".
-         "on a.year = f.year and a.season = f.season ".
-//      「資產負債表」每股淨值 --------------------------------------------------------------
-         "left join ( ".
-         "    select year, season, value stockvalue ".
-         "    from property ".
-         "    where 1=1 ".
-         "    and col_name in ('每股參考淨值') ".
-         "    and code = '".$_GET['company']."' ".
-         "    and season = '".$tSeason."') g ".
-         "on a.year = g.year and a.season = g.season ".
-//      「綜合損益表」營業收入 --------------------------------------------------------------
-         "left join ( ".
-         "    select year, season, value ".
-         "    from income_2 ".
-         "    where 1=1 ".
-         "    and code = '".$_GET['company']."' ".
-         "    and season = '".$tSeason."' ".
-         "    and col_name = '營業收入') h ".
-         "on a.year = h.year and a.season = h.season ".
-//      「資產負債表」資產總計 --------------------------------------------------------------
-         "left join ( ".
-         "    select year, season, value ".
-         "    from property ".
-         "    where 1=1 ".
-         "    and col_name in ('資產總計','資產總額') ".
-         "    and code = '".$_GET['company']."' ".
-         "    and season = '".$tSeason."') i ".
-         "on a.year = i.year and a.season = i.season ";
+         ") a ";
          
   $result = $conn->query($sql);
   $total_records = mysqli_num_rows($result);  // 取得記錄數
@@ -200,21 +208,21 @@
               echo "股本不變";
           echo "ROE = 利潤率 × 資產周轉率 × 權益乘數 = (淨收入 / 營業收入) × (營業收入 / 資產) × (資產/ 股東權益)<br>";
           if ($roe_s <= $row['profitRate']) 
-              echo "<font color='red'>ROE上升".($row['ROE']-$roe_s)."%</font><br>";
+              echo "<font color='red'>ROE上升".round(($row['ROE']-$roe_s),2)."%</font><br>";
           else
-              echo "<font color='green'>ROE下降".($roe_s-$row['ROE'])."%</font><br>";
+              echo "<font color='green'>ROE下降".round(($roe_s-$row['ROE']),2)."%</font><br>";
           if ($profitRate_s <= $row['profitRate']) 
-              echo "<font color='red'>淨利率上升".($row['profitRate']-$profitRate_s)."%，獲利能力進步</font><br>";
+              echo "<font color='red'>淨利率上升".round(($row['profitRate']-$profitRate_s),2)."%，獲利能力進步</font><br>";
           else
-              echo "<font color='green'>淨利率下降".($profitRate_s-$row['profitRate'])."%，獲利能力退步</font><br>";
+              echo "<font color='green'>淨利率下降".round(($profitRate_s-$row['profitRate']),2)."%，獲利能力退步</font><br>";
           if ($assetTurnOver_s <= $row['assetTurnOver']) 
-              echo "<font color='red'>資產週轉率上升".($row['assetTurnOver']-$assetTurnOver_s)."%，總資產創造營收能力進步</font><br>";
+              echo "<font color='red'>資產週轉率上升".round(($row['assetTurnOver']-$assetTurnOver_s),2)."%，總資產創造營收能力進步</font><br>";
           else
-              echo "<font color='green'>資產週轉率下降".($assetTurnOver_s-$row['assetTurnOver'])."%，總資產創造營收能力退步</font><br>";
+              echo "<font color='green'>資產週轉率下降".round(($assetTurnOver_s-$row['assetTurnOver']),2)."%，總資產創造營收能力退步</font><br>";
           if ($equityMultiplier_s <= $row['equityMultiplier']) 
-              echo "<font color='green'>權益乘數上升".($row['equityMultiplier']-$equityMultiplier_s)."，財務槓桿運用程度提昇</font><br>";
+              echo "<font color='green'>權益乘數上升".round(($row['equityMultiplier']-$equityMultiplier_s),2)."，財務槓桿運用程度提昇</font><br>";
           else
-              echo "<font color='red'>權益乘數下降".($equityMultiplier_s-$row['equityMultiplier'])."，財務槓桿運用程度降低</font><br>";  
+              echo "<font color='red'>權益乘數下降".round(($equityMultiplier_s-$row['equityMultiplier']),2)."，財務槓桿運用程度降低</font><br>";  
           echo "</div>";
       } 
   } 
