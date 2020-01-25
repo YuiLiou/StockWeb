@@ -7,6 +7,7 @@
   /* 20191130 rusiang  新增策略分析說明
   /* 20191228 rusiang  新增股本成長率
   /* 20191228 rusiang  新增杜邦分析
+  /* 20191228 rusiang  長短期金融借款負債比
   /**********************************************************************************/  
   if (empty($_GET))
       $_GET['company'] = '2330';
@@ -188,8 +189,51 @@
   echo "2.總資產週轉率代表管理階層運用總資產創造營收的能力，強化分析資產比例和營運天數。<br>";  
   echo "3.權益乘數代表財務槓桿的運用程度，強化分析負債內容，看是好債還是壞債。<br>";  
   echo "</div>";
-  /* back up */
-  // 『SQL』資產負債簡表 (Table2) ////////////////////////////////////////////
+
+  /*********************************************************************************/
+  /*『SQL』長短期金融借款負債比 (Table2)                                                                    
+  /*********************************************************************************/  
+  $sql = "select season, debt ".
+         "from ".
+         "( ".
+         "  select concat(year,season) season, round(sum(v2),2) debt ".
+         "  from property_2 ".
+         "  where 1=1 ".
+         "  and code = '".$_GET['company']."' ".
+         "  and col_name in ('短期借款','應付短期票券','應付公司債','長期借款') ".
+         "  group by year, season ".
+         "  order by year desc, season desc ".
+         "  limit 0, 12 ".
+         ") a ".
+         "order by season asc ";
+  $result = $conn->query($sql);
+  $total_records = mysqli_num_rows($result);  // 取得記錄數
+  $strTH = "";
+  $strTD = "";
+  for ($i=0;$i<$total_records;$i++)
+  {
+      $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
+      $strTH .= "<th>".$row['season']."</th>";
+      $strTD .= "<td>".$row['debt']."</td>";
+  }
+  if ($strTH != "")
+  {    
+      echo "【長短期金融借款負債比】<br>";
+      echo "<div class='table100 ver1' id='monthlyTbl' style='height:200px;'>";
+      echo "  <table data-vertable='ver1'>";
+      echo "    <thead>";
+      echo "      <tr class='row100 head'>".$strTH."</tr>";
+      echo "    </thead>";
+      echo "    <tbody>";
+      echo "      <tr class='row100'>".$strTD."</tr>";
+      echo "    </tbody>";
+      echo "  </table>";
+      echo "</div>";
+  }
+ 
+  /*********************************************************************************/
+  /*『SQL』資產負債簡表 (Table3)                                                                    
+  /*********************************************************************************/  
   $pYear = (string)((int)substr($_POST['season'],0,4)-1);
   
   echo "<div class='table100 ver1' id='monthlyTbl'>";
@@ -241,7 +285,7 @@
   echo "</div>";
 
   /*********************************************************************************/
-  /*『SQL』資產負債表 (Table3)                                                                     
+  /*『SQL』資產負債表 (Table4)                                                                     
   /*********************************************************************************/
   $sql = "select col_name, v1, v2, v3, v4, v5, v6 ".
          "from property_2 i ".
