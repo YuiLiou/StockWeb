@@ -8,6 +8,7 @@
   /* 20191228 rusiang  新增股本成長率
   /* 20191228 rusiang  新增杜邦分析
   /* 20191228 rusiang  長短期金融借款負債比
+  /* 20200125 rusiang  產出杜邦分析結果
   /**********************************************************************************/  
   if (empty($_GET))
       $_GET['company'] = '2330';
@@ -137,58 +138,86 @@
          
   $result = $conn->query($sql);
   $total_records = mysqli_num_rows($result);  // 取得記錄數
-  echo "<div class='table100 ver1' id='monthlyTbl' style='height:600px;'>";
-  echo "  <table data-vertable='ver1'>";
-  echo "    <thead>";
-  echo "      <tr class='row100 head'>";
-  echo "        <th>年份</th>";
-  echo "        <th>股本</th>";
-  echo "        <th>每股淨值</th>";
-  echo "        <th>長期投資</th>";
-  echo "        <th>固定資產</th>";
-  echo "        <th>淨利</th>";
-  echo "        <th>淨利率</th>";
-  echo "        <th>資產週轉率</th>";
-  echo "        <th>股東權益</th>";
-  echo "        <th>權益乘數</th>";
-  echo "        <th>ROE</th>";
-  echo "        <th>合約負債</th>";
-  echo "      </tr>";
-  echo "    </thead>";
-  echo "    <tbody>";
-  $share_s = 0;
-  $share_e = 0;
+  $share_s = 0;            //初期股本
+  $roe_s = 0;              //初期roe
+  $profitRate_s = 0;       //初期淨利率
+  $assetTurnOver_s = 0;    //初期資產週轉率
+  $equityMultiplier_s = 0; //初期權益乘數
   for ($i=0;$i<$total_records;$i++)
   {  
       $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
-      echo "  <tr>";
-      echo "    <td>".$row['year'].$row['season']."</td>";
-      echo "    <td>".$row['share']."</td>";
-      echo "    <td>".$row['stockvalue']."</td>";
-      echo "    <td>".$row['investment']."</td>";
-      echo "    <td>".$row['house']."</td>";
-      echo "    <td>".$row['profit']."</td>";
-      echo "    <td>".$row['profitRate']."%</td>";
-      echo "    <td>".$row['assetTurnOver']."%</td>";
-      echo "    <td>".$row['shareholder']."</td>";
-      echo "    <td>".$row['equityMultiplier']."</td>";
-      echo "    <td>".$row['ROE']."</td>";
-      echo "    <td>".$row['contract']."</td>";
-      echo "  </tr>";
-      if ($i == 0)
+      if ($i == 0) // 第一列
+      {
           $share_s = $row['share'];
-      else 
-          $share_e = $row['share'];
+          echo "<div class='table100 ver1' id='monthlyTbl' style='height:700px;'>";
+          echo "  <table data-vertable='ver1'>";
+          echo "    <thead>";
+          echo "      <tr class='row100 head'>";
+          echo "        <th>年份</th>";
+          echo "        <th>股本</th>";
+          echo "        <th>每股淨值</th>";
+          echo "        <th>長期投資</th>";
+          echo "        <th>固定資產</th>";
+          echo "        <th>淨利</th>";
+          echo "        <th>淨利率</th>";
+          echo "        <th>資產週轉率</th>";
+          echo "        <th>股東權益</th>";
+          echo "        <th>權益乘數</th>";
+          echo "        <th>ROE</th>";
+          echo "        <th>合約負債</th>";
+          echo "      </tr>";
+          echo "    </thead>";
+          echo "    <tbody>";
+      }
+      echo "  <tr>";
+      echo "    <td>".$row['year'].$row['season']."</td>";   //年份
+      echo "    <td>".$row['share']."</td>";                 //股本
+      echo "    <td>".$row['stockvalue']."</td>";            //每股淨值
+      echo "    <td>".$row['investment']."</td>";            //長期投資
+      echo "    <td>".$row['house']."</td>";                 //固定資產
+      echo "    <td>".$row['profit']."</td>";                //淨利
+      echo "    <td>".$row['profitRate']."%</td>";           //淨利率
+      echo "    <td>".$row['assetTurnOver']."%</td>";        //資產週轉率
+      echo "    <td>".$row['shareholder']."</td>";           //股東權益
+      echo "    <td>".$row['equityMultiplier']."</td>";      //權益乘數
+      echo "    <td>".$row['ROE']."</td>";                   //ROE
+      echo "    <td>".$row['contract']."</td>";              //合約負債
+      echo "  </tr>";
+      if ($i == $total_records -2)
+      {
+          $roe_s              = $row['ROE']; 
+          $profitRate_s       = $row['profitRate'];
+          $assetTurnOver_s    = $row['assetTurnOver'];
+          $equityMultiplier_s = $row['equityMultiplier'];
+      } 
+      else if ($i == $total_records -1) // 最後一列
+      {
+          echo "  </tbody>";
+          echo "</table>";
+          if ($share_s != $row['share'])
+              echo "股本成長率 = ".round((($row['share']/$share_s)-1)*100,2)."%<br>";
+          else 
+              echo "股本不變";
+          echo "ROE = 利潤率 × 資產周轉率 × 權益乘數 = (淨收入 / 營業收入) × (營業收入 / 資產) × (資產/ 股東權益)<br>";
+          if ($roe_s <= $row['profitRate']) 
+              echo "<font color='red'>ROE上升".($row['ROE']-$roe_s)."%</font><br>";
+          else
+              echo "<font color='green'>ROE下降".($roe_s-$row['ROE'])."%</font><br>";
+          if ($profitRate_s <= $row['profitRate']) 
+              echo "<font color='red'>淨利率上升".($row['profitRate']-$profitRate_s)."%，獲利能力進步</font><br>";
+          else
+              echo "<font color='green'>淨利率下降".($profitRate_s-$row['profitRate'])."%，獲利能力退步</font><br>";
+          if ($assetTurnOver_s <= $row['assetTurnOver']) 
+              echo "<font color='red'>資產週轉率上升".($row['assetTurnOver']-$assetTurnOver_s)."%，總資產創造營收能力進步</font><br>";
+          else
+              echo "<font color='green'>資產週轉率下降".($assetTurnOver_s-$row['assetTurnOver'])."%，總資產創造營收能力退步</font><br>";
+          if ($equityMultiplier_s <= $row['equityMultiplier']) 
+              echo "<font color='green'>權益乘數上升".($row['equityMultiplier']-$equityMultiplier_s)."，財務槓桿運用程度提昇</font><br>";
+          else
+              echo "<font color='red'>權益乘數下降".($equityMultiplier_s-$row['equityMultiplier'])."，財務槓桿運用程度降低</font><br>";  
+          echo "</div>";
+      } 
   } 
-  echo "    </tbody>";
-  echo "  </table>";
-  if ($share_s != $share_e)
-      echo "股本成長率 = ".round((($share_e/$share_s)-1)*100,2)."%<br>";
-  echo "ROE = 利潤率 × 資產周轉率 × 權益乘數 = (淨收入 / 營業收入) × (營業收入 / 資產) × (資產/ 股東權益)<br>";
-  echo "1.淨利率代表獲利能力，分析損益表，比較營收、獲利金額、獲利率的變化。<br>";
-  echo "2.總資產週轉率代表管理階層運用總資產創造營收的能力，強化分析資產比例和營運天數。<br>";  
-  echo "3.權益乘數代表財務槓桿的運用程度，強化分析負債內容，看是好債還是壞債。<br>";  
-  echo "</div>";
 
   /*********************************************************************************/
   /*『SQL』長短期金融借款負債比 (Table2)                                                                    
