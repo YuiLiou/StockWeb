@@ -208,7 +208,7 @@
           else 
               echo "股本不變<br>";
           echo "ROE = 利潤率 × 資產周轉率 × 權益乘數 = (淨收入 / 營業收入) × (營業收入 / 資產) × (資產/ 股東權益)<br>";
-          if ($roe_s <= $row['profitRate']) 
+          if ($roe_s <= $row['ROE']) 
               echo "<font color='red'>ROE上升".round(($row['ROE']-$roe_s),2)."%</font><br>";
           else
               echo "<font color='green'>ROE下降".round(($roe_s-$row['ROE']),2)."%</font><br>";
@@ -275,7 +275,7 @@
   }
   if ($strTH != "")
   {    
-      echo "【負債比率】<br>";
+      echo "【負債比率】（長短期金融借款負債比不宜超過40%）<br>";
       echo "<div class='table100 ver1' id='monthlyTbl' style='height:300px;'>";
       echo "  <table data-vertable='ver1'>";
       echo "    <thead>";
