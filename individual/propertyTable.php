@@ -10,6 +10,7 @@
   /* 20191228 rusiang  長短期金融借款負債比
   /* 20200125 rusiang  產出杜邦分析結果
   /* 20200126 rusiang  Fix table1 SQL
+  /* 20200126 rusiang  新增負債比率
   /**********************************************************************************/  
   if (empty($_GET)) $_GET['company'] = '2330';
   echo "\"";
@@ -205,7 +206,7 @@
           if ($share_s != $row['share'])
               echo "股本成長率 = ".round((($row['share']/$share_s)-1)*100,2)."%<br>";
           else 
-              echo "股本不變";
+              echo "股本不變<br>";
           echo "ROE = 利潤率 × 資產周轉率 × 權益乘數 = (淨收入 / 營業收入) × (營業收入 / 資產) × (資產/ 股東權益)<br>";
           if ($roe_s <= $row['profitRate']) 
               echo "<font color='red'>ROE上升".round(($row['ROE']-$roe_s),2)."%</font><br>";
@@ -228,41 +229,61 @@
   } 
 
   /*********************************************************************************/
-  /*『SQL』長短期金融借款負債比 (Table2)                                                                    
+  /*『SQL』負債比率/長短期金融借款負債比 (Table2)                                                                    
   /*********************************************************************************/  
-  $sql = "select season, debt ".
+  $sql = "select concat(a.year,a.season) season, ".
+         "       round((a.value/b.value)*100,2) debtRate, ".
+         "       ( ".
+         "         select round(sum(v2),2) ".
+         "         from property_2 ".
+         "         where 1=1 ".
+         "         and code = a.code ".
+         "         and year = a.year ".
+         "         and season = a.season ".
+         "         and col_name in ('短期借款','應付短期票券','應付公司債','長期借款') ".
+         "       ) debt ".
          "from ".
          "( ".
-         "  select concat(year,season) season, round(sum(v2),2) debt ".
-         "  from property_2 ".
-         "  where 1=1 ".
-         "  and code = '".$_GET['company']."' ".
-         "  and col_name in ('短期借款','應付短期票券','應付公司債','長期借款') ".
-         "  group by year, season ".
-         "  order by year desc, season desc ".
-         "  limit 0, 12 ".
-         ") a ".
-         "order by season asc ";
+         "  select code, year, season, value ".
+         "  from property ".
+         "  where code = '".$_GET['company']."' ".
+         "  and col_name in ('負債總額','負債總計') ".
+         ") a, ".
+         "( ".
+         "  select year, season, value ".
+         "  from property ".
+         "  where code = '".$_GET['company']."' ".
+         "  and col_name in ('資產總額','資產總計') ".
+         ") b ".
+         "where 1=1 ".
+         "and a.year = b.year ".
+         "and a.season = b.season ".
+         "order by a.year desc, a.season desc ".
+         "limit 0,12 ";
+
   $result = $conn->query($sql);
   $total_records = mysqli_num_rows($result);  // 取得記錄數
-  $strTH = "";
-  $strTD = "";
+  $strTH  = "";
+  $strTD  = "";
+  $strTD2 = "";
   for ($i=0;$i<$total_records;$i++)
   {
       $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
-      $strTH .= "<th>".$row['season']."</th>";
-      $strTD .= "<td>".$row['debt']."</td>";
+      $strTH  .= "<th>".$row['season']."</th>";
+      $strTD  .= "<td>".$row['debtRate']."%</td>";
+      $strTD2 .= "<td>".$row['debt']."%</td>";
   }
   if ($strTH != "")
   {    
-      echo "【長短期金融借款負債比】<br>";
-      echo "<div class='table100 ver1' id='monthlyTbl' style='height:200px;'>";
+      echo "【負債比率】<br>";
+      echo "<div class='table100 ver1' id='monthlyTbl' style='height:300px;'>";
       echo "  <table data-vertable='ver1'>";
       echo "    <thead>";
-      echo "      <tr class='row100 head'>".$strTH."</tr>";
+      echo "      <tr class='row100 head'><th></th>".$strTH."</tr>";
       echo "    </thead>";
       echo "    <tbody>";
-      echo "      <tr class='row100'>".$strTD."</tr>";
+      echo "      <tr class='row100'><td>負債比率</td>".$strTD."</tr>";
+      echo "      <tr class='row100'><td>長短期負債比</td>".$strTD2."</tr>";
       echo "    </tbody>";
       echo "  </table>";
       echo "</div>";

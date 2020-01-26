@@ -13,7 +13,7 @@
   /*********************************************************************************/
   /*『SQL』30日累計買賣超                                                                      
   /*********************************************************************************/
-  echo "<div class='table100 ver1 m-b-110' id='monthlyTbl'>";
+  echo "<div class='table100 ver1 m-b-110' id='monthlyTbl' style='height:500px;'>";
   echo "<table data-vertable='ver1'>";
   echo "<thead>".
          "<tr class='row100 head'>".
@@ -101,7 +101,9 @@
     echo getRateTd($row['s30']);
     echo "</tr>";  
   }
-  echo "</tbody></table>";
+  echo "    </tbody>";
+  echo "  </table>";
+  echo "</div>";
   echo "【每日買賣超】<br>";
   
   /*********************************************************************************/
@@ -133,8 +135,8 @@
   /*********************************************************************************/
   /*『HTML』30日法人買賣狀況                                                                      
   /*********************************************************************************/
-  //echo "<div class='table100 ver1 m-b-110' id='monthlyTbl'>".
-  echo "<table data-vertable='ver1'>".
+  echo "<div class='table100 ver1 m-b-110' id='monthlyTbl'>".
+       "<table data-vertable='ver1'>".
        "<thead>".
          "<tr class='row100 head'>".
            "<th>日期</th>".
@@ -170,6 +172,9 @@
       echo    getRateTd($row['s']);           // 成交量佔股本比率    
       echo "</tr>";
   }
-  echo "</tbody></table></div>\"";
+  echo "    </tbody>";
+  echo "  </table>";
+  echo "</div>";
+  echo "\"";
   $result->close();
 ?>
