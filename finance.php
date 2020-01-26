@@ -82,6 +82,7 @@ $('#income2Btn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
     document.getElementById('viewTable').innerHTML = <?php include 'individual/income2Table.php'; ?>;
     <?php include 'individual/businessChart.php'; ?>
+    <?php include 'individual/outOfBusinessChart.php'; ?>
 });
 /////////////////////// 資產負債表 ///////////////////////
 $('#propertyBtn').click(function() {
