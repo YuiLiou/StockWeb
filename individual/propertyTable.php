@@ -11,6 +11,7 @@
   /* 20200125 rusiang  產出杜邦分析結果
   /* 20200126 rusiang  Fix table1 SQL
   /* 20200126 rusiang  新增負債比率
+  /* 20200127 rusiang  新增存貨週轉率
   /**********************************************************************************/  
   if (empty($_GET)) $_GET['company'] = '2330';
   echo "\"";
@@ -226,6 +227,54 @@
               echo "<font color='red'>權益乘數下降".round(($equityMultiplier_s-$row['equityMultiplier']),2)."，財務槓桿運用程度降低</font><br>";  
           echo "</div>";
       } 
+  }
+
+  /*********************************************************************************/
+  /*『SQL』存貨週轉率                                                                    
+  /*********************************************************************************/  
+  $sql = "select concat(year,season) season, ".
+         "       v2 inventory, ".
+         "       ( ".
+         "         select round(v1/p.v1*100,2) ".
+         "         from income_3 ".
+         "         where 1=1 ".
+         "         and code = p.code ".
+         "         and year = p.year ".
+         "         and season = p.season ".
+         "         and col_name = '銷貨成本' ".
+         "       ) inventoryRate ".
+         "from property_2 p ".
+         "where 1=1 ".
+         "and code = '".$_GET['company']."' ".
+         "and col_name = '存貨' ".
+         "order by year desc, season desc ".
+         "limit 0,12 ";
+  $result = $conn->query($sql);
+  $total_records = mysqli_num_rows($result);  // 取得記錄數
+  $strTH  = "";
+  $strTD  = "";
+  $strTD2 = "";
+  for ($i=0;$i<$total_records;$i++)
+  {
+      $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
+      $strTH  .= "<th>".$row['season']."</th>";
+      $strTD  .= "<td>".$row['inventory']."%</td>";
+      $strTD2 .= "<td>".$row['inventoryRate']."%</td>";
+  }
+  if ($strTH != "")
+  {    
+      echo "【存貨週轉率】<br>";
+      echo "<div class='table100 ver1' id='monthlyTbl' style='height:300px;'>";
+      echo "  <table data-vertable='ver1'>";
+      echo "    <thead>";
+      echo "      <tr class='row100 head'><th></th>".$strTH."</tr>";
+      echo "    </thead>";
+      echo "    <tbody>";
+      echo "      <tr class='row100'><td>存貨比率</td>".$strTD."</tr>";
+      echo "      <tr class='row100'><td>存貨週轉率</td>".$strTD2."</tr>";
+      echo "    </tbody>";
+      echo "  </table>";
+      echo "</div>";
   } 
 
   /*********************************************************************************/
