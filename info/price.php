@@ -1,27 +1,40 @@
 <?php
-
+  /**********************************************************************************/
+  /* Date     Author   ChangeList
+  /* --------------------------------------------------------------------------------  
+  /* 20200129 rusiang  回傳股價/均線
+  /**********************************************************************************/  
   // connect to db
   require_once('db.php');
   if (empty($_GET))
       $_GET['company'] = '2330';
-
-  $sql = "select p.*, round(ma5.value,2) ma5, round(ma20.value,2) ma20, round(ma60.value,2) ma60 ".
-         "from (select price, date ".
-         "      from prices ".
-         "      where code = '".$_GET['company']."') p left join ". 
-         "     ((select date, value ".
-         "       from ma ".
-         "       where code = '".$_GET['company']."' ".
-         "       and span = 5) ma5, ".
-         "      (select date, value ".
-         "       from ma ".
-         "       where code = '".$_GET['company']."' ".
-         "       and span = 20) ma20, ".
-         "      (select date, value ".
-         "       from ma ".
-         "       where code = '".$_GET['company']."' ".
-         "       and span = 60) ma60) ".
-         "      on (p.date=ma5.date and p.date=ma20.date and p.date=ma60.date) ".
+  $sql = "select p.price, p.date, ".
+         "( ".
+         "  select round(value,2) ".
+         "  from ma ".
+         "  where 1=1 ".
+         "  and code = p.code ".
+         "  and span = 5 ".
+         "  and date = p.date ".
+         ") ma5, ".
+         "( ".
+         "  select round(value,2) ".
+         "  from ma ".
+         "  where 1=1 ".
+         "  and code = p.code ".
+         "  and span = 20 ".
+         "  and date = p.date ".
+         ") ma20, ".
+         "( ".
+         "  select round(value,2) ".
+         "  from ma ".
+         "  where 1=1 ".
+         "  and code = p.code ".
+         "  and span = 60 ".
+         "  and date = p.date ".
+         ") ma60 ". 
+         "from prices p ".
+         "where code = '".$_GET['company']."' ".
          "order by p.date desc limit 30";
 
   $result = $conn->query($sql);
