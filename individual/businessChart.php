@@ -27,8 +27,8 @@
                         label: '推銷費用',                 
                         lineTension: 0.1,
                         fill:false,
-                        borderColor: 'black',
-                        backgroundColor: 'black',
+                        borderColor: '#7441AA',
+                        backgroundColor: '#7441AA',
                         pointRadius: 5,
                         borderWidth: 5,
                         data: sale,
@@ -36,9 +36,9 @@
                         label: '管理費用',
                         fill:false,
                         lineTension: 0.1,
-                        borderColor: '#00ff00',
-                        backgroundColor: '#00ff00',
-                        pointRadius: 1,
+                        borderColor: '#99BD51',
+                        backgroundColor: '#99BD51',
+                        pointRadius: 5,
                         borderWidth: 5,
                         data:manage
                     },{
@@ -47,16 +47,16 @@
                         lineTension: 0.1,
                         borderColor: '#00cc66',
                         backgroundColor: '#00cc66',
-                        pointRadius: 1,
+                        pointRadius: 5,
                         borderWidth: 5,
                         data:research
                     },{
                         label: '預期信用減損損失（利益）',
                         fill:false,
                         lineTension: 0.1,
-                        borderColor: '#ffff00',
-                        backgroundColor: '#ffff00',
-                        pointRadius: 1,
+                        borderColor: '#00ff00',
+                        backgroundColor: '#00ff00',
+                        pointRadius: 5,
                         borderWidth: 5,
                         data:credit
                     },{
@@ -84,7 +84,7 @@
                     scales: {
                         yAxes: [{
                             ticks: {
-                                fontColor: 'black',
+                                fontColor: 'black',                                
                                 fontSize: '20'
                             },
                         }],

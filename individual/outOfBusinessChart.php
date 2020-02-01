@@ -27,8 +27,8 @@
                         label: '其他收入',                 
                         lineTension: 0.1,
                         fill:false,
-                        borderColor: 'black',
-                        backgroundColor: 'black',
+                        borderColor: '#7441AA',
+                        backgroundColor: '#7441AA',
                         pointRadius: 5,
                         borderWidth: 5,
                         data: a,
@@ -36,8 +36,8 @@
                         label: '其他利益及損失淨額',
                         fill:false,
                         lineTension: 0.1,
-                        borderColor: '#00ff00',
-                        backgroundColor: '#00ff00',
+                        borderColor: '#99BD51',
+                        backgroundColor: '#99BD51',
                         pointRadius: 1,
                         borderWidth: 5,
                         data: b
@@ -54,8 +54,8 @@
                         label: '採用權益法認列之關聯企業及合資損益之份額淨額',
                         fill:false,
                         lineTension: 0.1,
-                        borderColor: '#ffff00',
-                        backgroundColor: '#ffff00',
+                        borderColor: '#00ff00',
+                        backgroundColor: '#00ff00',
                         pointRadius: 1,
                         borderWidth: 5,
                         data: d
@@ -84,7 +84,7 @@
                     scales: {
                         yAxes: [{
                             ticks: {
-                                fontColor: 'black',
+                                fontColor: 'black',                                
                                 fontSize: '20'
                             },
                         }],

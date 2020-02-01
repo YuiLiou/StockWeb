@@ -76,7 +76,7 @@
                     scales: {
                         yAxes: [{
                             ticks: {
-                                fontColor: 'black',
+                                fontColor: 'black',                               
                                 fontSize: '20'
                             },
                         }],

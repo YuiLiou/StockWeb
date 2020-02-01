@@ -50,15 +50,22 @@
   /*********************************************************************************/
   /*『SQL』長期投資項目...tbd盈再率 (Table1)                                                                    
   /*********************************************************************************/
-  $sql = "select a.year, a.season, profit, investment, house, shareholder, ".
-         "       round(profit/shareholder*100,2) ROE, share, contract, stockvalue, ".
+  $sql = "select a.year, a.season, ".
+         "       profit, ".                                              // 稅後淨利                         
+         "       investment, ".                                          // 長期投資
+         "       house, ".                                               // 固定資產
+         "       shareholder, ".                                         // 股東權益
+         "       round(profit/shareholder*100,2) ROE, ".                 // ROE
+         "       share, ".                                               // 股本
+         "       contract, ".                                            // 合約負債
+         "       stockvalue, ".                                          // 每股淨值
          "       round(profit/ope_income*100,2) profitRate, ".           // 淨利率
          "       round(ope_income/asset*100,2) assetTurnOver, ".         // 資產週轉率
          "       round(asset/shareholder*100,2) equityMultiplier ".      // 權益乘數 
          "from ".
          "( ".
 //      「資產負債表」股本 ----------------------------------------------------------------
-         "    select year, season, value share, ".
+         "    select year, season, value share, @year:=year, ".
 //      「資產負債表」長期投資 --------------------------------------------------------------
          "    ( ".
          "      select sum(v1) ".
@@ -101,13 +108,13 @@
          "    ) contract, ".
 //       「綜合損益表」獲利 ----------------------------------------------------------------   
          "    ( ".
-         "      select i.value ".
-         "      from income_2 i ".
+         "      select value ".
+         "      from income_2 ".
          "      where 1=1 ".
          "      and code = p.code ".
          "      and year = p.year ".
          "      and season = p.season ".
-         "      and i.col_name = '本期淨利（淨損）' ".
+         "      and col_name = '本期淨利（淨損）' ".
          "    ) profit, ".
 //      「資產負債表」每股淨值 --------------------------------------------------------------
          "    ( ".
@@ -139,7 +146,8 @@
          "      and year = p.year ".
          "      and season = p.season ".
          "    ) asset ".         
-         "    from property p ".
+         "    from property p, ".
+         "    (select @year := 0)a ".
          "    where 1=1 ".
          "    and col_name in ('股本') ".
          "    and code = '".$_GET['company']."' ".
