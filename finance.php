@@ -101,6 +101,7 @@ $('#cashFlowBtn').click(function() {
 $('#epsBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
     document.getElementById('viewTable').innerHTML = <?php include 'individual/epsTable.php'; ?>;
+    <?php include 'individual/seasonPriceEPSChart.php'; ?>
 });
 /////////////////////// 股利政策 ///////////////////////
 $('#dividendBtn').click(function() {
