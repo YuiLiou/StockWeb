@@ -300,13 +300,13 @@
          "         and col_name in ('短期借款','應付短期票券','應付公司債','長期借款') ".
          "       ) debt ".
          "from ".
-         "( ".
+         "( ". // 負債總計
          "  select code, year, season, value ".
          "  from property ".
          "  where code = '".$_GET['company']."' ".
          "  and col_name in ('負債總額','負債總計') ".
          ") a, ".
-         "( ".
+         "( ". // 資產總計
          "  select year, season, value ".
          "  from property ".
          "  where code = '".$_GET['company']."' ".
@@ -323,17 +323,32 @@
   $strTH  = "";
   $strTD  = "";
   $strTD2 = "";
+  $debtRate_s = 0;
+  $debt_s = 0;
+  $debtRate_e = 0;
+  $debt_e = 0;
+  
   for ($i=0;$i<$total_records;$i++)
   {
       $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
       $strTH  .= "<th>".$row['season']."</th>";
       $strTD  .= "<td>".$row['debtRate']."%</td>";
       $strTD2 .= "<td>".$row['debt']."%</td>";
+      if ($i == 0)
+      {
+          $debtRate_s = $row['debtRate'];
+          $debt_s     = $row['debt'];
+      }
+      else if ($i == $total_records-1)
+      {
+          $debtRate_e = $row['debtRate'];
+          $debt_e     = $row['debt'];
+      }
   }
   if ($strTH != "")
   {    
       echo "【負債比率】（長短期金融借款負債比不宜超過40%）<br>";
-      echo "<div class='table100 ver1' id='monthlyTbl' style='height:300px;'>";
+      echo "<div class='table100 ver1' id='monthlyTbl' style='height:400px;'>";
       echo "  <table data-vertable='ver1'>";
       echo "    <thead>";
       echo "      <tr class='row100 head'><th></th>".$strTH."</tr>";
@@ -343,8 +358,17 @@
       echo "      <tr class='row100'><td>長短期負債比</td>".$strTD2."</tr>";
       echo "    </tbody>";
       echo "  </table>";
+      echo "負債比率增加：".($debtRate_s-$debtRate_e)."%<br>";
+      echo "長短期金融借款增加：".($debt_s-$debt_e)."%<br>";
       echo "</div>";
   }
+
+  /*********************************************************************************/
+  /*【應收帳款週轉率】                                              
+  /*********************************************************************************/
+  echo "【應收帳款週轉率】<br>";
+  echo "<canvas id='receivableChart'></canvas>";  
+
  
   /*********************************************************************************/
   /*『SQL』資產負債簡表 (Table3)                                                                    

@@ -89,6 +89,7 @@ $('#income2Btn').click(function() {
 $('#propertyBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
     document.getElementById('viewTable').innerHTML = <?php include 'individual/propertyTable.php'; ?>;
+    <?php include 'individual/receivableChart.php'; ?>
 });
 /////////////////////// 現金流量表 ///////////////////////
 $('#cashFlowBtn').click(function() {
