@@ -71,6 +71,7 @@ $('#monthlyBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
     document.getElementById('viewTable').innerHTML = <?php include 'individual/monthlyTable.php'; ?>;
     <?php include 'individual/yearlyIncomeChart.php'; ?>
+    <?php include 'individual/seasonIncomeChart.php'; ?>
 });
 /////////////////////// 營益分析表 ///////////////////////
 $('#incomeBtn').click(function() {
