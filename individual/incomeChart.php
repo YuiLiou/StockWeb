@@ -15,12 +15,14 @@
             var operatingRate = [];
             var beforeTaxRate = [];
             var afterTaxRate = [];
+            var income = [];
             for(var i in response) {
-                season.push(response[i]['year'] + response[i]['season']);
+                season.push(response[i]['season']);
                 grossRate.push(response[i]['grossRate']);
                 operatingRate.push(response[i]['operatingRate']);
                 beforeTaxRate.push(response[i]['beforeTaxRate']);
                 afterTaxRate.push(response[i]['afterTaxRate']);
+                income.push(response[i]['income']);
             }
             // draw graph
             var chartdata = {
@@ -33,7 +35,8 @@
                         borderColor: '#7441AA',
                         pointRadius: 10,
                         borderWidth: 5,
-                        data: grossRate
+                        data: grossRate,
+                        yAxisID: 'y-axis-1'
                     },{    
                         label: '營業利益率',                        
                         fill: false,                        
@@ -41,7 +44,8 @@
                         borderColor: '#99BD51',
                         pointRadius: 10,
                         borderWidth: 5,
-                        data: operatingRate
+                        data: operatingRate,
+                        yAxisID: 'y-axis-1'
                     },{    
                         label: '稅前淨利率',                        
                         fill: false,                        
@@ -49,7 +53,8 @@
                         borderColor: '#312B73',
                         pointRadius: 10,
                         borderWidth: 5,
-                        data: beforeTaxRate
+                        data: beforeTaxRate,
+                        yAxisID: 'y-axis-1'
                     },{    
                         label: '稅後淨利率',                        
                         fill: false,                        
@@ -57,8 +62,18 @@
                         borderColor: '#0D2611',
                         pointRadius: 10,
                         borderWidth: 5,
-                        data: afterTaxRate
-                    }
+                        data: afterTaxRate,
+                        yAxisID: 'y-axis-1'
+                    },{    
+                        label: '營收',                        
+                        fill: false,                        
+                        backgroundColor: '#ff6600',
+                        borderColor: '#ff6600',
+                        pointRadius: 10,
+                        borderWidth: 5,
+                        data: income,
+                        yAxisID: 'y-axis-2'
+                    }                     
                 ],	                 
             };
             var ctx = document.getElementById('myChart');
@@ -75,11 +90,20 @@
                     },
                     scales: {
                         yAxes: [{
-                            ticks: {
-                                fontColor: 'black',                               
-                                fontSize: '20'
+			    type: 'linear',
+                            display: true,
+                            position: 'left',
+                            id: 'y-axis-1',
+                        }, {
+			    type: 'linear',
+                            display: true,
+                            position: 'right',
+                            id: 'y-axis-2',
+                            // grid line settings
+                            gridLines: {
+                                drawOnChartArea: false, 
                             },
-                        }],
+                        }], 
                         xAxes: [{
                             ticks: {
                                 fontColor: 'black',
