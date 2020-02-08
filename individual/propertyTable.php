@@ -12,6 +12,7 @@
   /* 20200126 rusiang  Fix table1 SQL
   /* 20200126 rusiang  新增負債比率
   /* 20200127 rusiang  新增存貨週轉率
+  /* 20200208 rusiang  新增盈再率
   /**********************************************************************************/  
   if (empty($_GET)) $_GET['company'] = '2330';
   echo "\"";
@@ -48,7 +49,7 @@
   echo "<a href='https://www.cmoney.tw/finance/f00031.aspx?s=".$_GET['company']."'>轉投資項目</a><br>";
   echo "【歷年資產指標】<br>";
   /*********************************************************************************/
-  /*『SQL』長期投資項目...tbd盈再率 (Table1)                                                                    
+  /*『SQL』長期投資項目 (Table1)                                                                    
   /*********************************************************************************/
   $sql = "select a.year, a.season, ".
          "       profit, ".                                              // 稅後淨利                         
@@ -161,10 +162,31 @@
   $profitRate_s = 0;       //初期淨利率
   $assetTurnOver_s = 0;    //初期資產週轉率
   $equityMultiplier_s = 0; //初期權益乘數
+  $assetList = array();    //歷年資產
+  $assetIncrease = 0;      //資產增加
+  $profitList = array();   //歷年盈餘
+  $profitSum = 0;          //四年累積盈餘
   for ($i=0;$i<$total_records;$i++)
   {  
       $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
-      if ($i == 0) // 第一列
+      array_push($assetList, $row['investment']+$row['house']);
+      array_push($profitList, $row['profit']);
+      // 四年間增加的資產 -------------------------------------
+      if ($i >= 4)
+      {
+          $assetIncrease = $assetList[$i] - $assetList[$i-4];
+      }
+      // 四年累積盈餘 ----------------------------------------
+      if ($i > 0)
+      {
+          $profitSum += $profitList[$i];
+          if ($i > 4)
+          {
+              $profitSum -= $profitList[$i-4];
+          }
+      }    
+      // 第一列 ---------------------------------------------
+      if ($i == 0)
       {
           $share_s = $row['share'];
           echo "<div class='table100 ver1' id='monthlyTbl' style='height:700px;'>";
@@ -183,6 +205,7 @@
           echo "        <th>權益乘數</th>";
           echo "        <th>ROE</th>";
           echo "        <th>合約負債</th>";
+          echo "        <th>盈再率</th>";
           echo "      </tr>";
           echo "    </thead>";
           echo "    <tbody>";
@@ -200,15 +223,24 @@
       echo "    <td>".$row['equityMultiplier']."</td>";      //權益乘數
       echo "    <td>".$row['ROE']."</td>";                   //ROE
       echo "    <td>".$row['contract']."</td>";              //合約負債
-      echo "  </tr>";
+      // 盈再率 ---------------------------------------------------------        
+      if ($i>=4)
+          echo "<td>".round(($assetIncrease/$profitSum)*100,2)."%</td>";
+      else 
+          echo "<td></td>";
+      // 盈再率 ---------------------------------------------------------        
+      echo "  </tr>";       
+
+      // 倒數第二列 -----------------------------------------------------        
       if ($i == $total_records -2)
       {
           $roe_s              = $row['ROE']; 
           $profitRate_s       = $row['profitRate'];
           $assetTurnOver_s    = $row['assetTurnOver'];
           $equityMultiplier_s = $row['equityMultiplier'];
-      } 
-      else if ($i == $total_records -1) // 最後一列
+      }
+      // 最後一列 -------------------------------------------------------
+      else if ($i == $total_records -1) 
       {
           echo "  </tbody>";
           echo "</table>";
@@ -217,6 +249,7 @@
           else 
               echo "股本不變<br>";
           echo "ROE = 利潤率 × 資產周轉率 × 權益乘數 = (淨收入 / 營業收入) × (營業收入 / 資產) × (資產/ 股東權益)<br>";
+          //********************* ROE自動分析 *********************//
           if ($roe_s <= $row['ROE']) 
               echo "<font color='red'>ROE上升".round(($row['ROE']-$roe_s),2)."%</font><br>";
           else
@@ -232,11 +265,11 @@
           if ($equityMultiplier_s <= $row['equityMultiplier']) 
               echo "<font color='green'>權益乘數上升".round(($row['equityMultiplier']-$equityMultiplier_s),2)."，財務槓桿運用程度提昇</font><br>";
           else
-              echo "<font color='red'>權益乘數下降".round(($equityMultiplier_s-$row['equityMultiplier']),2)."，財務槓桿運用程度降低</font><br>";  
+              echo "<font color='red'>權益乘數下降".round(($equityMultiplier_s-$row['equityMultiplier']),2)."，財務槓桿運用程度降低</font><br>"; 
+          //********************* ROE自動分析 *********************// 
           echo "</div>";
       } 
   }
-
   /*********************************************************************************/
   /*『SQL』存貨週轉率                                                                    
   /*********************************************************************************/  

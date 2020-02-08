@@ -55,87 +55,88 @@
   /*********************************************************************************/
   /*【歷年營運盤點】                                              
   /*********************************************************************************/
-  $sql = "select t1.year, t1.season, ".
-         "       t1.value v1, t2.value v2, t3.value v3, t4.value v4, ".
-         "       t5.value v5, t6.value v6, t7.value v7, t8.value v8, ".
-         "       t9.value v9, t10.eps, round(t6.value/t11.value*100,2) v11 ".
-         "from (select i.value, i.year, i.season ".
-         "      from income_2 i ".
-         "      where 1=1 ".
-         "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = '".$tSeason."' ".
-         "      and i.col_name = '營業成本') t1, ".
-         "     (select i.value, i.year ".
-         "      from income_2 i ".
-         "      where 1=1 ".
-         "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = '".$tSeason."' ".
-         "      and i.col_name = '營業收入') t2, ".
-         "     (select i.value, i.year ".
-         "      from income_2 i ".
-         "      where 1=1 ".
-         "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = '".$tSeason."' ".
-         "      and i.col_name = '營業毛利（毛損）') t3, ".
-         "     (select i.value, i.year ".
-         "      from income_2 i ".
-         "      where 1=1 ".
-         "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = '".$tSeason."' ".
-         "      and i.col_name = '營業費用') t4, ".
-         "     (select i.value, i.year ".
-         "      from income_2 i ".
-         "      where 1=1 ".
-         "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = '".$tSeason."' ".
-         "      and i.col_name = '營業利益（損失）') t5, ".
-         "     (select i.value, i.year ".
-         "      from income_2 i ".
-         "      where 1=1 ".
-         "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = '".$tSeason."' ".
-         "      and i.col_name = '營業外收入及支出') t6, ".
-         "     (select i.value, i.year ".
-         "      from income_2 i ".
-         "      where 1=1 ".
-         "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = '".$tSeason."' ".
-         "      and i.col_name = '所得稅費用（利益）') t7, ". 
-         "     (select i.value, i.year ".
-         "      from income_2 i ".
-         "      where 1=1 ".
-         "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = '".$tSeason."' ".
-         "      and i.col_name = '本期淨利（淨損）') t8, ". 
-         "     (select i.value, i.year ".
-         "      from income_2 i ".
-         "      where 1=1 ".
-         "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = '".$tSeason."' ".
-         "      and i.col_name = '綜合損益總額歸屬於母公司業主') t9, ".
-         "     (select i.eps, i.year ".
-         "      from _eps i ".
-         "      where 1=1 ".
-         "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = '".$tSeason."') t10, ".
-         "     (select i.value, i.year ".
-         "      from income_2 i ".
-         "      where 1=1 ".
-         "      and i.code = '".$_GET['company']."' ".
-         "      and i.season = '".$tSeason."' ".
-         "      and i.col_name = '稅前淨利（淨損）') t11 ".
-         "where 1=1 ".
-         "and t1.year = t2.year ".
-         "and t1.year = t3.year ".
-         "and t1.year = t4.year ".
-         "and t1.year = t5.year ".
-         "and t1.year = t6.year ".
-         "and t1.year = t7.year ".
-         "and t1.year = t8.year ".
-         "and t1.year = t9.year ".
-         "and t1.year = t10.year ".
-         "and t1.year = t11.year ".
-         "order by year asc ";
+  $sql = "select a.*, round(v6/t11*100,2) v11 ".
+         "from (".
+         "  select t1.year, t1.season, ".
+         "         t1.value v1, ".
+         "         (select value ".
+         "          from income_2 i ".
+         "          where 1=1 ".
+         "          and i.code = t1.code ".
+         "          and i.season = t1.season ".
+         "          and i.year = t1.year ".
+         "          and i.col_name = '營業收入') v2, ".
+         "         (select value ".
+         "          from income_2 i ".
+         "          where 1=1 ".
+         "          and i.code = t1.code ".
+         "          and i.season = t1.season ".
+         "          and i.year = t1.year ".
+         "          and i.col_name = '營業毛利（毛損）') v3, ".
+         "         (select value ".
+         "          from income_2 i ".
+         "          where 1=1 ".
+         "          and i.code = t1.code ".
+         "          and i.season = t1.season ".
+         "          and i.year = t1.year ".
+         "          and i.col_name = '營業費用') v4, ".
+         "         (select value ".
+         "          from income_2 i ".
+         "          where 1=1 ".
+         "          and i.code = t1.code ".
+         "          and i.season = t1.season ".
+         "          and i.year = t1.year ".
+         "          and i.col_name = '營業利益（損失）') v5, ".
+         "         (select value ".
+         "          from income_2 i ".
+         "          where 1=1 ".
+         "          and i.code = t1.code ".
+         "          and i.season = t1.season ".
+         "          and i.year = t1.year ".
+         "          and i.col_name = '營業外收入及支出') v6, ".
+         "         (select value ".
+         "          from income_2 i ".
+         "          where 1=1 ".
+         "          and i.code = t1.code ".
+         "          and i.season = t1.season ".
+         "          and i.year = t1.year ".
+         "          and i.col_name = '所得稅費用（利益）') v7, ".
+         "         (select value ".
+         "          from income_2 i ".
+         "          where 1=1 ".
+         "          and i.code = t1.code ".
+         "          and i.season = t1.season ".
+         "          and i.year = t1.year ".
+         "          and i.col_name = '本期淨利（淨損）') v8, ".
+         "         (select value ".
+         "          from income_2 i ".
+         "          where 1=1 ".
+         "          and i.code = t1.code ".
+         "          and i.season = t1.season ".
+         "          and i.year = t1.year ".
+         "          and i.col_name = '綜合損益總額歸屬於母公司業主') v9, ".
+         "         (select round(i.eps,2) ".
+         "          from _eps i ".
+         "          where 1=1 ".
+         "          and i.code = t1.code ".
+         "          and i.season = t1.season ".
+         "          and i.year = t1.year) v10, ".
+         "         (select value ".
+         "          from income_2 i ".
+         "          where 1=1 ".
+         "          and i.code = t1.code ".
+         "          and i.season = t1.season ".
+         "          and i.year = t1.year ".
+         "          and i.col_name = '稅前淨利（淨損）') t11 ".
+         "  from (select i.value, i.year, i.season, i.code ".
+         "        from income_2 i ".
+         "        where 1=1 ".
+         "        and i.code = '".$_GET['company']."' ".
+         "        and i.season = '".$tSeason."' ".
+         "        and i.col_name = '營業成本') t1 ".
+         "  where 1=1 ".         
+         "  order by year asc ".
+         ") a ";
   echo "【歷年營運指標】<br>";
   echo "<div class='table100 ver1' id='monthlyTbl' style='height:500px;'>";
   echo "  <table data-vertable='ver1'>";
@@ -172,7 +173,7 @@
       echo "  <td>".$row['v7']."</td>";
       echo "  <td>".$row['v8']."</td>";
       echo "  <td>".$row['v9']."</td>";
-      echo "  <td>".$row['eps']."</td>";
+      echo "  <td>".$row['v10']."</td>";
       echo "  <td>".$row['v11']."%</td>";
       echo "</tr>";
   }
