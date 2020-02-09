@@ -249,24 +249,42 @@
           else 
               echo "股本不變<br>";
           echo "ROE = 利潤率 × 資產周轉率 × 權益乘數 = (淨收入 / 營業收入) × (營業收入 / 資產) × (資產/ 股東權益)<br>";
-          //********************* ROE自動分析 *********************//
+          // ROE自動分析 ------------------------------------------------------- 
           if ($roe_s <= $row['ROE']) 
               echo "<font color='red'>ROE上升".round(($row['ROE']-$roe_s),2)."%</font><br>";
           else
               echo "<font color='green'>ROE下降".round(($roe_s-$row['ROE']),2)."%</font><br>";
-          if ($profitRate_s <= $row['profitRate']) 
-              echo "<font color='red'>淨利率上升".round(($row['profitRate']-$profitRate_s),2)."%，獲利能力進步</font><br>";
+          if ($profitRate_s <= $row['profitRate'])
+          { 
+              echo "<font color='red'>淨利率上升";
+              echo round(($row['profitRate']-$profitRate_s),2)."%，獲利能力進步</font><br>";
+          }
           else
-              echo "<font color='green'>淨利率下降".round(($profitRate_s-$row['profitRate']),2)."%，獲利能力退步</font><br>";
-          if ($assetTurnOver_s <= $row['assetTurnOver']) 
-              echo "<font color='red'>資產週轉率上升".round(($row['assetTurnOver']-$assetTurnOver_s),2)."%，總資產創造營收能力進步</font><br>";
+          {
+              echo "<font color='green'>淨利率下降";
+              echo round(($profitRate_s-$row['profitRate']),2)."%，獲利能力退步</font><br>";
+          }
+          if ($assetTurnOver_s <= $row['assetTurnOver'])
+          { 
+              echo "<font color='red'>資產週轉率上升";
+              echo round(($row['assetTurnOver']-$assetTurnOver_s),2)."%，總資產創造營收能力進步</font><br>";
+          }
           else
-              echo "<font color='green'>資產週轉率下降".round(($assetTurnOver_s-$row['assetTurnOver']),2)."%，總資產創造營收能力退步</font><br>";
+          {
+              echo "<font color='green'>資產週轉率下降";
+              echo round(($assetTurnOver_s-$row['assetTurnOver']),2)."%，總資產創造營收能力退步</font><br>";
+          }
           if ($equityMultiplier_s <= $row['equityMultiplier']) 
-              echo "<font color='green'>權益乘數上升".round(($row['equityMultiplier']-$equityMultiplier_s),2)."，財務槓桿運用程度提昇</font><br>";
+          {
+              echo "<font color='green'>權益乘數上升";
+              echo round(($row['equityMultiplier']-$equityMultiplier_s),2)."，財務槓桿運用程度提昇</font><br>";
+          }
           else
-              echo "<font color='red'>權益乘數下降".round(($equityMultiplier_s-$row['equityMultiplier']),2)."，財務槓桿運用程度降低</font><br>"; 
-          //********************* ROE自動分析 *********************// 
+          {
+              echo "<font color='red'>權益乘數下降";
+              echo round(($equityMultiplier_s-$row['equityMultiplier']),2)."，財務槓桿運用程度降低</font><br>"; 
+          }
+          // ROE自動分析 ------------------------------------------------------- 
           echo "</div>";
       } 
   }
@@ -333,13 +351,15 @@
          "         and col_name in ('短期借款','應付短期票券','應付公司債','長期借款') ".
          "       ) debt ".
          "from ".
-         "( ". // 負債總計
+         // 負債總計 ----------------------------------------------------
+         "( ". 
          "  select code, year, season, value ".
          "  from property ".
          "  where code = '".$_GET['company']."' ".
          "  and col_name in ('負債總額','負債總計') ".
          ") a, ".
-         "( ". // 資產總計
+         // 資產總計 ----------------------------------------------------
+         "( ".
          "  select year, season, value ".
          "  from property ".
          "  where code = '".$_GET['company']."' ".

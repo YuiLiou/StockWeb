@@ -7,8 +7,7 @@
   /* 20200112 rusiang  修正四率成長幅度算法 
   /* 20200118 rusiang  新增同業本業比率 
   /**********************************************************************************/  
-  if (empty($_GET))
-      $_GET['company'] = '2330';
+  if (empty($_GET)) $_GET['company'] = '2330';
   echo "\"";
   /*********************************************************************************/
   /*『SQL』指標成長                                                               
@@ -86,33 +85,13 @@
            "<th>本業比率</th>".
          "</tr>".
        "</thead><tbody>";
-
-  // get today
-  $sql = "SELECT date ".
-         "FROM prices ".
-         "order by date desc ".
-         "limit 0,1 ";
-  $result = $conn->query($sql);
-  $row    = mysqli_fetch_assoc($result); //將陣列以欄位名索引
-  $today  = $row['date']; 
-
-  // get this year, season
-  $sql = "SELECT year, season ".
-         "FROM income ".
-         "order by year desc, season desc ".
-         "limit 0,1 ";
-  $result  = $conn->query($sql);
-  $row     = mysqli_fetch_assoc($result); //將陣列以欄位名索引
-  $tYear   = $row['year']; 
-  $pYear   = (string)((int)$tYear-1); 
-  $tSeason = $row['season'];
  
   $sql = "select p.code, p.price, p.pe, c.company, i.grossRate, i.operatingRate, i.beforeTaxRate, ".        
          "       i.afterTaxRate, round((d.cash/p.price)*100,2) dividend, ".
          "       round(i.operatingRate/i.beforeTaxRate*100,2) mainJob ".
          "from prices p, company_map c, dividend d, income i ".
          "where 1=1 ".
-         ///同類股
+         // 同類股 ----------------------------------------------------------------------
          "and p.code in ( ". 
          "    select code ".
          "    from company_map c ".
@@ -123,15 +102,15 @@
          "        where code = '".$_GET['company']."' ".
          "    ) ".
          ") ".
-         ////當天
-         "and p.date = '".$today."' ".
+         // 當天 ----------------------------------------------------------------------
+         "and p.date = (select max(date) from prices where code = p.code)".
          "and p.code = c.code ".
          "and i.code = p.code ".
-         "and i.year = '".$tYear."' ".
-         "and i.season = '".$tSeason."' ".
+         // 當季 ----------------------------------------------------------------------
+         "and i.year = substr((select max(concat(year, season)) from income ),1,4) ".
+         "and i.season = substr((select max(concat(year, season)) from income ),5,2) ".
          "and d.code = p.code ".
          "and d.year = (select year from dividend order by year desc limit 0,1) ".
-//       "and d.year = '".$pYear."' ".
          "order by code asc ";
   $result = $conn->query($sql);
   $total_records = mysqli_num_rows($result);  // 取得記錄數
