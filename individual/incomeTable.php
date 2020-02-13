@@ -6,6 +6,7 @@
   /* 20191214 rusiang  新增同業比較 
   /* 20200112 rusiang  修正四率成長幅度算法 
   /* 20200118 rusiang  新增同業本業比率 
+  /* 20200213 rusiang  指標成長增加今年數值 
   /**********************************************************************************/  
   if (empty($_GET)) $_GET['company'] = '2330';
   echo "\"";
@@ -28,6 +29,10 @@
        "</thead><tbody>";
   
   $sql = "select concat(this.year, this.season)season, ".
+         "       this.grossRate, ".
+         "       this.operatingRate, ".
+         "       this.beforeTaxRate, ".
+         "       this.afterTaxRate, ".
          "       round((this.operatingIncome-past.operatingIncome)/abs(past.operatingIncome)*100,2)nIncome, ".
          "       round((this.grossRate-past.grossRate),2)nGross, ".
          "       round((this.operatingRate-past.operatingRate),2)nOperating, ".
@@ -54,12 +59,31 @@
   {
       $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
       echo "<tr class='row100'>";
+      // 季節 ------------------------------------------------------------------------------ 
       echo "<td>".$row['season']."</td>";
+      // 營收成長率 -------------------------------------------------------------------------
       echo getRateTd($row['nIncome']);
-      echo getRateTd($row['nGross']);
-      echo getRateTd($row['nOperating']);
-      echo getRateTd($row['nBeforeTax']);
-      echo getRateTd($row['nAfterTax']);
+      // 毛利率成長率 ------------------------------------------------------------------------
+      if ($row['nGross'] >= 0)
+          echo "<td class='up'>".$row['grossRate']."%(".$row['nGross'].")</td>";
+      else
+          echo "<td class='down'>".$row['grossRate']."%(".$row['nGross'].")</td>";
+      // 營業利益率成長 ----------------------------------------------------------------------
+      if ($row['nOperating'] >= 0)
+          echo "<td class='up'>".$row['operatingRate']."%(".$row['nOperating'].")</td>";
+      else
+          echo "<td class='down'>".$row['operatingRate']."%(".$row['nOperating'].")</td>";
+      // 稅前淨利率成長 ----------------------------------------------------------------------
+      if ($row['nBeforeTax'] >= 0)
+          echo "<td class='up'>".$row['beforeTaxRate']."%(".$row['nBeforeTax'].")</td>";
+      else
+          echo "<td class='down'>".$row['beforeTaxRate']."%(".$row['nBeforeTax'].")</td>";
+      // 稅後淨利率成長 ----------------------------------------------------------------------
+      if ($row['nAfterTax'] >= 0)
+          echo "<td class='up'>".$row['afterTaxRate']."%(".$row['nAfterTax'].")</td>";
+      else
+          echo "<td class='down'>".$row['afterTaxRate']."%(".$row['nAfterTax'].")</td>";
+      // 本業利益率 -------------------------------------------------------------------------
       echo "<td>".$row['mainJob']."%</td>";
       echo "</tr>";
   }
