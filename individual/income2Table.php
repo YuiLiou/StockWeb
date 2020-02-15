@@ -8,6 +8,7 @@
   /* 20200119 rusiang  新增業外收支佔稅前淨利比 
   /* 20200124 rusiang  新增營業費用拆解表  
   /* 20200127 rusiang  新增業外收入拆解表  
+  /* 20200215 rusiang  簡明表依四率分類  
   /**********************************************************************************/  
   if (empty($_GET)) $_GET['company'] = '2330';
   echo "\"";
@@ -183,8 +184,14 @@
   /*********************************************************************************/
   /*【簡明表】                                              
   /*********************************************************************************/
+  $row_1 = "";
+  $row_2 = "";
+  $row_3 = "";
+  $row_4 = "";
+  $row_5 = "";
+  $row_6 = "";
 
-  /******************************************* 合併淨利 *******************************************/
+/*  // 合併淨利 
   $sql = "select this_y.col_name, this_y.value this_value, past_y.value past_value ".
          "from (select i.col_name, i.value ".
          "      from income_2 i ".
@@ -210,7 +217,7 @@
       $this_benefit = $row['this_value'];
       $past_benefit = $row['past_value'];
 
-      /******************************************* 綜合損益 *******************************************/
+      // 綜合損益 
       $sql = "select this_y.col_name, this_y.value this_value, past_y.value past_value ".
              "from (select i.col_name, i.value ".
              "      from income_2 i ".
@@ -233,46 +240,141 @@
       $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
  
       $this_sum_up = $row['this_value'];
-      $past_sum_up = $row['past_value'];
-      /******************************************* 全部欄位 *******************************************/
-      $sql = "select this_y.col_name, this_y.value this_value, past_y.value past_value, ".
-             "       round((this_y.value-past_y.value)/abs(past_y.value)*100,2) grow ".
-             "from (select i.col_name, i.value ".
-             "      from income_2 i ".
-             "      where 1=1 ".
-             "      and i.code = '".$_GET['company']."' ".
-             "      and i.year = '".$tYear."' ".
-             "      and i.season = '".$tSeason."') this_y, ".
-             "     (select i.col_name, i.value ".
-             "      from income_2 i ".
-             "      where 1=1 ".
-             "      and i.code = '".$_GET['company']."' ".
-             "      and i.year = '".$pYear."' ".
-             "      and i.season = '".$tSeason."') past_y ".
-             "where 1=1 ".
-             "and this_y.col_name = past_y.col_name ".
-             "order by this_y.col_name asc ";
+      $past_sum_up = $row['past_value'];*/
+  //簡明表細項 --------------------------------------------------------------------------
+  $sql = "select this_y.col_name, this_y.value this_value, past_y.value past_value, ".
+         "       round((this_y.value-past_y.value)/abs(past_y.value)*100,2) grow ".
+         "from (select i.col_name, i.value ".
+         "      from income_2 i ".
+         "      where 1=1 ".
+         "      and i.code = '".$_GET['company']."' ".
+         "      and i.year = '".$tYear."' ".
+         "      and i.season = '".$tSeason."') this_y, ".
+         "     (select i.col_name, i.value ".
+         "      from income_2 i ".
+         "      where 1=1 ".
+         "      and i.code = '".$_GET['company']."' ".
+         "      and i.year = '".$pYear."' ".
+         "      and i.season = '".$tSeason."') past_y ".
+         "where 1=1 ".
+         "and this_y.col_name = past_y.col_name ".
+         "order by this_y.col_name asc ";
     
-      echo "【簡明表】<br>";
-      echo "<div class='table100 ver1' id='monthlyTbl'>";
-      echo "  <table data-vertable='ver1'>";
-      echo "    <thead>";
-      echo "      <tr class='row100 head'>";
-      echo "        <th></th>";
-      echo "        <th>".$tYear.$tSeason."</th>";
-      echo "        <th>".$pYear.$tSeason."</th>";
-      echo "        <th>成長</th>";
-      echo "      </tr>";
-      echo "    </thead>";
-      echo "    <tbody>";
-      $result = $conn->query($sql);
-      $total_records = mysqli_num_rows($result);  // 取得記錄數
-      for ($i=0;$i<$total_records;$i++)
+  $result = $conn->query($sql);
+  $total_records = mysqli_num_rows($result);  // 取得記錄數
+  for ($i=0;$i<$total_records;$i++)
+  {
+      $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
+      if ($row['col_name'] == '營業收入' or 
+          $row['col_name'] == '營業毛利（毛損）' or
+          $row['col_name'] == '營業毛利（毛損）淨額')
+      { 
+          $row_1 .= getUpGroup($row['col_name'], $row['this_value'], $row['past_value'], $row['grow']);
+      }
+      else if ($row['col_name'] == '營業成本')
       {
-          $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
-          echo "<tr class='row100'>";
-          /************************ 『HighLight』紅色為投資亮點，綠色為投資風險 ************************/
-          /************************ 『HighLight』增加為亮點，減少為風險        ************************/
+          $row_1 .= getDownGroup($row['col_name'], $row['this_value'], $row['past_value'], $row['grow']); 
+      }  
+      else if ($row['col_name'] == '營業利益（損失）')
+      {
+          $row_2 .= getUpGroup($row['col_name'], $row['this_value'], $row['past_value'], $row['grow']);
+      }
+      else if ($row['col_name'] == '營業費用')
+      {
+          $row_2 .= getDownGroup($row['col_name'], $row['this_value'], $row['past_value'], $row['grow']); 
+      }
+      else if ($row['col_name'] == '稅前淨利（淨損）' or 
+               $row['col_name'] == '營業外收入及支出')
+      {
+          $row_3 .= getUpGroup($row['col_name'], $row['this_value'], $row['past_value'], $row['grow']);    
+      }
+      else if ($row['col_name'] == '本期淨利（淨損）')
+      {
+          $row_4 .= getUpGroup($row['col_name'], $row['this_value'], $row['past_value'], $row['grow']);    
+      }  
+      else if ($row['col_name'] == '所得稅費用（利益）')
+      {
+          $row_4 .= getDownGroup($row['col_name'], $row['this_value'], $row['past_value'], $row['grow']);  
+      }
+      else if ($row['col_name'] == '其他綜合損益（淨額）' or
+               $row['col_name'] == '基本每股盈餘（元）' or
+               $row['col_name'] == '本期綜合損益總額' or
+               $row['col_name'] == '淨利（淨損）歸屬於母公司業主' or
+               $row['col_name'] == '綜合損益總額歸屬於母公司業主' or
+               $row['col_name'] == '繼續營業單位本期淨利（淨損）')
+      {
+          $row_5 .= getUpGroup($row['col_name'], $row['this_value'], $row['past_value'], $row['grow']);     
+      } 
+      else 
+      {
+          $row_6 .= "<tr>";
+          $row_6 .= "<td>".$row['col_name']."</td>";
+          $row_6 .= "<td>".$row['this_value']."</td>";
+          $row_6 .= "<td>".$row['past_value']."</td>";
+          $row_6 .= "<td>".$row['grow']."</td>";
+          $row_6 .= "</tr>";
+      }
+  }
+  //毛利/營業利益/稅前利益/稅後利益 -------------------------------------------------------------------
+  $sql = "select this_y.grossRate     thisGross, ".
+         "       this_y.operatingRate thisOperating, ".
+         "       this_y.beforeTaxRate thisBeforeTax, ".
+         "       this_y.afterTaxRate  thisAfterTax, ".
+         "       past_y.grossRate     pastGross, ".
+         "       past_y.operatingRate pastOperating, ".
+         "       past_y.beforeTaxRate pastBeforeTax, ".
+         "       past_y.afterTaxRate  pastAfterTax ".
+         "from ".
+         "( ".
+         "  select i.* ".
+         "  from income i ".
+         "  where 1=1 ".
+         "  and i.code = '".$_GET['company']."' ".
+         "  and i.year = '".$tYear."' ".
+         "  and i.season = '".$tSeason."' ".
+         ") this_y, ".
+         "( ".
+         "  select i.* ".
+         "  from income i ".
+         "  where 1=1 ".
+         "  and i.code = '".$_GET['company']."' ".
+         "  and i.year = '".$pYear."' ".
+         "  and i.season = '".$tSeason."' ".
+         ") past_y ".
+         "where 1=1 ".
+         "and this_y.code = past_y.code ";
+  $result = $conn->query($sql);
+  $total_records = mysqli_num_rows($result);  // 取得記錄數
+  for ($i=0;$i<$total_records;$i++)
+  {
+      $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
+      $row_1 .= "<tr>";
+      $row_1 .= "<td>毛利率</td>";
+      $row_1 .= "<td>".$row['thisGross']."</td>";
+      $row_1 .= "<td>".$row['pastGross']."</td>";
+      $row_1 .= "<td>".($row['thisGross'] - $row['pastGross'])."</td>";
+      $row_1 .= "</tr>";
+      $row_2 .= "<tr>";
+      $row_2 .= "<td>營業利益率</td>";
+      $row_2 .= "<td>".$row['thisOperating']."</td>";
+      $row_2 .= "<td>".$row['pastOperating']."</td>";
+      $row_2 .= "<td>".($row['thisOperating'] - $row['pastOperating'])."</td>";
+      $row_2 .= "</tr>";
+      $row_3 .= "<tr>";
+      $row_3 .= "<td>稅前利益率</td>";
+      $row_3 .= "<td>".$row['thisBeforeTax']."</td>";
+      $row_3 .= "<td>".$row['pastBeforeTax']."</td>";
+      $row_3 .= "<td>".($row['thisBeforeTax'] - $row['pastBeforeTax'])."</td>";
+      $row_3 .= "</tr>";
+      $row_4 .= "<tr>";
+      $row_4 .= "<td>稅後利益率</td>";
+      $row_4 .= "<td>".$row['thisAfterTax']."</td>";
+      $row_4 .= "<td>".$row['pastAfterTax']."</td>";
+      $row_4 .= "<td>".($row['thisAfterTax'] - $row['pastAfterTax'])."</td>";
+      $row_4 .= "</tr>"; 
+  }
+  
+      /*echo "<tr>";
           if ($row['col_name'] == '營業毛利（毛損）' or $row['col_name'] == '營業利益（損失）' 
            or $row['col_name'] == '營業外收入及支出' or $row['col_name'] == '本期綜合損益總額'
            or $row['col_name'] == '本期淨利（淨損）' or $row['col_name'] == '淨利（淨損）歸屬於母公司業主'
@@ -284,7 +386,6 @@
               else
                   echo "  <td><font color='green'>".$row['col_name']."</td>";
           }
-          /************************ 『HighLight』減少為亮點，增加為風險        ************************/
           else if ($row['col_name'] == '營業費用' or $row['col_name'] == '所得稅費用（利益）'
                 or $row['col_name'] == '營業成本')
           {
@@ -296,7 +397,6 @@
           else 
               echo "  <td>".$row['col_name']."</td>";
 
-          /************************ 『Comment』歸屬比例 ********************************************/
           if ($row['col_name'] == '淨利（淨損）歸屬於母公司業主')
           {
               echo "  <td>".$row['this_value']."(".round($row['this_value']/$this_benefit*100,2)."%)</td>";      
@@ -322,13 +422,35 @@
               echo "  <td>".$row['this_value']."</td>";      
               echo "  <td>".$row['past_value']."</td>";
           }
-          echo getRateTd($row['grow']);
-          echo "</tr>";      
-      }
-      echo "    </tbody>";
-      echo "  </table>";
-      echo "</div>";
-  }
+          echo getRateTd($row['grow']); 
+          echo "</tr>";*/
+  echo "【簡明表】<br>";
+  echo "<div class='table100 ver1' id='monthlyTbl'>";
+  echo "  <table data-vertable='ver1'>";
+  echo "    <thead>";
+  echo "      <tr class='row100 head'>";
+  echo "        <th></th>";
+  echo "        <th>".$tYear.$tSeason."</th>";
+  echo "        <th>".$pYear.$tSeason."</th>";
+  echo "        <th>成長</th>";
+  echo "      </tr>";
+  echo "    </thead>";
+  echo "    <tbody>"; 
+  echo "<tr><td>【營業毛利】</td><td></td><td></td><td></td></tr>";
+  echo $row_1;
+  echo "<tr><td>【營業利益】</td><td></td><td></td><td></td></tr>";
+  echo $row_2;
+  echo "<tr><td>【稅前利益】</td><td></td><td></td><td></td></tr>";
+  echo $row_3;
+  echo "<tr><td>【稅後利益】</td><td></td><td></td><td></td></tr>";
+  echo $row_4;
+  echo "<tr><td>【綜合損益】</td><td></td><td></td><td></td></tr>";
+  echo $row_5;
+  echo $row_6;
+  echo "    </tbody>";
+  echo "  </table>";
+  echo "</div>";
+ // }
   /*********************************************************************************/
   /*【營業費用拆解】                                              
   /*********************************************************************************/

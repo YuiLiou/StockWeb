@@ -464,7 +464,7 @@
   for ($i=0;$i<$total_records;$i++)
   {
       $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
-      echo "  <tr class='row100'>";
+      echo "  <tr>";
       echo "    <td>".$row['col_name']."</td>";  
       echo "    <td>".$row['this_value']."</td>";      
       echo "    <td>".$row['past_value']."</td>";
