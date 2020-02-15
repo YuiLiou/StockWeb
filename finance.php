@@ -27,7 +27,7 @@
       <button id="priceBtn">股價</button>
       <button id="peBtn">本益比河流</button>
       <button id="legalsBtn">三大法人</button>
-      <button id="newsBtn">新聞</button>
+      <button id="newsBtn">集保＆新聞</button>
       <button id="monthlyBtn">月營收</button>
       <button id="incomeBtn">營益分析表</button>
       <button id="income2Btn">綜合損益表</button>

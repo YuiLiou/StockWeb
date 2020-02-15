@@ -244,18 +244,22 @@
   //簡明表細項 --------------------------------------------------------------------------
   $sql = "select this_y.col_name, this_y.value this_value, past_y.value past_value, ".
          "       round((this_y.value-past_y.value)/abs(past_y.value)*100,2) grow ".
-         "from (select i.col_name, i.value ".
-         "      from income_2 i ".
-         "      where 1=1 ".
-         "      and i.code = '".$_GET['company']."' ".
-         "      and i.year = '".$tYear."' ".
-         "      and i.season = '".$tSeason."') this_y, ".
-         "     (select i.col_name, i.value ".
-         "      from income_2 i ".
-         "      where 1=1 ".
-         "      and i.code = '".$_GET['company']."' ".
-         "      and i.year = '".$pYear."' ".
-         "      and i.season = '".$tSeason."') past_y ".
+         "from ( ".
+         "  select i.col_name, i.value ".
+         "  from income_2 i ".
+         "  where 1=1 ".
+         "  and i.code = '".$_GET['company']."' ".
+         "  and i.year = '".$tYear."' ".
+         "  and i.season = '".$tSeason."' ".
+         ") this_y, ".
+         "( ".
+         "  select i.col_name, i.value ".
+         "  from income_2 i ".
+         "  where 1=1 ".
+         "  and i.code = '".$_GET['company']."' ".
+         "  and i.year = '".$pYear."' ".
+         "  and i.season = '".$tSeason."' ".
+         ") past_y ".
          "where 1=1 ".
          "and this_y.col_name = past_y.col_name ".
          "order by this_y.col_name asc ";
@@ -461,7 +465,9 @@
   /*********************************************************************************/
   echo "【業外收入拆解】<br>";
   echo "<canvas id='outOfBusinessChart'></canvas>";
-  /////////////////////////////////////『指標說明』/////////////////////////////////////
+  /*********************************************************************************/
+  /*【指標說明】                                              
+  /*********************************************************************************/
   echo "*********************************************************************<br>";
   echo "【指標說明】                                                           <br>";
   echo "本期綜合損益總額 = 綜合損益總額歸屬於母公司業主 + 綜合損益總額歸屬於非控制權益  <br>";

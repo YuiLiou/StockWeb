@@ -9,10 +9,11 @@
   require_once('commonFunc.php');
   if (empty($_GET)) {$_GET['company'] = '2330';}
   echo "\"";
-  echo "【平均買賣超】<br>";
+
   /*********************************************************************************/
   /*『SQL』30日累計買賣超                                                                      
   /*********************************************************************************/
+  echo "【平均買賣超】<br>";
   echo "<div class='table100 ver1 m-b-110' id='monthlyTbl' style='height:500px;'>";
   echo "<table data-vertable='ver1'>";
   echo "<thead>".
