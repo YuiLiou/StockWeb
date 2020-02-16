@@ -65,6 +65,7 @@ $('#legalsBtn').click(function() {
 $('#newsBtn').click(function() {
     document.getElementById('viewChart').innerHTML = "";
     document.getElementById('viewTable').innerHTML = <?php include 'individual/newsList.php'; ?>;
+    <?php include 'individual/shareRatioChart.php'; ?>
 });
 /////////////////////// 月營收 ///////////////////////
 $('#monthlyBtn').click(function() {    
