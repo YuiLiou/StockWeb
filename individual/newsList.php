@@ -11,8 +11,8 @@
   /*********************************************************************************/
   echo "【集保統計】<br>";
   $sql = "select a.*, ".
-         "       round((n_all-n_400)/(p_all-p_400),2) np_400_minus, ".
-         "       round((n_400)/(p_400),2) np_400 ".
+         "       (p_all-p_400) p_400_minus, ".
+         "       (100-r_400) r_400_minus ".
          "from ".
          "( ".
          "  select distinct s.date, ".
@@ -85,7 +85,15 @@
          "      where 1=1 ".
          "      and code = s.code ".
          "      and date = s.date ".
-         "    ) n_all ".
+         "    ) n_all, ".
+         //   股價
+         "    ( ".
+         "      select price ".
+         "      from prices ".
+         "      where 1=1 ".
+         "      and code = s.code ".
+         "      and date = s.date ".
+         "    ) price ".
          "  from share_ratio s ".
          "  where code = '".$_GET['company']."' ".
          "  order by date desc ".
@@ -96,9 +104,10 @@
   echo "<thead>".
          "<tr class='row100 head'>".
            "<th>日期</th>".
+           "<th>股價</th>".
            "<th>股東總人數</th>".
-           "<th>散戶平均持有張數</th>".
-           "<th>大戶平均持有張數</th>".
+           "<th>散戶人數</th>".
+           "<th>散戶比例</th>".
            "<th>400張股東持有張數</th>".
            "<th>400張股東持有比例</th>".
            "<th>400張股東人數</th>".
@@ -115,9 +124,10 @@
       $row = mysqli_fetch_assoc($result); 
       echo "<tr class='row100'>";
       echo "<td>".$row['date']."</td>";
+      echo "<td>".$row['price']."</td>";
       echo "<td>".$row['p_all']."</td>";
-      echo "<td>".$row['np_400_minus']."</td>";
-      echo "<td>".$row['np_400']."</td>";
+      echo "<td>".$row['p_400_minus']."</td>";
+      echo "<td>".$row['r_400_minus']."</td>";
       echo "<td>".$row['n_400']."</td>";
       echo "<td>".$row['r_400']."</td>";
       echo "<td>".$row['p_400']."</td>";
