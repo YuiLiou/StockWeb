@@ -8,7 +8,7 @@
   require_once('db.php');
   echo "\"";
   /*********************************************************************************/
-  /* 日期下拉式選單跳轉的部份
+  /* 日期下拉式選單跳轉
   /*********************************************************************************/
   echo "  <input type='hidden' name='type' value='price'>";
   echo "</form>";
@@ -34,27 +34,53 @@
   $pYear = (string)((int)substr($_POST['date'],0,4)-1);
   $tRocYear = (string)((int)substr($_POST['date'],0,4)-1911);
 
-  $sql = "select m.code, m.company, p.price, p.date, p.change, p.moving, p.PE, ".
-         "round(ma5.value,2) ma5, round(ma20.value,2) ma20,".
-         "round((d.cash/p.price)*100,2) dividend, ".
-         "f.foreigner ".
-         "from prices p, company_map m, dividend d, ".
-         "(select code, date, value from ma where span=5) ma5, ".
-         "(select code, date, value from ma where span=20) ma20, ".
-         "(select code, date, foreigner from legals) f ".
+  $sql = "select p.code, ".
+         "       p.price, ".
+         "       p.date, ".
+         "       p.change, ".
+         "       p.moving, ".
+         "       p.PE, ".
+         "       ( ".
+         "         select company ".
+         "         from company_map ".
+         "         where 1=1 ".
+         "         and code = p.code ".
+         "       )company, ".
+         "       ( ".
+         "         select value ".
+         "         from ma ".
+         "         where 1=1 ".
+         "         and span = 5 ".
+         "         and code = p.code ".
+         "         and date = p.date ".
+         "       )ma5, ".
+         "       ( ".
+         "         select value ".
+         "         from ma ".
+         "         where 1=1 ".
+         "         and span = 20 ".
+         "         and code = p.code ".
+         "         and date = p.date ".
+         "       )ma20, ".
+         "       ( ".
+         "         select round((cash/p.price)*100,2) ".
+         "         from dividend ".
+         "         where 1=1 ".
+         "         and code = p.code ".
+         "         order by year desc ".
+         "         limit 0,1 ".
+         "       )dividend, ". 
+         "       ( ".
+         "         select foreigner ".
+         "         from legals ".
+         "         where 1=1 ".
+         "         and code = p.code ".
+         "         and date = p.date ".
+         "       )foreigner ". 
+         "from prices p ".
          "where 1=1 ".
-         "and m.code in ('".$codes."') ".
-         "and m.code = p.code ".
-         "and m.code = ma5.code ".
-         "and m.code = ma20.code ".
-         "and m.code = d.code ".
-         "and m.code = f.code ".
-         "and p.date = '".$_POST['date']."' ".
-         "and p.date = ma5.date ".
-         "and p.date = ma20.date ".
-         "and p.date = f.date ".
-         "and d.year = (select year from dividend order by year desc limit 0,1) ".
-//       "and d.year = '".$pYear."' ".
+         "and p.code in ('".$codes."') ".
+         "and p.date = '".$_POST['date']."' ".        
          "order by p.moving desc ";
 
   $result = $conn->query($sql);    
