@@ -68,7 +68,7 @@
   foreach ($result as $row)
   {  
       echo  "<tr class='row100'>";
-      echo  "  <td><a href=finance.php?company=".$row['code'].">".$row['company']."(".$row['code'].")</a></td>";
+      echo  "  <td><a href=price.php?company=".$row['code'].">".$row['company']."(".$row['code'].")</a></td>";
       echo    "<td>".$row['col_name']."</td>";
       echo    "<td>".$row['v1']."</td>";
       echo    "<td>".$row['v2']."</td>";

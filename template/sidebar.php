@@ -12,7 +12,7 @@
   echo "<ul>";
   foreach ($result as $row)
   {
-      echo "<li><a href='finance.php?company=".$row['code']."'>".$row['company']." (".$row['code'].")</a></li>";
+      echo "<li><a href='price.php?company=".$row['code']."'>".$row['company']." (".$row['code'].")</a></li>";
   }
   echo "</ul>";
   echo "</nav>";

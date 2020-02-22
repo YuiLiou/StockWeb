@@ -106,7 +106,7 @@
   foreach ($result as $row)
   {  
       echo  "<tr class='row100'>";
-      echo  "  <td><a href=finance.php?company=".$row['code'].">".$row['company']."</a></td>";
+      echo  "  <td><a href=price.php?company=".$row['code'].">".$row['company']."</a></td>";
       echo    "<td>".$row['price']."</td>";
       echo    "<td>".round($row['dividend'],2)."%</td>";
       echo    "<td>".$row['PE']."</td>";

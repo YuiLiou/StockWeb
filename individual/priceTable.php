@@ -5,7 +5,6 @@
   /* 20200112 rusiang  Created
   /* 20200118 rusiang  統計增加高低差/殖利率/淨值比
   /**********************************************************************************/  
-  require_once('commonFunc.php');
   if (empty($_GET)) $_GET['company'] = '2330';
   echo "\"";  
   echo "<div class='table100 ver1' id='monthlyTbl'>".

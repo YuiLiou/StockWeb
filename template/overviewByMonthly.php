@@ -82,7 +82,7 @@
   $result = $conn->query($sql);
   foreach ($result as $row){
     echo  "<tr class='row100'>";
-    echo  "  <td><a href=finance.php?company=".$row['code'].">".$row['company']."(".$row['code'].")</a></td>";
+    echo  "  <td><a href=price.php?company=".$row['code'].">".$row['company']."(".$row['code'].")</a></td>";
     echo  "  <td>".$row['current']."</td>";
     echo     getRateTd($row['MoM']); // 月增率
     echo     getRateTd($row['YoY']); // 年增率   

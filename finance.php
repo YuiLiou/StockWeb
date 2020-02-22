@@ -22,20 +22,7 @@
 
 <!--/////////////////////// 主頁面 ///////////////////////-->
   <div id="main">
-    <?php include 'individual/subTitle.php'; ?>  
-    <div class="btn-group">
-      <button id="priceBtn">股價</button>
-      <button id="peBtn">本益比河流</button>
-      <button id="legalsBtn">三大法人</button>
-      <button id="newsBtn">集保＆新聞</button>
-      <button id="monthlyBtn">月營收</button>
-      <button id="incomeBtn">營益分析表</button>
-      <button id="income2Btn">綜合損益表</button>
-      <button id="propertyBtn">資產負債表</button>
-      <button id="cashFlowBtn">現金流量表</button>
-      <button id="epsBtn">每股盈餘</button>
-      <button id="dividendBtn">股利政策</button>
-    </div>    
+    <?php include 'individual/subTitle.php'; ?> 
     <div id="viewChart"></div> 
     <div id="viewTable"></div>    
   </div>  

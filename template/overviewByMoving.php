@@ -88,7 +88,7 @@
   {   
     echo  "<tr class='row100'>";
     // 公司
-    echo  "  <td><a href=finance.php?company=".$row['code'].">".$row['company']."(".$row['code'].")</a></td> ";
+    echo  "  <td><a href=price.php?company=".$row['code'].">".$row['company']."(".$row['code'].")</a></td> ";
     // 收盤價
     echo  "  <td>".$row['price']."<a href='https://doc.twse.com.tw/server-java/t57sb01?step=1&colorchg=1&co_id=".$row['code']."&year=".$tRocYear."&seamon=&mtype=A&'>（財報）</a></td> ";
     // 漲跌
