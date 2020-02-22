@@ -85,6 +85,7 @@
          "      where 1=1 ".
          "      and code = s.code ".
          "      and date = s.date ".
+         "      and rank not in ('合　計') ".
          "    ) p_all, ".
          //   總張數
          "    ( ". 
@@ -93,6 +94,7 @@
          "      where 1=1 ".
          "      and code = s.code ".
          "      and date = s.date ".
+         "      and rank not in ('合　計') ".
          "    ) n_all, ".
          //   股價
          "    ( ".

@@ -33,7 +33,7 @@
                         fill: false,                        
                         backgroundColor: '#7441AA',
                         borderColor: '#7441AA',
-                        pointRadius: 10,
+                        pointRadius: 5,
                         borderWidth: 5,
                         data: grossRate,
                         yAxisID: 'y-axis-1'
@@ -42,7 +42,7 @@
                         fill: false,                        
                         backgroundColor: '#99BD51',
                         borderColor: '#99BD51',
-                        pointRadius: 10,
+                        pointRadius: 5,
                         borderWidth: 5,
                         data: operatingRate,
                         yAxisID: 'y-axis-1'
@@ -51,7 +51,7 @@
                         fill: false,                        
                         backgroundColor: '#312B73',
                         borderColor: '#312B73',
-                        pointRadius: 10,
+                        pointRadius: 5,
                         borderWidth: 5,
                         data: beforeTaxRate,
                         yAxisID: 'y-axis-1'
@@ -60,7 +60,7 @@
                         fill: false,                        
                         backgroundColor: '#0D2611',
                         borderColor: '#0D2611',
-                        pointRadius: 10,
+                        pointRadius: 5,
                         borderWidth: 5,
                         data: afterTaxRate,
                         yAxisID: 'y-axis-1'
@@ -69,7 +69,7 @@
                         fill: false,                        
                         backgroundColor: '#ff6600',
                         borderColor: '#ff6600',
-                        pointRadius: 10,
+                        pointRadius: 5,
                         borderWidth: 5,
                         data: income,
                         yAxisID: 'y-axis-2'

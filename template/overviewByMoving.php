@@ -1,4 +1,9 @@
 <?php
+  /**********************************************************************************/
+  /* Date     Author   ChangeList
+  /* --------------------------------------------------------------------------------  
+  /* 20200222 rusiang  比較週線/月線漲幅 
+  /**********************************************************************************/
   require_once('commonFunc.php');
   require_once('db.php');
   echo "\"";
@@ -56,13 +61,27 @@
   foreach ($result as $row)
   {   
     echo  "<tr class='row100'>";
+    // 公司
     echo  "  <td><a href=finance.php?company=".$row['code'].">".$row['company']."(".$row['code'].")</a></td> ";
+    // 收盤價
     echo  "  <td>".$row['price']."<a href='https://doc.twse.com.tw/server-java/t57sb01?step=1&colorchg=1&co_id=".$row['code']."&year=".$tRocYear."&seamon=&mtype=A&'>（財報）</a></td> ";
+    // 漲跌
     echo  getPriceMovingTd($row['change'], $row['moving']);
+    // 本益比
     echo  "  <td>".$row['PE']."<a href='https://doc.twse.com.tw/server-java/t57sb01?step=1&colorchg=1&co_id=".$row['code']."&year=".$tRocYear."&mtype=F&'>（股東會）</a></td>";
+    // 殖利率
     echo  "  <td><a href='https://tw.stock.yahoo.com/d/s/dividend_".$row['code'].".html'>".$row['dividend']."%</a></td>";
-    echo  "  <td>".$row['ma5']."<a href='https://norway.twsthr.info/StockHolders.aspx?stock=".$row['code']."'>（集保）</a></td>";
-    echo  "  <td>".$row['ma20']."</td>";
+    // 週線
+    if ($row['price'] >= $row['ma5'])
+        echo "<td><a href='https://norway.twsthr.info/StockHolders.aspx?stock=".$row['code']."'>（集保）</a><font color='red'>↑".round($row['price']-$row['ma5'],2)."元</td>";
+    else
+        echo "<td><a href='https://norway.twsthr.info/StockHolders.aspx?stock=".$row['code']."'>（集保）</a><font color='green'>↓".round($row['ma5']-$row['price'],2)."元</td>";
+    // 月線
+    if ($row['price'] >= $row['ma20'])
+        echo "<td><font color='red'>↑".round($row['price']-$row['ma20'],2)."元</td>";
+    else
+        echo "<td><font color='green'>↓".round($row['ma20']-$row['price'],2)."元</td>";
+    // 法人
     echo  getLegalsTd($row['foreigner']);
     echo  "</tr>";  
   }

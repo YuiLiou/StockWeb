@@ -47,9 +47,9 @@
   function getPriceMovingTd($change, $moving)
   {
       if ($change > 0)
-          return "<td class='up'>+".$change."(".$moving."%)</td>";
+          return "<td class='up'>↑".$change."元(".$moving."%)</td>";
       else if ($change < 0)
-          return "<td class='down'>".$change."(".$moving."%)</td>";
+          return "<td class='down'>↓".(-1*$change)."元(".$moving."%)</td>";
       else
           return "<td>0 (0%)</td>";
   }
