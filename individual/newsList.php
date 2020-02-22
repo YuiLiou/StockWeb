@@ -4,6 +4,7 @@
   /* --------------------------------------------------------------------------------  
   /* 20200215 rusiang  新增集保統計 
   /* 20200216 rusiang  新增大股東比例 
+  /* 20200222 rusiang  大股東持有比例上色 
   /**********************************************************************************/    
   if (empty($_GET)) $_GET['company'] = '2330';
   echo "\"";    
@@ -15,12 +16,12 @@
   echo "<canvas id='shareRatioChart'></canvas>";  
 
   /*********************************************************************************/
-  /*『SQL』集保統計                                                                      
+  /*【集保統計】
   /*********************************************************************************/
   echo "【集保統計】<br>";
   $sql = "select a.*, ".
          "       (p_all-p_400) p_400_minus, ".
-         "       (100-r_400) r_400_minus ".
+         "       (100-r_400_up) r_400_minus ".
          "from ".
          "( ".
          "  select distinct s.date, ".
@@ -33,6 +34,15 @@
          "      and date = s.date ".
          "      and rank in ('400001-600000','600001-800000','800001-1000000','1000001以上') ".
          "    ) n_400, ".
+         //   >400張股東人數
+         "    ( ". 
+         "      select sum(person) ".
+         "      from share_ratio ".
+         "      where 1=1 ".
+         "      and code = s.code ".
+         "      and date = s.date ".
+         "      and rank in ('400001-600000','600001-800000','800001-1000000','1000001以上') ".
+         "    ) p_400, ".
          //   >400張股東持有比例
          "    ( ". 
          "      select round(sum(rate),2) ".
@@ -41,43 +51,43 @@
          "      and code = s.code ".
          "      and date = s.date ".
          "      and rank in ('400001-600000','600001-800000','800001-1000000','1000001以上') ".
-         "    ) r_400, ".
-         //   >400張股東人數
+         "    ) r_400_up, ".
+         //   400-600張持有比例
          "    ( ".   
-         "      select sum(person) ".
+         "      select round(sum(rate),2) ".
          "      from share_ratio ".
          "      where 1=1 ".
          "      and code = s.code ".
          "      and date = s.date ".
-         "      and rank in ('400001-600000','600001-800000','800001-1000000','1000001以上') ".
-         "    ) p_400, ". 
-         //   600-800張股東人數
+         "      and rank in ('400001-600000') ".
+         "    ) r_400, ". 
+         //   600-800張持有比例
          "    ( ". 
-         "      select sum(person) ".
+         "      select round(sum(rate),2) ".
          "      from share_ratio ".
          "      where 1=1 ".
          "      and code = s.code ".
          "      and date = s.date ".
          "      and rank in ('600001-800000') ".
-         "    ) p_600, ". 
-         //   800-1000張股東人數
+         "    ) r_600, ". 
+         //   800-1000張持有比例
          "    ( ". 
-         "      select sum(person) ".
+         "      select round(sum(rate),2) ".
          "      from share_ratio ".
          "      where 1=1 ".
          "      and code = s.code ".
          "      and date = s.date ".
          "      and rank in ('800001-1000000') ".
-         "    ) p_800, ". 
-         //   >1000張股東人數
+         "    ) r_800, ". 
+         //   >1000張持有比例
          "    ( ". 
-         "      select sum(person) ".
+         "      select round(sum(rate),2) ".
          "      from share_ratio ".
          "      where 1=1 ".
          "      and code = s.code ".
          "      and date = s.date ".
          "      and rank in ('1000001以上') ".
-         "    ) p_1000, ". 
+         "    ) r_1000, ". 
          //   股東總人數
          "    ( ". 
          "      select sum(person) ".
@@ -119,31 +129,38 @@
            "<th>散戶人數</th>".
            "<th>散戶比例</th>".
            "<th>400張股東持有張數</th>".
-           "<th>400張股東持有比例</th>".
-           "<th>400張股東人數</th>".
-           "<th>600-800張股東人數</th>".
-           "<th>800-1000張股東人數</th>".
-           "<th>1000張股東人數</th>". 
+           "<th>400張以上持有比例</th>".
+           "<th>400-600張持有比例</th>".
+           "<th>600-800張持有比例</th>".
+           "<th>800-1000張持有比例</th>".
+           "<th>1000張持有比例</th>". 
          "</tr>".
        "</thead>";
   echo "<tbody>";
+  // 現在集保 ------------------------------------------------------
   $result = $conn->query($sql);
   $total_records = mysqli_num_rows($result);  // 取得記錄數
-  for ($i=0;$i<$total_records;$i++)
+  // 上週集保 ------------------------------------------------------
+  $result_past = $conn->query($sql);
+  mysqli_fetch_assoc($result_past); 
+  // --------------------------------------------------------------
+  for ($i=0;$i<$total_records-1;$i++)
   { 
-      $row = mysqli_fetch_assoc($result); 
+      $row      = mysqli_fetch_assoc($result);
+      $row_past = mysqli_fetch_assoc($result_past); 
+      
       echo "<tr class='row100'>";
       echo "<td>".$row['date']."</td>";
-      echo "<td>".$row['price']."</td>";
-      echo "<td>".$row['p_all']."</td>";
-      echo "<td>".$row['p_400_minus']."</td>";
-      echo "<td>".$row['r_400_minus']."</td>";
-      echo "<td>".$row['n_400']."</td>";
-      echo "<td>".$row['r_400']."</td>";
-      echo "<td>".$row['p_400']."</td>";
-      echo "<td>".$row['p_600']."</td>";
-      echo "<td>".$row['p_800']."</td>";
-      echo "<td>".$row['p_1000']."</td>";
+      echo getShareRatio($row['price']   , $row_past['price']);     
+      echo "<td>".$row['p_all']."</td>";                             // 股東總人數
+      echo "<td>".$row['p_400_minus']."</td>";                       // 散戶人數
+      echo "<td>".$row['r_400_minus']."</td>";                       // 散戶比例
+      echo getShareRatio($row['n_400']   , $row_past['n_400']);      // 大戶張數
+      echo getShareRatio($row['r_400_up'], $row_past['r_400_up']);   // 大戶比例
+      echo getShareRatio($row['r_400']   , $row_past['r_400']);      // 400張比例
+      echo getShareRatio($row['r_600']   , $row_past['r_600']);      // 600張比例
+      echo getShareRatio($row['r_800']   , $row_past['r_800']);      // 800張比例
+      echo getShareRatio($row['r_1000']  , $row_past['r_1000']);     // 1000張比例
       echo "</tr>";
   }
   echo "    </tbody>";

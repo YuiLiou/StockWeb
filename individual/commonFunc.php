@@ -1,4 +1,14 @@
 <?php
+  /*************************比較集保增長**********************************/
+  function getShareRatio($this_value, $past_value)
+  {
+      if ($this_value > $past_value)
+          echo "<td><font color='red'>".$this_value."</td>";
+      else if ($this_value == $past_value)
+          echo "<td>".$this_value."</td>";
+      else 
+          echo "<td><font color='green'>".$this_value."</td>";
+  } 
   /*************************漲跌率**********************************/
   function getRateTd($value)
   {
