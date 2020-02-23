@@ -24,7 +24,6 @@
   <div id="main">
     <?php include 'individual/subTitle.php'; ?> 
     <div id="viewTable"></div> 
-    <div id="viewChart"></div> 
   </div>  
 
 <script type="text/javascript" src="js/jquery.min.js"></script>
@@ -33,7 +32,6 @@
 <script>
 window.onload = function() 
 {
-  document.getElementById('viewChart').innerHTML = "";
   document.getElementById('viewTable').innerHTML = <?php include 'individual/newsList.php'; ?>;
   <?php include 'individual/shareRatioChart.php'; ?>
 };

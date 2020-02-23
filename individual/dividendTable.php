@@ -1,7 +1,11 @@
 <?php
-  if (empty($_GET))
-      $_GET['company'] = '2330';
-
+  if (empty($_GET)) $_GET['company'] = '2330';
+  echo "\"";
+  /*********************************************************************************/
+  /*【股利政策】                                                                     
+  /*********************************************************************************/
+  echo "【股利政策】<br>";
+  
   $sql = "select d.*, ".
          "       (case ".
          "           when (d.cash = 0) then 0 ".
@@ -20,7 +24,7 @@
   $total_records = mysqli_num_rows($result);  // 取得記錄數
 
   /////////////////////////// 標題 /////////////////////////// 
-  echo "\"<div class='table100 ver1' id='monthlyTbl'>".
+  echo "<div class='table100 ver1' id='monthlyTbl'>".
        "<table data-vertable='ver1'>".
        "<thead>".
          "<tr class='row100 head'>".

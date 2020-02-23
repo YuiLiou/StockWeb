@@ -17,7 +17,7 @@
          "order by year desc, season desc ";
   $result = $conn->query($sql);
 
-  echo "<form action='finance.php?company=".$_GET['company']."' method='POST'>";    
+  echo "<form action='cashFlow.php?company=".$_GET['company']."' method='POST'>";    
   echo "    <select id='slct' name='season' onchange='this.form.submit()'>";  
   foreach ($result as $row)
   {

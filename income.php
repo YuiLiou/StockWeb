@@ -23,7 +23,6 @@
 <!--/////////////////////// 主頁面 ///////////////////////-->
   <div id="main">
     <?php include 'individual/subTitle.php'; ?> 
-    <div id="viewChart"></div> 
     <div id="viewTable"></div>    
   </div>  
 
@@ -33,7 +32,6 @@
 <script>
 window.onload = function() 
 {
-  document.getElementById('viewChart').innerHTML = "<canvas id='myChart'></canvas>";   
   document.getElementById('viewTable').innerHTML = <?php include 'individual/incomeTable.php'?>;
   <?php include 'individual/incomeChart.php'; ?>
 };
