@@ -1,10 +1,13 @@
    $.ajax({
         url: "info/price.php",
         <?php
-            if (empty($_GET))
-                echo "data:{'company':'2330'},";
-            else
-                echo "data:{'company':'".$_GET['company']."'},"
+            if (empty($_GET))            
+                echo "data:{'company':'2330'},";            
+            else                            
+                if (isset($_GET['days']))
+                    echo "data:{'company':'".$_GET['company']."','days':'".$_GET['days']."'},"; 
+                else
+                    echo "data:{'company':'".$_GET['company']."'},";            
         ?>        
         contentType: "application/json",
         dataType: "json",         
