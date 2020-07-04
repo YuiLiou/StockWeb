@@ -27,17 +27,17 @@
 
   ///////////////////////////////////// 公司列表 /////////////////////////////////////
   echo "<div class='table100 ver1 m-b-110' id='monthlyTbl'>";
-  echo "  <table data-vertable='ver1'>";
+  echo "  <table data-vertable='ver1' id='myTable'>";
   echo "    <thead>";
   echo "      <tr class='row100 head'>";
-  echo "        <th>公司</th>";
-  echo "        <th>月營收</th>";
-  echo "        <th>月增率</th>";
-  echo "        <th>年增率</th>";
-  echo "        <th>累計營收</th>"; 
-  echo "        <th>累計年增率</th>";
-  echo "        <th>季營收</th>";
-  echo "        <th>季成長</th>";
+  echo "        <th onclick='sortTable(0)'>公司</th>";
+  echo "        <th onclick='sortTable(1)'>月營收</th>";
+  echo "        <th onclick='sortTable(2)'>月增率</th>";
+  echo "        <th onclick='sortTable(3)'>年增率</th>";
+  echo "        <th onclick='sortTable(4)'>累計營收</th>"; 
+  echo "        <th onclick='sortTable(5)'>累計年增率</th>";
+  echo "        <th onclick='sortTable(6)'>季營收</th>";
+  echo "        <th onclick='sortTable(7)'>季成長</th>";
   echo "      </tr>";
   echo "    </thead>";
   echo "    <tbody>";  

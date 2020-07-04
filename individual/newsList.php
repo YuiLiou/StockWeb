@@ -20,8 +20,8 @@
   /*********************************************************************************/
   echo "【集保統計】<br>";
   $sql = "select a.*, ".
-         "       (p_all-p_400) p_400_minus, ".
-         "       (100-r_400_up) r_400_minus ".
+         "       (p_all-p_400) p_400_minus, ". // 散戶人數
+         "       (100-r_400_up) r_400_minus ". // 散戶比例
          "from ".
          "( ".
          "  select distinct s.date, ".
@@ -112,7 +112,9 @@
          "      from prices ".
          "      where 1=1 ".
          "      and code = s.code ".
-         "      and date = s.date ".
+         "      and date <= s.date ".
+         "      order by date desc ".
+         "      limit 0,1 ".
          "    ) price ".
          "  from share_ratio s ".
          "  where code = '".$_GET['company']."' ".

@@ -15,18 +15,18 @@
   /*********************************************************************************/
   
   ///////////////////////////////////// 公司列表 /////////////////////////////////////
-  echo "<div class='table100 ver1 m-b-110' id='monthlyTbl'>";
-  echo "  <table data-vertable='ver1'>";
+  echo "<div class='table100 ver1 m-b-110'>";
+  echo "  <table data-vertable='ver1' id='myTable'>";
   echo "    <thead>";
   echo "      <tr class='row100 head'>";
-  echo "        <th>公司</th>";
-  echo "        <th>收盤</th>";
-  echo "        <th>漲跌</th>";
-  echo "        <th>本益比</th>";
-  echo "        <th>殖利率</th>";
-  echo "        <th>週線</th>";
-  echo "        <th>月線</th>";
-  echo "        <th>法人</th>"; 
+  echo "        <th onclick='sortTable(0)'>公司</th>";
+  echo "        <th onclick='sortTable(1)'>收盤</th>";
+  echo "        <th onclick='sortTable(2)'>漲跌</th>";
+  echo "        <th onclick='sortTable(3)'>本益比</th>";
+  echo "        <th onclick='sortTable(4)'>殖利率</th>";
+  echo "        <th onclick='sortTable(5'>週線</th>";
+  echo "        <th onclick='sortTable(6)'>月線</th>";
+  echo "        <th onclick='sortTable(7)'>法人</th>";
   echo "      </tr>";
   echo "    </thead>";
   echo "    <tbody>";  

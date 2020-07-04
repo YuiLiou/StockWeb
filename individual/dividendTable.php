@@ -7,19 +7,24 @@
   echo "【股利政策】<br>";
   
   $sql = "select d.*, ".
-         "       (case ".
-         "           when (d.cash = 0) then 0 ".
-         "           when (e.eps = 0) then 0 ".
-         "           else round(d.cash*100/e.eps,2) ".
-         "       end) dispatch ". 
-         "from dividend d, ".
-         "    (select year, eps ".
-         "    from eps ".
-         "    where code = '".$_GET['company']."' ".
-         "    and season = 'Q4')e ".
+         "  ifnull(( ".
+         "    select ".
+         "      ( ".
+         "        case ".
+         "          when (d.cash = 0) then 0 ".
+         "          when (e.eps = 0) then 0 ".
+         "          else round(d.cash*100/e.eps,2) ".
+         "        end ".
+         "      ) ".
+         "    from eps e".
+         "    where 1=1 ".
+         "    and e.code = d.code ".
+         "    and e.season = 'Q4' ".
+         "    and e.year = d.year ".
+         "  ),0) dispatch ".
+         "from dividend d ".
          "where code = '".$_GET['company']."' ".
-         "and d.year = e.year ".
-         "order by year desc ";
+         "order by year desc "; 
   $result = $conn->query($sql);
   $total_records = mysqli_num_rows($result);  // 取得記錄數
 
@@ -37,7 +42,8 @@
        "</thead><tbody>";
 
   /////////////////////////// 欄位 /////////////////////////// 
-  for ($i=0;$i<$total_records;$i++){ 
+  for ($i=0;$i<$total_records;$i++)
+  { 
       $row = mysqli_fetch_assoc($result); //將陣列以欄位名索引
       echo "<tr class='row100'>";
       echo "  <td>".$row['year']."</td>"; 

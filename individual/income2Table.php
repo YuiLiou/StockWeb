@@ -56,7 +56,7 @@
   /*********************************************************************************/
   /*【歷年營運盤點】                                              
   /*********************************************************************************/
-  $sql = "select a.*, round(v6/t11*100,2) v11 ".
+  $sql = "select a.*, round(v6/t11*100,2) v11, round(v5*v10/v8,2) v12 ".
          "from (".
          "  select t1.year, t1.season, ".
          "         t1.value v1, ".
@@ -155,6 +155,7 @@
   echo "        <th>母公司損益</th>";
   echo "        <th>EPS</th>";
   echo "        <th>業外收支佔稅前淨利比</th>";
+  echo "        <th>本業EPS</th>";
   echo "      </tr>";
   echo "    </thead>";
   echo "    <tbody>";
@@ -176,6 +177,7 @@
       echo "  <td>".$row['v9']."</td>";
       echo "  <td>".$row['v10']."</td>";
       echo "  <td>".$row['v11']."%</td>";
+      echo "  <td>".$row['v12']."</td>";
       echo "</tr>";
   }
   echo "    </tbody>";

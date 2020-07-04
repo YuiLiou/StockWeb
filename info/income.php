@@ -27,7 +27,7 @@
          "              (a.season = 'Q2' and ".
          "              (month like '____06' or month like '____05' or month like '____04')) or ".
          "              (a.season = 'Q1' and ".
-         "             (month like '____03' or month like '____02' or month like '____01'))) ".
+         "              (month like '____03' or month like '____02' or month like '____01'))) ".
          "       ) income ".
          "from income a ".
          "where code = '".$_GET['company']."' ".

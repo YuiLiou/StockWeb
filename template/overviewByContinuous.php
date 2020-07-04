@@ -36,20 +36,20 @@
   $tSeason = substr($_POST['season'],4,6);
 
   ///////////////////////////////////// 公司列表 /////////////////////////////////////
-  echo "<div class='table100 ver1 m-b-110' id='monthlyTbl'>";
-  echo "  <table data-vertable='ver1'>";
+  echo "<div class='table100 ver1 m-b-110'>";
+  echo "  <table data-vertable='ver1' id='myTable'>";
   echo "    <thead>";
   echo "      <tr class='row100 head'>";
-  echo "        <th>公司</th>";
-  echo "        <th>股價</th>";
-  echo "        <th>本益比</th>";
-  echo "        <th>現金殖利率</th>";
-  echo "        <th>毛利率</th>";
-  echo "        <th>營業利益率</th>";
-  echo "        <th>稅前利益率</th>";
-  echo "        <th>稅後利益率</th>";
-  echo "        <th>配息力</th>";
-  echo "        <th>獲利力</th>";
+  echo "        <th onclick='sortTable(0)'>公司</th>";
+  echo "        <th onclick='sortTable(1)'>股價</th>";
+  echo "        <th onclick='sortTable(2)'>本益比</th>";
+  echo "        <th onclick='sortTable(3)'>現金殖利率</th>";
+  echo "        <th onclick='sortTable(4)'>毛利率</th>";
+  echo "        <th onclick='sortTable(5)'>營業利益率</th>";
+  echo "        <th onclick='sortTable(6)'>稅前利益率</th>";
+  echo "        <th onclick='sortTable(7)'>稅後利益率</th>";
+  echo "        <th onclick='sortTable(8)'>配息力</th>";
+  echo "        <th onclick='sortTable(9)'>獲利力</th>";
   echo "      </tr>";
   echo "    </thead>";
   echo "    <tbody>";  
@@ -242,7 +242,7 @@
         echo "<td class='up'>連續".$row['eps_cons']."年賺錢</td>";  
     else
         echo "<td class='down'>連續".(-1*$row['eps_cons'])."年賠錢</td>";  
-    echo  "<tr>";
+    echo  "</tr>";
   }
   echo "</tbody></table></div>";
   
