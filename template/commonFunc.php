@@ -47,10 +47,20 @@
   function getPriceMovingTd($change, $moving)
   {
       if ($change > 0)
-          return "<td class='up'>↑".$change."元(".$moving."%)</td>";
+          return "<td class='up'>↑".$change."元<br>(".$moving."%)</td>";
       else if ($change < 0)
-          return "<td class='down'>↓".(-1*$change)."元(".$moving."%)</td>";
+          return "<td class='down'>↓".(-1*$change)."元<br>(".$moving."%)</td>";
       else
           return "<td>0 (0%)</td>";
+  }
+  /**************************集保td***********************************/
+  function getSuperShareTd($change)
+  {
+      if ($change > 0)
+          return "<td class='up'>↑".$change."張</td>";
+      else if ($change < 0)
+          return "<td class='down'>↓".(-1*$change)."張</td>";
+      else
+          return "<td>0張</td>";
   }
 ?>

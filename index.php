@@ -80,7 +80,6 @@ function sortTable(n) {
       //x = rows[i].getElementsByTagName("TD")[n].innerHTML.replace("↑","").replace("↓","").match(/([0-9]*\.?[0-9]*)/)[0]; \d+
       x = rows[i].getElementsByTagName("TD")[n].innerHTML.replace("↑","").replace("↓","").match(/\d+/);   
       y = rows[i+1].getElementsByTagName("TD")[n].innerHTML.toLowerCase();
-      alert(x);
       if (dir == "asc") {
         if (x > y) {
           shouldSwitch = true;
