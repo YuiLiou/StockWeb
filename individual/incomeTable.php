@@ -46,19 +46,54 @@
          "       round((this.beforeTaxRate-past.beforeTaxRate),2)nBeforeTax, ".
          "       round((this.afterTaxRate-past.afterTaxRate),2)nAfterTax, ".
          "       round(this.operatingRate/this.beforeTaxRate*100,2) mainJob ".
-         "from (select i.*, @rank := @rank + 1 rnk ".
-         "      from income i, ".
-         "      (select @rank := 0)a ".
-         "      where code = '".$_GET['company']."' ".
-         "      order by year desc, season desc ".
-         "      limit 0,1000) this, ".
-         "     (select i.*, @rank2 := @rank2 + 1 rnk ".
-         "      from income i, ".
-         "      (select @rank2 := 0)a ".
-         "      where code = '".$_GET['company']."' ".
-         "      order by year desc, season desc ".
-         "      limit 4,1000) past ".
-         "where this.rnk = past.rnk ";
+         "from (select i.year, ".
+         "             i.season, ".
+         "             case when i.season in ('Q4','Q3','Q2') then (i.operatingIncome-x.operatingIncome) ".
+         "                  else i.operatingIncome end operatingIncome, ".
+         "             i.grossRate, ".
+         "             i.operatingRate, ".
+         "             i.beforeTaxRate, ".
+         "             i.afterTaxRate, ".
+         "             i.rnk ".
+         "      from ( ".
+         "        select i.*, (@rank := @rank + 1) rnk ".
+         "        from income i, (select @rank := 0)a ".
+         "        where 1=1 ".
+         "        and i.code = '".$_GET['company']."' ".
+         "        order by i.year desc, i.season desc ".
+         "        limit 0,1000) i, income x ".
+         "      where 1=1 ".
+         "      and i.code = x.code ".
+         "      and i.year = x.year ".
+         "      and case when i.season='Q4' then x.season='Q3' ".
+         "               when i.season='Q3' then x.season='Q2' ".
+         "               when i.season='Q2' then x.season='Q1' ".
+         "               when i.season='Q1' then x.season='Q1' end) this, ".
+         // 去年同期
+         "     (select i.year, ".
+         "             i.season, ".
+         "             case when i.season in ('Q4','Q3','Q2') then (i.operatingIncome-x.operatingIncome) ".
+         "                  else i.operatingIncome end operatingIncome, ".
+         "             i.grossRate, ".
+         "             i.operatingRate, ".
+         "             i.beforeTaxRate, ".
+         "             i.afterTaxRate, ".
+         "             i.rnk ".
+         "      from ( ".
+         "        select i.*, (@rank2 := @rank2 + 1) rnk ".
+         "        from income i, (select @rank2 := 0)a ".
+         "        where 1=1 ".
+         "        and i.code = '".$_GET['company']."' ".
+         "        order by i.year desc, i.season desc ".
+         "        limit 4,1000) i, income x ".
+         "      where 1=1 ".
+         "      and i.code = x.code ".
+         "      and i.year = x.year ".
+         "      and case when i.season='Q4' then x.season='Q3' ".
+         "               when i.season='Q3' then x.season='Q2' ".
+         "               when i.season='Q2' then x.season='Q1' ".
+         "               when i.season='Q1' then x.season='Q1' end) past ".
+         "where this.rnk = past.rnk order by this.rnk asc ";
 
   $result = $conn->query($sql);
   $total_records = mysqli_num_rows($result);  // 取得記錄數

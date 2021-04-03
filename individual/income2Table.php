@@ -137,7 +137,8 @@
          "        and i.col_name = '營業成本') t1 ".
          "  where 1=1 ".         
          "  order by year asc ".
-         ") a ";
+         ") a ".
+         "order by year desc";
   echo "【歷年營運指標】<br>";
   echo "<div class='table100 ver1' id='monthlyTbl' style='height:500px;'>";
   echo "  <table data-vertable='ver1'>";

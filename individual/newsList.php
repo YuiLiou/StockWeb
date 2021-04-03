@@ -46,7 +46,7 @@
   if ($row['grow'] > 0)
     echo "<font color='red'>買進".$row['grow']."張</font><br>";
   else 
-    echo "<font color='red'>賣出".$row['grow']."張</font><br><br><br>";
+    echo "<font color='green'>賣出".(-1*$row['grow'])."張</font><br><br><br>";
    
   /*********************************************************************************/
   /*【集保統計】

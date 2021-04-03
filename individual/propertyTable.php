@@ -158,7 +158,8 @@
          "    and col_name in ('股本') ".
          "    and code = '".$_GET['company']."' ".
          "    and season = '".$tSeason."' ".
-         ") a ";
+         ") a ".
+         "order by year desc ";
          
   $result = $conn->query($sql);
   $total_records = mysqli_num_rows($result);  // 取得記錄數
@@ -311,7 +312,7 @@
          "where 1=1 ".
          "and code = '".$_GET['company']."' ".
          "and col_name = '存貨' ".
-         "order by year desc, season desc ".
+         "order by year asc, season asc ".
          "limit 0,12 ";
   $result = $conn->query($sql);
   $total_records = mysqli_num_rows($result);  // 取得記錄數
@@ -373,7 +374,7 @@
          "where 1=1 ".
          "and a.year = b.year ".
          "and a.season = b.season ".
-         "order by a.year desc, a.season desc ".
+         "order by a.year asc, a.season asc ".
          "limit 0,12 ";
 
   $result = $conn->query($sql);
